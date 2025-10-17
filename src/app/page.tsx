@@ -4,7 +4,6 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { 
-  Bell, 
   MessageSquare, 
   Car, 
   Package, 
@@ -120,23 +119,11 @@ export default function HomePage() {
     <div className="min-h-screen bg-gray-50">
       <div className="w-full max-w-sm mx-auto px-4 py-4 space-y-6 sm:max-w-2xl sm:px-6 md:max-w-4xl md:px-8 lg:max-w-6xl lg:px-12 lg:py-6 xl:max-w-7xl">
         
-        {/* 헤더 */}
-        <header className="flex items-center justify-between mb-2">
-          <div className="flex-1">
-            <h1 className="text-xl font-bold text-gray-900 sm:text-2xl lg:text-3xl">안녕하세요! 👋</h1>
-            <p className="text-sm text-gray-600 mt-1 sm:text-base">101동 1001호 홍길동님</p>
-          </div>
-          <button 
-            className="relative p-3 hover:bg-gray-100 rounded-lg transition-colors sm:p-4 touch-manipulation focus:outline-none focus:ring-2 focus:ring-primary-500"
-            aria-label="알림 확인"
-          >
-            <Bell className="h-6 w-6 text-gray-600 sm:h-7 sm:w-7" />
-            <div 
-              className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full sm:w-4 sm:h-4"
-              aria-label="읽지 않은 알림 있음"
-            ></div>
-          </button>
-        </header>
+        {/* 환영 메시지 */}
+        <div className="mb-6">
+          <h1 className="text-xl font-bold text-gray-900 sm:text-2xl lg:text-3xl">안녕하세요! 👋</h1>
+          <p className="text-sm text-gray-600 mt-1 sm:text-base">101동 1001호 홍길동님</p>
+        </div>
 
         {/* 긴급 알림 배너 */}
         <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-4 sm:p-5" role="alert" aria-live="assertive">
