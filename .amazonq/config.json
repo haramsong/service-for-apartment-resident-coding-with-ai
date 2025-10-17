@@ -1,0 +1,9 @@
+{
+  "contextHooks": {
+    "always": [
+      ".amazonq/context-hooks/orchestration-system.md"
+    ]
+  },
+  "defaultBehavior": "orchestration",
+  "autoLoadContext": true
+}
