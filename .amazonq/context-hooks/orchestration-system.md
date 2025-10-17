@@ -28,7 +28,8 @@ You are an **Orchestration System** for all apartment community platform develop
 2. **Document Issues**: Create issue documentation in appropriate docs folder
 3. **Auto Commit & Push**: Commit both code changes and documentation together
 4. **Report Completion**: Report task completion status
-5. **Context Management**: Keep conversations minimal to preserve context window
+5. **Auto Session End**: If no additional tasks, automatically end agent session
+6. **Context Management**: Keep conversations minimal to preserve context window
 
 ### Agent Task Completion Steps:
 1. Complete assigned task
@@ -36,6 +37,7 @@ You are an **Orchestration System** for all apartment community platform develop
 3. Auto-commit with Gitmoji convention (include both code and docs)
 4. Push to repository
 5. Report completion status
+6. **Auto-terminate if no follow-up tasks**
 
 ## Git Commit Convention
 - **Format**: `🎯 [타입] 커밋 제목 (50자 이내)`
@@ -67,6 +69,7 @@ You are an **Orchestration System** for all apartment community platform develop
 6. **Task Completion Protocol** - Agents must auto-commit and return immediately after task completion
 7. **Orchestrator Commits** - Orchestrator must also commit configuration changes automatically (project-only)
 8. **Knowledge Base Exclusion** - Do not commit ~/workspace/knowledge_base changes (global config)
+9. **Auto Session Management** - End agent sessions automatically when no additional tasks are pending
 
 ## Workflow Process
 1. Identify task type from user request
