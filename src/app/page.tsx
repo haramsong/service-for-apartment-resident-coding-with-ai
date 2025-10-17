@@ -125,16 +125,31 @@ export default function HomePage() {
           <p className="text-sm text-gray-600 mt-1 sm:text-base">101동 1001호 홍길동님</p>
         </div>
 
-        {/* 긴급 알림 배너 */}
-        <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-4 sm:p-5" role="alert" aria-live="assertive">
-          <div className="flex items-start">
-            <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0 sm:h-6 sm:w-6" />
-            <div className="ml-3 flex-1">
-              <h3 className="text-sm font-semibold text-red-800 sm:text-base">긴급 공지</h3>
-              <p className="text-sm text-red-700 mt-1 sm:text-base">정기 소독 실시 안내 - 오늘 오후 2시부터 방역 소독 진행</p>
+        {/* 긴급 알림 배너 - 개선된 버전 */}
+        <div className="bg-gradient-to-r from-red-500 to-red-600 text-white p-4 rounded-lg mb-6 shadow-lg sm:p-5" role="alert" aria-live="assertive">
+          <div className="flex items-center">
+            {/* 단일 펄스 애니메이션 적용 */}
+            <div className="relative flex-shrink-0 mr-3">
+              <div className="absolute inset-0 bg-white rounded-full opacity-25 animate-ping"></div>
+              <div className="relative bg-white bg-opacity-20 p-2 rounded-full">
+                <AlertCircle className="h-5 w-5 text-white sm:h-6 sm:w-6" />
+              </div>
             </div>
-            <button className="ml-2 p-1 hover:bg-red-100 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-red-500" aria-label="알림 닫기">
-              <ChevronRight className="h-4 w-4 text-red-500 rotate-90" />
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="bg-white bg-opacity-20 text-white text-xs font-bold px-2 py-1 rounded-full sm:text-sm">
+                  긴급
+                </span>
+                <span className="text-red-100 text-xs sm:text-sm">지금 확인 필요</span>
+              </div>
+              <h3 className="font-bold text-white text-sm leading-tight sm:text-base">정기 소독 실시 안내</h3>
+              <p className="text-red-100 text-sm mt-1 sm:text-base">오늘 오후 2시부터 방역 소독 진행 - 외출 자제 요청</p>
+            </div>
+            <button 
+              className="ml-3 p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 min-w-[44px] min-h-[44px] flex items-center justify-center" 
+              aria-label="긴급 알림 닫기"
+            >
+              <ChevronRight className="h-4 w-4 text-white rotate-90 sm:h-5 sm:w-5" />
             </button>
           </div>
         </div>
@@ -161,7 +176,7 @@ export default function HomePage() {
                         <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                         {action.badge && (
                           <div 
-                            className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold shadow-lg animate-pulse sm:w-7 sm:h-7 sm:text-sm"
+                            className="absolute -top-2 -right-2 min-w-[24px] h-6 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold shadow-lg border-2 border-white sm:min-w-[28px] sm:h-7 sm:text-sm"
                             aria-label={`${action.badge}개의 새 항목`}
                           >
                             {action.badge}
@@ -208,8 +223,8 @@ export default function HomePage() {
                       <div className="flex-shrink-0 mt-1">
                         {notice.isImportant ? (
                           <div className="relative">
-                            <AlertCircle className="h-5 w-5 text-red-500 sm:h-6 sm:w-6" aria-label="긴급 공지" />
-                            <div className="absolute -inset-1 bg-red-500 rounded-full opacity-25 animate-ping"></div>
+                            <AlertCircle className="h-5 w-5 text-red-500 sm:h-6 sm:w-6" aria-label="중요 공지" />
+                            {/* 배너에서 이미 애니메이션을 사용하므로 여기서는 정적 표시 */}
                           </div>
                         ) : (
                           <CheckCircle className="h-5 w-5 text-green-500 sm:h-6 sm:w-6" aria-label="일반 공지" />
@@ -268,7 +283,7 @@ export default function HomePage() {
                         <h3 className="font-medium text-gray-900 truncate group-hover:text-primary-600 transition-colors sm:text-lg">{post.title}</h3>
                         {post.isHot && (
                           <Badge 
-                            className="bg-gradient-to-r from-red-100 to-orange-100 text-red-600 text-xs px-2 py-0.5 border-red-200 animate-pulse font-bold sm:text-sm sm:px-3 sm:py-1"
+                            className="bg-gradient-to-r from-orange-100 to-red-100 text-red-600 text-xs px-2 py-0.5 border border-red-200 font-bold sm:text-sm sm:px-3 sm:py-1"
                             aria-label="인기 게시글"
                           >
                             🔥 HOT
