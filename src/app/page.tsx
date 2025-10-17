@@ -173,7 +173,7 @@ export default function HomePage() {
         </div>
 
         {/* 메인 콘텐츠 영역 - 반응형 그리드 */}
-        <div className="space-y-4 
+        <div className="space-y-3 
                         lg:grid lg:grid-cols-12 lg:gap-6 lg:space-y-0">
 
           {/* 빠른 액션 - 모바일: 전체, 데스크톱: 8컬럼 */}
