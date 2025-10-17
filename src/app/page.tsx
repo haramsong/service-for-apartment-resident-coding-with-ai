@@ -174,10 +174,10 @@ export default function HomePage() {
 
         {/* 메인 콘텐츠 영역 - 반응형 그리드 */}
         <div className="space-y-3 
-                        lg:grid lg:grid-cols-12 lg:gap-6 lg:space-y-0">
+                        lg:space-y-4">
 
-          {/* 빠른 액션 - 모바일: 전체, 데스크톱: 8컬럼 */}
-          <section className="lg:col-span-8">
+          {/* 빠른 액션 - 전체 너비 */}
+          <section>
             <h2 className="text-lg font-semibold text-gray-900 mb-4 
                           sm:text-xl">빠른 메뉴</h2>
             <div className="grid grid-cols-2 gap-3 
@@ -240,17 +240,19 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* 공지사항 - 모바일: 전체, 데스크톱: 4컬럼 */}
-          <section className="lg:col-span-4">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900 
-                            sm:text-xl">공지사항</h2>
-              <Button variant="ghost" size="sm" 
-                      className="text-primary-500 hover:text-primary-600 hover:bg-primary-50 
-                                lg:hidden touch-manipulation">
-                전체보기 <ChevronRight className="h-4 w-4 ml-1" />
-              </Button>
-            </div>
+          {/* 하단 섹션 - 공지사항과 커뮤니티 글 */}
+          <div className="lg:grid lg:grid-cols-2 lg:gap-6 space-y-3 lg:space-y-0">
+            {/* 공지사항 */}
+            <section>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-gray-900 
+                              sm:text-xl">공지사항</h2>
+                <Button variant="ghost" size="sm" 
+                        className="text-primary-500 hover:text-primary-600 hover:bg-primary-50 
+                                  lg:hidden touch-manipulation">
+                  전체보기 <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
             
             <div className="space-y-3">
               {notices.slice(0, 3).map((notice) => (
@@ -326,19 +328,19 @@ export default function HomePage() {
                 </Button>
               </div>
             </div>
-          </section>
+            </section>
 
-          {/* 최근 커뮤니티 글 - 모바일: 전체, 데스크톱: 8컬럼 */}
-          <section className="lg:col-span-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900 
-                            sm:text-xl">최근 커뮤니티 글</h2>
-              <Button variant="ghost" size="sm" 
-                      className="text-primary-500 hover:text-primary-600 hover:bg-primary-50
-                                touch-manipulation">
-                더보기 <ChevronRight className="h-4 w-4 ml-1" />
-              </Button>
-            </div>
+            {/* 최근 커뮤니티 글 */}
+            <section>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-gray-900 
+                              sm:text-xl">최근 커뮤니티 글</h2>
+                <Button variant="ghost" size="sm" 
+                        className="text-primary-500 hover:text-primary-600 hover:bg-primary-50
+                                  touch-manipulation">
+                  더보기 <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
             
             <Card className="divide-y divide-gray-100 border-0 shadow-sm overflow-hidden">
               {recentPosts.map((post, index) => (
