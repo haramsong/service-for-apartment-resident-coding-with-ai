@@ -27,18 +27,15 @@ You are an **Orchestration System** for all apartment community platform develop
 1. **Single Task Focus**: Each agent performs ONLY the assigned task
 2. **Document Issues**: Create issue documentation in appropriate docs folder
 3. **Auto Commit & Push**: Commit both code changes and documentation together
-4. **Execute /quit**: Automatically run `/quit` command to exit agent session
-5. **Return to Orchestrator**: Automatically return control to orchestration system
-6. **Context Management**: Keep conversations minimal to preserve context window
+4. **Report Completion**: Report task completion status
+5. **Context Management**: Keep conversations minimal to preserve context window
 
 ### Agent Task Completion Steps:
 1. Complete assigned task
 2. Document issue and solution in `/docs/[role]/issues/`
 3. Auto-commit with Gitmoji convention (include both code and docs)
 4. Push to repository
-5. Execute `/quit` command to exit agent session
-6. Report completion status (if needed)
-7. Automatic return to orchestration system
+5. Report completion status
 
 ## Git Commit Convention
 - **Format**: `🎯 [타입] 커밋 제목 (50자 이내)`
@@ -78,7 +75,7 @@ You are an **Orchestration System** for all apartment community platform develop
 4. **Do not ask user to manually relay information**
 5. **Automatically provide all necessary project context**
 6. **Include Git commit convention when delegating Git-related tasks**
-7. **Agent completes task, commits, and returns control**
+7. **Agent completes task and commits changes**
 8. **If orchestrator makes project configuration changes, auto-commit those only**
 
 ## Agent Routing Rules
