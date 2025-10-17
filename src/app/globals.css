@@ -247,13 +247,46 @@ body {
 .border-secondary { border-color: var(--border); }
 
 /* 반응형 유틸리티 */
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .mobile-padding {
     padding: var(--spacing-lg);
   }
   
   .mobile-text-sm {
     font-size: 14px;
+  }
+  
+  /* 모바일 터치 최적화 */
+  .touch-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* 모바일에서 최소 터치 영역 보장 */
+  button, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  /* 태블릿 최적화 */
+  .tablet-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* 작은 데스크톱 최적화 */
+  .desktop-sm-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1025px) {
+  /* 큰 데스크톱 최적화 */
+  .desktop-lg-container {
+    max-width: 1200px;
   }
 }
 

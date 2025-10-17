@@ -9,7 +9,16 @@ module.exports = {
     extend: {
       screens: {
         'xs': '475px',
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
+        '2xl': '1536px',
         '3xl': '1600px',
+        // 커스텀 브레이크포인트 추가
+        'tablet': '768px',
+        'desktop': '1024px',
+        'wide': '1440px',
       },
       colors: {
         // 기존 디자인 가이드라인 색상 시스템 적용

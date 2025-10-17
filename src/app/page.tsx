@@ -118,18 +118,30 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="p-4 space-y-6 max-w-md mx-auto lg:max-w-4xl lg:px-8">
+      {/* 컨테이너: 모바일 우선, 반응형 최대 너비 설정 */}
+      <div className="w-full max-w-sm mx-auto px-4 py-4 space-y-6 
+                      sm:max-w-2xl sm:px-6 
+                      md:max-w-4xl md:px-8 
+                      lg:max-w-6xl lg:px-12 lg:py-6
+                      xl:max-w-7xl">
+        
         {/* 헤더 */}
-        <header className="flex items-center justify-between pt-2 lg:pt-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 lg:text-3xl">안녕하세요! 👋</h1>
-            <p className="text-sm text-gray-600 mt-1 lg:text-base">101동 1001호 홍길동님</p>
+        <header className="flex items-center justify-between">
+          <div className="flex-1">
+            <h1 className="text-xl font-bold text-gray-900 
+                          sm:text-2xl 
+                          lg:text-3xl">안녕하세요! 👋</h1>
+            <p className="text-sm text-gray-600 mt-1 
+                         sm:text-base">101동 1001호 홍길동님</p>
           </div>
           <button 
-            className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors lg:p-3"
+            className="relative p-3 hover:bg-gray-100 rounded-lg transition-colors 
+                       sm:p-4 
+                       touch-manipulation"
             aria-label="알림 확인"
           >
-            <Bell className="h-6 w-6 text-gray-600 lg:h-7 lg:w-7" />
+            <Bell className="h-6 w-6 text-gray-600 
+                           sm:h-7 sm:w-7" />
             <div 
               className="notification-badge"
               aria-label="읽지 않은 알림 있음"
@@ -137,151 +149,190 @@ export default function HomePage() {
           </button>
         </header>
 
-        {/* 메인 콘텐츠 영역 */}
-        <div className="lg:grid lg:grid-cols-3 lg:gap-8 lg:space-y-0 space-y-6">
+        {/* 메인 콘텐츠 영역 - 반응형 그리드 */}
+        <div className="space-y-6 
+                        lg:grid lg:grid-cols-12 lg:gap-8 lg:space-y-0">
 
-        {/* 빠른 액션 */}
-        <section className="lg:col-span-2">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4 lg:text-xl">빠른 메뉴</h2>
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
-            {quickActions.map((action, index) => {
-              const Icon = action.icon
-              return (
+          {/* 빠른 액션 - 모바일: 전체, 데스크톱: 8컬럼 */}
+          <section className="lg:col-span-8">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 
+                          sm:text-xl">빠른 메뉴</h2>
+            <div className="grid grid-cols-2 gap-3 
+                           sm:grid-cols-2 sm:gap-4
+                           md:grid-cols-4 md:gap-4">
+              {quickActions.map((action, index) => {
+                const Icon = action.icon
+                return (
+                  <Card 
+                    key={index} 
+                    className="p-4 hover:shadow-md transition-all duration-200 cursor-pointer 
+                              border-0 shadow-sm focus-within:ring-2 focus-within:ring-primary-500
+                              min-h-[80px] touch-manipulation
+                              sm:p-5 sm:min-h-[90px]
+                              md:min-h-[100px]"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${action.title} - ${action.description}`}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        // 네비게이션 로직 추가 필요
+                      }
+                    }}
+                  >
+                    <div className="flex items-center space-x-3 h-full">
+                      <div className={`relative p-2.5 rounded-xl ${action.color}
+                                     sm:p-3`}>
+                        <Icon className="h-5 w-5 
+                                       sm:h-6 sm:w-6" />
+                        {action.badge && (
+                          <div 
+                            className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white 
+                                      text-xs rounded-full flex items-center justify-center font-medium
+                                      sm:w-6 sm:h-6 sm:text-sm"
+                            aria-label={`${action.badge}개의 새 항목`}
+                          >
+                            {action.badge}
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-900 text-sm truncate
+                                      sm:text-base">{action.title}</h3>
+                        <p className="text-xs text-gray-600 mt-0.5 truncate
+                                     sm:text-sm">{action.description}</p>
+                      </div>
+                    </div>
+                  </Card>
+                )
+              })}
+            </div>
+          </section>
+
+          {/* 공지사항 - 모바일: 전체, 데스크톱: 4컬럼 */}
+          <section className="lg:col-span-4">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900 
+                            sm:text-xl">공지사항</h2>
+              <Button variant="ghost" size="sm" 
+                      className="text-primary-500 hover:text-primary-600 hover:bg-primary-50 
+                                lg:hidden touch-manipulation">
+                전체보기 <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </div>
+            
+            <div className="space-y-3">
+              {notices.map((notice) => (
                 <Card 
-                  key={index} 
-                  className="p-4 hover:shadow-md transition-all duration-200 cursor-pointer border-0 shadow-sm focus-within:ring-2 focus-within:ring-primary-500"
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`${action.title} - ${action.description}`}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      // 네비게이션 로직 추가 필요
-                    }
-                  }}
+                  key={notice.id} 
+                  className={`p-4 border-0 shadow-sm hover:shadow-md transition-all duration-200 
+                             touch-manipulation
+                             sm:p-5 ${
+                    notice.isImportant ? 'bg-red-50 border-l-4 border-l-red-500' : 'bg-white'
+                  }`}
+                  role={notice.isImportant ? 'alert' : undefined}
+                  aria-live={notice.isImportant ? 'assertive' : 'polite'}
                 >
-                  <div className="flex items-center space-x-3">
-                    <div className={`relative p-3 rounded-xl ${action.color}`}>
-                      <Icon className="h-5 w-5" />
-                      {action.badge && (
-                        <div 
-                          className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium"
-                          aria-label={`${action.badge}개의 새 항목`}
-                        >
-                          {action.badge}
-                        </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="flex-shrink-0 mt-1">
+                      {notice.isImportant ? (
+                        <AlertCircle className="h-5 w-5 text-red-500 
+                                               sm:h-6 sm:w-6" aria-label="긴급 공지" />
+                      ) : (
+                        <CheckCircle className="h-5 w-5 text-green-500 
+                                               sm:h-6 sm:w-6" aria-label="일반 공지" />
                       )}
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 text-sm">{action.title}</h3>
-                      <p className="text-xs text-gray-600 mt-0.5">{action.description}</p>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-2 flex-wrap">
+                        <Badge 
+                          className={`text-xs font-medium border 
+                                     sm:text-sm ${getBadgeStyle(notice.category)}`}
+                        >
+                          {notice.type}
+                        </Badge>
+                        <div className="flex items-center gap-1 text-xs text-gray-500
+                                       sm:text-sm">
+                          <Clock className="h-3 w-3 
+                                          sm:h-4 sm:w-4" />
+                          <span>{notice.time}</span>
+                        </div>
+                      </div>
+                      <h3 className="font-semibold text-gray-900 mb-2 leading-tight
+                                    sm:text-lg">{notice.title}</h3>
+                      <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed
+                                   sm:text-base">{notice.content}</p>
                     </div>
                   </div>
                 </Card>
-              )
-            })}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
 
-        {/* 중요 공지사항 */}
-        <section className="lg:col-span-1">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900 lg:text-xl">공지사항</h2>
-            <Button variant="ghost" size="sm" className="text-primary-500 hover:text-primary-600 hover:bg-primary-50 lg:hidden">
-              전체보기 <ChevronRight className="h-4 w-4 ml-1" />
-            </Button>
-          </div>
-          
-          <div className="space-y-3">
-            {notices.map((notice) => (
-              <Card 
-                key={notice.id} 
-                className={`p-4 border-0 shadow-sm hover:shadow-md transition-all duration-200 ${
-                  notice.isImportant ? 'bg-red-50 border-l-4 border-l-red-500' : 'bg-white'
-                }`}
-                role={notice.isImportant ? 'alert' : undefined}
-                aria-live={notice.isImportant ? 'assertive' : 'polite'}
-              >
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0 mt-1">
-                    {notice.isImportant ? (
-                      <AlertCircle className="h-5 w-5 text-red-500" aria-label="긴급 공지" />
-                    ) : (
-                      <CheckCircle className="h-5 w-5 text-green-500" aria-label="일반 공지" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Badge 
-                        className={`text-xs font-medium border ${getBadgeStyle(notice.category)}`}
-                      >
-                        {notice.type}
-                      </Badge>
-                      <div className="flex items-center gap-1 text-xs text-gray-500">
-                        <Clock className="h-3 w-3" />
-                        <span>{notice.time}</span>
+          {/* 최근 커뮤니티 글 - 모바일: 전체, 데스크톱: 8컬럼 */}
+          <section className="lg:col-span-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900 
+                            sm:text-xl">최근 커뮤니티 글</h2>
+              <Button variant="ghost" size="sm" 
+                      className="text-primary-500 hover:text-primary-600 hover:bg-primary-50
+                                touch-manipulation">
+                더보기 <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </div>
+            
+            <Card className="divide-y divide-gray-100 border-0 shadow-sm">
+              {recentPosts.map((post, index) => (
+                <article 
+                  key={index} 
+                  className="p-4 flex items-center justify-between 
+                            hover:bg-gray-50 transition-colors duration-200 
+                            focus-within:bg-gray-50 touch-manipulation
+                            sm:p-5"
+                >
+                  <div className="flex-1 min-w-0 pr-3">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <h3 className="font-medium text-gray-900 truncate
+                                    sm:text-lg">{post.title}</h3>
+                      {post.isHot && (
+                        <Badge 
+                          className="bg-red-100 text-red-600 text-xs px-2 py-0.5 border-red-200
+                                    sm:text-sm sm:px-3 sm:py-1"
+                          aria-label="인기 게시글"
+                        >
+                          HOT
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-gray-500 flex-wrap
+                                   sm:text-sm">
+                      <span>{post.author}</span>
+                      <span>•</span>
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-3 w-3 
+                                        sm:h-4 sm:w-4" />
+                        <span>{post.time}</span>
                       </div>
                     </div>
-                    <h3 className="font-semibold text-gray-900 mb-2 leading-tight">{notice.title}</h3>
-                    <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">{notice.content}</p>
                   </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </section>
-
-        {/* 최근 커뮤니티 글 */}
-        <section className="lg:col-span-2">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900 lg:text-xl">최근 커뮤니티 글</h2>
-            <Button variant="ghost" size="sm" className="text-primary-500 hover:text-primary-600 hover:bg-primary-50">
-              더보기 <ChevronRight className="h-4 w-4 ml-1" />
-            </Button>
-          </div>
-          
-          <Card className="divide-y divide-gray-100 border-0 shadow-sm">
-            {recentPosts.map((post, index) => (
-              <article 
-                key={index} 
-                className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors duration-200 focus-within:bg-gray-50"
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-medium text-gray-900 truncate">{post.title}</h3>
-                    {post.isHot && (
-                      <Badge 
-                        className="bg-red-100 text-red-600 text-xs px-2 py-0.5 border-red-200"
-                        aria-label="인기 게시글"
-                      >
-                        HOT
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <span>{post.author}</span>
-                    <span>•</span>
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      <span>{post.time}</span>
+                  <div className="flex items-center gap-3 flex-shrink-0">
+                    <div className="flex items-center gap-1 text-xs text-gray-500
+                                   sm:text-sm">
+                      <MessageSquare className="h-3 w-3 
+                                               sm:h-4 sm:w-4" />
+                      <span>{post.comments}</span>
                     </div>
+                    <ChevronRight className="h-4 w-4 text-gray-400 
+                                           sm:h-5 sm:w-5" aria-hidden="true" />
                   </div>
-                </div>
-                <div className="flex items-center gap-3 ml-3">
-                  <div className="flex items-center gap-1 text-xs text-gray-500">
-                    <MessageSquare className="h-3 w-3" />
-                    <span>{post.comments}</span>
-                  </div>
-                  <ChevronRight className="h-4 w-4 text-gray-400" aria-hidden="true" />
-                </div>
-              </article>
-            ))}
-          </Card>
-        </section>
+                </article>
+              ))}
+            </Card>
+          </section>
         </div>
 
         {/* 하단 여백 (네비게이션 바 공간 확보) */}
-        <div className="h-4 lg:h-8"></div>
+        <div className="h-20 sm:h-24 lg:h-8"></div>
       </div>
     </div>
   )
