@@ -125,32 +125,81 @@ export default function HomePage() {
           <p className="text-sm text-gray-600 mt-1 sm:text-base">101동 1001호 홍길동님</p>
         </div>
 
-        {/* 긴급 알림 배너 - 개선된 버전 */}
-        <div className="bg-gradient-to-r from-red-500 to-red-600 text-white p-4 rounded-lg mb-6 shadow-lg sm:p-5" role="alert" aria-live="assertive">
-          <div className="flex items-center">
-            {/* 단일 펄스 애니메이션 적용 */}
-            <div className="relative flex-shrink-0 mr-3">
-              <div className="absolute inset-0 bg-white rounded-full opacity-25 animate-ping"></div>
-              <div className="relative bg-white bg-opacity-20 p-2 rounded-full">
-                <AlertCircle className="h-5 w-5 text-white sm:h-6 sm:w-6" />
+        {/* 긴급 알림 배너 - 최적화된 버전 */}
+        <div 
+          className="relative bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl shadow-xl border-l-4 border-red-300 overflow-hidden mb-6" 
+          role="alert" 
+          aria-live="assertive"
+          aria-labelledby="emergency-title"
+          aria-describedby="emergency-content"
+        >
+          {/* 배경 패턴 */}
+          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-white/10"></div>
+          
+          <div className="relative p-5 sm:p-6">
+            <div className="flex items-start gap-4">
+              {/* 아이콘 영역 - 개선된 애니메이션 */}
+              <div className="relative flex-shrink-0">
+                <div className="absolute inset-0 bg-white rounded-full opacity-20 animate-pulse"></div>
+                <div className="relative bg-white/20 backdrop-blur-sm p-3 rounded-full border border-white/30">
+                  <AlertCircle className="h-6 w-6 text-white sm:h-7 sm:w-7" aria-hidden="true" />
+                </div>
               </div>
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="bg-white bg-opacity-20 text-white text-xs font-bold px-2 py-1 rounded-full sm:text-sm">
-                  긴급
-                </span>
-                <span className="text-red-100 text-xs sm:text-sm">지금 확인 필요</span>
+              
+              {/* 콘텐츠 영역 */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-3 mb-2 flex-wrap">
+                  <span 
+                    className="inline-flex items-center gap-1 bg-white/25 backdrop-blur-sm text-white text-sm font-bold px-3 py-1.5 rounded-full border border-white/30 shadow-sm"
+                    aria-label="긴급 공지"
+                  >
+                    🚨 긴급
+                  </span>
+                  <span className="text-red-100 text-sm font-medium">즉시 확인 필요</span>
+                </div>
+                
+                <h3 
+                  id="emergency-title"
+                  className="font-bold text-white text-lg leading-tight mb-2 sm:text-xl"
+                >
+                  정기 소독 실시 안내
+                </h3>
+                
+                <p 
+                  id="emergency-content"
+                  className="text-red-50 text-base leading-relaxed sm:text-lg"
+                >
+                  오늘 오후 2시부터 아파트 전체 방역 소독을 실시합니다. 해당 시간에는 외출을 자제해 주시기 바랍니다.
+                </p>
+                
+                {/* 액션 버튼 */}
+                <div className="flex gap-3 mt-4">
+                  <button 
+                    className="inline-flex items-center gap-2 bg-white text-red-600 font-semibold px-4 py-2 rounded-lg hover:bg-red-50 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-500 text-sm sm:text-base"
+                    aria-label="긴급 공지 자세히 보기"
+                  >
+                    자세히 보기
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                  <button 
+                    className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white font-medium px-4 py-2 rounded-lg hover:bg-white/30 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-500 border border-white/30 text-sm sm:text-base"
+                    aria-label="나중에 알림"
+                  >
+                    나중에
+                  </button>
+                </div>
               </div>
-              <h3 className="font-bold text-white text-sm leading-tight sm:text-base">정기 소독 실시 안내</h3>
-              <p className="text-red-100 text-sm mt-1 sm:text-base">오늘 오후 2시부터 방역 소독 진행 - 외출 자제 요청</p>
+              
+              {/* 닫기 버튼 */}
+              <button 
+                className="flex-shrink-0 p-2 hover:bg-white/20 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-500 min-w-[44px] min-h-[44px] flex items-center justify-center" 
+                aria-label="긴급 알림 닫기"
+              >
+                <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
-            <button 
-              className="ml-3 p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 min-w-[44px] min-h-[44px] flex items-center justify-center" 
-              aria-label="긴급 알림 닫기"
-            >
-              <ChevronRight className="h-4 w-4 text-white rotate-90 sm:h-5 sm:w-5" />
-            </button>
           </div>
         </div>
 
@@ -166,17 +215,20 @@ export default function HomePage() {
                 return (
                   <Card 
                     key={index} 
-                    className="group p-4 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 cursor-pointer border-0 shadow-sm focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 min-h-[88px] touch-manipulation active:scale-[0.98] sm:p-5 sm:min-h-[96px] md:min-h-[104px]"
+                    className="group relative overflow-hidden p-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer border-0 shadow-sm focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 min-h-[88px] touch-manipulation active:scale-[0.98] sm:p-5 sm:min-h-[96px] md:min-h-[104px] bg-gradient-to-br from-white to-gray-50 hover:from-primary-50 hover:to-blue-50"
                     role="button"
                     tabIndex={0}
                     aria-label={`${action.title} - ${action.description}`}
                   >
-                    <div className="flex items-center space-x-3 h-full">
-                      <div className={`relative p-3 rounded-xl transition-transform duration-200 group-hover:scale-110 ${action.color} sm:p-3.5`}>
+                    {/* 배경 장식 */}
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-transparent to-gray-100 opacity-50 rounded-full transform translate-x-8 -translate-y-8 group-hover:scale-150 transition-transform duration-500"></div>
+                    
+                    <div className="relative flex items-center space-x-3 h-full">
+                      <div className={`relative p-3 rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 ${action.color} shadow-sm sm:p-3.5`}>
                         <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                         {action.badge && (
                           <div 
-                            className="absolute -top-2 -right-2 min-w-[24px] h-6 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold shadow-lg border-2 border-white sm:min-w-[28px] sm:h-7 sm:text-sm"
+                            className="absolute -top-2 -right-2 min-w-[24px] h-6 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full flex items-center justify-center font-bold shadow-lg border-2 border-white animate-bounce sm:min-w-[28px] sm:h-7 sm:text-sm"
                             aria-label={`${action.badge}개의 새 항목`}
                           >
                             {action.badge}
@@ -185,7 +237,7 @@ export default function HomePage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-gray-900 text-sm truncate group-hover:text-primary-600 transition-colors sm:text-base">{action.title}</h3>
-                        <p className="text-xs text-gray-600 mt-1 truncate sm:text-sm">{action.description}</p>
+                        <p className="text-xs text-gray-600 mt-1 truncate group-hover:text-primary-500 transition-colors sm:text-sm">{action.description}</p>
                       </div>
                       <ChevronRight className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200 sm:h-5 sm:w-5" />
                     </div>
@@ -210,40 +262,77 @@ export default function HomePage() {
                 {notices.slice(0, 3).map((notice) => (
                   <Card 
                     key={notice.id} 
-                    className={`group p-4 border-0 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer touch-manipulation sm:p-5 ${
+                    className={`group relative overflow-hidden border-0 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer touch-manipulation ${
                       notice.isImportant 
-                        ? 'bg-gradient-to-r from-red-50 to-orange-50 border-l-4 border-l-red-500 hover:from-red-100 hover:to-orange-100' 
+                        ? 'bg-gradient-to-r from-red-50 via-orange-50 to-yellow-50 border-l-4 border-l-red-500 hover:from-red-100 hover:via-orange-100 hover:to-yellow-100 shadow-red-100' 
                         : 'bg-white hover:bg-gray-50'
                     }`}
                     role={notice.isImportant ? 'alert' : 'article'}
                     aria-live={notice.isImportant ? 'assertive' : 'polite'}
                     tabIndex={0}
                   >
-                    <div className="flex items-start space-x-3">
-                      <div className="flex-shrink-0 mt-1">
-                        {notice.isImportant ? (
-                          <div className="relative">
-                            <AlertCircle className="h-5 w-5 text-red-500 sm:h-6 sm:w-6" aria-label="중요 공지" />
-                            {/* 배너에서 이미 애니메이션을 사용하므로 여기서는 정적 표시 */}
-                          </div>
-                        ) : (
-                          <CheckCircle className="h-5 w-5 text-green-500 sm:h-6 sm:w-6" aria-label="일반 공지" />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2 flex-wrap">
-                          <Badge className={`text-xs font-medium border transition-colors sm:text-sm ${getBadgeStyle(notice.category)}`}>
-                            {notice.type}
-                          </Badge>
-                          <div className="flex items-center gap-1 text-xs text-gray-500 sm:text-sm">
-                            <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
-                            <span>{notice.time}</span>
-                          </div>
+                    {/* 중요 공지 강조 스트라이프 */}
+                    {notice.isImportant && (
+                      <div className="absolute top-0 right-0 w-0 h-0 border-l-[20px] border-l-transparent border-t-[20px] border-t-red-500 opacity-80"></div>
+                    )}
+                    
+                    <div className="p-4 sm:p-5">
+                      <div className="flex items-start space-x-3">
+                        <div className="flex-shrink-0 mt-1">
+                          {notice.isImportant ? (
+                            <div className="relative">
+                              <div className="bg-red-100 p-2 rounded-full">
+                                <AlertCircle className="h-5 w-5 text-red-600 sm:h-6 sm:w-6" aria-label="중요 공지" />
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="bg-green-100 p-2 rounded-full">
+                              <CheckCircle className="h-5 w-5 text-green-600 sm:h-6 sm:w-6" aria-label="일반 공지" />
+                            </div>
+                          )}
                         </div>
-                        <h3 className="font-semibold text-gray-900 mb-2 leading-tight group-hover:text-primary-600 transition-colors sm:text-lg">{notice.title}</h3>
-                        <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed sm:text-base">{notice.content}</p>
+                        
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-2 flex-wrap">
+                            <Badge 
+                              className={`text-xs font-bold border-2 transition-colors sm:text-sm ${getBadgeStyle(notice.category)}`}
+                            >
+                              {notice.type}
+                            </Badge>
+                            <div className="flex items-center gap-1 text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full sm:text-sm">
+                              <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
+                              <span className="font-medium">{notice.time}</span>
+                            </div>
+                          </div>
+                          
+                          <h3 className={`font-semibold mb-2 leading-tight group-hover:text-primary-600 transition-colors ${
+                            notice.isImportant ? 'text-red-900 text-lg sm:text-xl' : 'text-gray-900 sm:text-lg'
+                          }`}>
+                            {notice.title}
+                          </h3>
+                          
+                          <p className={`text-sm leading-relaxed line-clamp-2 sm:text-base ${
+                            notice.isImportant ? 'text-red-800' : 'text-gray-600'
+                          }`}>
+                            {notice.content}
+                          </p>
+                          
+                          {/* 중요 공지 액션 버튼 */}
+                          {notice.isImportant && (
+                            <div className="mt-3 flex gap-2">
+                              <button className="inline-flex items-center gap-1 bg-red-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:text-sm">
+                                확인했습니다
+                                <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                              </button>
+                              <button className="inline-flex items-center gap-1 bg-white text-red-600 text-xs font-medium px-3 py-1.5 rounded-full border border-red-300 hover:bg-red-50 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:text-sm">
+                                자세히 보기
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                        
+                        <ChevronRight className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200 flex-shrink-0 sm:h-5 sm:w-5" />
                       </div>
-                      <ChevronRight className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200 flex-shrink-0 sm:h-5 sm:w-5" />
                     </div>
                   </Card>
                 ))}
