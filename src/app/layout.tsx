@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import TopNavigation from '@/components/layout/TopNavigation'
 import BottomNavigation from '@/components/layout/BottomNavigation'
 
 export const metadata: Metadata = {
@@ -16,7 +17,8 @@ export default function RootLayout({
     <html lang="ko">
       <body>
         <div className="min-h-screen bg-gray-50">
-          <main className="pb-16 md:pb-0">
+          <TopNavigation />
+          <main className="pb-16 md:pb-0 md:pt-16">
             {children}
           </main>
           <BottomNavigation />
