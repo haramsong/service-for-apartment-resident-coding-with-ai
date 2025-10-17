@@ -126,7 +126,7 @@ export default function HomePage() {
                       xl:max-w-7xl">
         
         {/* 헤더 */}
-        <header className="flex items-center justify-between">
+        <header className="flex items-center justify-between mb-2">
           <div className="flex-1">
             <h1 className="text-xl font-bold text-gray-900 
                           sm:text-2xl 
@@ -137,17 +137,40 @@ export default function HomePage() {
           <button 
             className="relative p-3 hover:bg-gray-100 rounded-lg transition-colors 
                        sm:p-4 
-                       touch-manipulation"
+                       touch-manipulation focus:outline-none focus:ring-2 focus:ring-primary-500"
             aria-label="알림 확인"
           >
             <Bell className="h-6 w-6 text-gray-600 
                            sm:h-7 sm:w-7" />
             <div 
-              className="notification-badge"
+              className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full
+                         sm:w-4 sm:h-4"
               aria-label="읽지 않은 알림 있음"
             ></div>
           </button>
         </header>
+
+        {/* 긴급 알림 배너 (조건부 표시) */}
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg mb-4
+                       sm:p-5" 
+             role="alert" 
+             aria-live="assertive">
+          <div className="flex items-start">
+            <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0
+                                  sm:h-6 sm:w-6" />
+            <div className="ml-3 flex-1">
+              <h3 className="text-sm font-semibold text-red-800
+                           sm:text-base">긴급 공지</h3>
+              <p className="text-sm text-red-700 mt-1
+                          sm:text-base">정기 소독 실시 안내 - 오늘 오후 2시부터 방역 소독 진행</p>
+            </div>
+            <button className="ml-2 p-1 hover:bg-red-100 rounded-full transition-colors
+                              focus:outline-none focus:ring-2 focus:ring-red-500"
+                    aria-label="알림 닫기">
+              <ChevronRight className="h-4 w-4 text-red-500 rotate-90" />
+            </button>
+          </div>
+        </div>
 
         {/* 메인 콘텐츠 영역 - 반응형 그리드 */}
         <div className="space-y-4 
@@ -165,11 +188,12 @@ export default function HomePage() {
                 return (
                   <Card 
                     key={index} 
-                    className="p-4 hover:shadow-md transition-all duration-200 cursor-pointer 
-                              border-0 shadow-sm focus-within:ring-2 focus-within:ring-primary-500
-                              min-h-[80px] touch-manipulation
-                              sm:p-5 sm:min-h-[90px]
-                              md:min-h-[100px]"
+                    className="group p-4 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 
+                              cursor-pointer border-0 shadow-sm 
+                              focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2
+                              min-h-[88px] touch-manipulation active:scale-[0.98]
+                              sm:p-5 sm:min-h-[96px]
+                              md:min-h-[104px]"
                     role="button"
                     tabIndex={0}
                     aria-label={`${action.title} - ${action.description}`}
@@ -181,15 +205,17 @@ export default function HomePage() {
                     }}
                   >
                     <div className="flex items-center space-x-3 h-full">
-                      <div className={`relative p-2.5 rounded-xl ${action.color}
-                                     sm:p-3`}>
+                      <div className={`relative p-3 rounded-xl transition-transform duration-200
+                                     group-hover:scale-110 ${action.color}
+                                     sm:p-3.5`}>
                         <Icon className="h-5 w-5 
                                        sm:h-6 sm:w-6" />
                         {action.badge && (
                           <div 
-                            className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white 
-                                      text-xs rounded-full flex items-center justify-center font-medium
-                                      sm:w-6 sm:h-6 sm:text-sm"
+                            className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white 
+                                      text-xs rounded-full flex items-center justify-center font-bold
+                                      shadow-lg animate-pulse
+                                      sm:w-7 sm:h-7 sm:text-sm"
                             aria-label={`${action.badge}개의 새 항목`}
                           >
                             {action.badge}
@@ -198,10 +224,15 @@ export default function HomePage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-gray-900 text-sm truncate
+                                      group-hover:text-primary-600 transition-colors
                                       sm:text-base">{action.title}</h3>
-                        <p className="text-xs text-gray-600 mt-0.5 truncate
+                        <p className="text-xs text-gray-600 mt-1 truncate
                                      sm:text-sm">{action.description}</p>
                       </div>
+                      <ChevronRight className="h-4 w-4 text-gray-400 opacity-0 
+                                             group-hover:opacity-100 group-hover:translate-x-1
+                                             transition-all duration-200
+                                             sm:h-5 sm:w-5" />
                     </div>
                   </Card>
                 )
@@ -222,22 +253,34 @@ export default function HomePage() {
             </div>
             
             <div className="space-y-3">
-              {notices.map((notice) => (
+              {notices.slice(0, 3).map((notice) => (
                 <Card 
                   key={notice.id} 
-                  className={`p-4 border-0 shadow-sm hover:shadow-md transition-all duration-200 
-                             touch-manipulation
+                  className={`group p-4 border-0 shadow-sm hover:shadow-md transition-all duration-200 
+                             cursor-pointer touch-manipulation
                              sm:p-5 ${
-                    notice.isImportant ? 'bg-red-50 border-l-4 border-l-red-500' : 'bg-white'
+                    notice.isImportant 
+                      ? 'bg-gradient-to-r from-red-50 to-orange-50 border-l-4 border-l-red-500 hover:from-red-100 hover:to-orange-100' 
+                      : 'bg-white hover:bg-gray-50'
                   }`}
-                  role={notice.isImportant ? 'alert' : undefined}
+                  role={notice.isImportant ? 'alert' : 'article'}
                   aria-live={notice.isImportant ? 'assertive' : 'polite'}
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      // 상세보기 로직 추가 필요
+                    }
+                  }}
                 >
                   <div className="flex items-start space-x-3">
                     <div className="flex-shrink-0 mt-1">
                       {notice.isImportant ? (
-                        <AlertCircle className="h-5 w-5 text-red-500 
-                                               sm:h-6 sm:w-6" aria-label="긴급 공지" />
+                        <div className="relative">
+                          <AlertCircle className="h-5 w-5 text-red-500 
+                                                 sm:h-6 sm:w-6" aria-label="긴급 공지" />
+                          <div className="absolute -inset-1 bg-red-500 rounded-full opacity-25 animate-ping"></div>
+                        </div>
                       ) : (
                         <CheckCircle className="h-5 w-5 text-green-500 
                                                sm:h-6 sm:w-6" aria-label="일반 공지" />
@@ -246,7 +289,7 @@ export default function HomePage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2 flex-wrap">
                         <Badge 
-                          className={`text-xs font-medium border 
+                          className={`text-xs font-medium border transition-colors
                                      sm:text-sm ${getBadgeStyle(notice.category)}`}
                         >
                           {notice.type}
@@ -259,13 +302,29 @@ export default function HomePage() {
                         </div>
                       </div>
                       <h3 className="font-semibold text-gray-900 mb-2 leading-tight
+                                    group-hover:text-primary-600 transition-colors
                                     sm:text-lg">{notice.title}</h3>
                       <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed
                                    sm:text-base">{notice.content}</p>
                     </div>
+                    <ChevronRight className="h-4 w-4 text-gray-400 opacity-0 
+                                           group-hover:opacity-100 group-hover:translate-x-1
+                                           transition-all duration-200 flex-shrink-0
+                                           sm:h-5 sm:w-5" />
                   </div>
                 </Card>
               ))}
+              
+              {/* 더보기 버튼 (데스크톱에서만 표시) */}
+              <div className="hidden lg:block pt-2">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-center hover:bg-primary-50 hover:border-primary-300
+                            focus:ring-2 focus:ring-primary-500 touch-manipulation"
+                >
+                  공지사항 전체보기 <ChevronRight className="h-4 w-4 ml-2" />
+                </Button>
+              </div>
             </div>
           </section>
 
@@ -281,33 +340,46 @@ export default function HomePage() {
               </Button>
             </div>
             
-            <Card className="divide-y divide-gray-100 border-0 shadow-sm">
+            <Card className="divide-y divide-gray-100 border-0 shadow-sm overflow-hidden">
               {recentPosts.map((post, index) => (
                 <article 
                   key={index} 
-                  className="p-4 flex items-center justify-between 
-                            hover:bg-gray-50 transition-colors duration-200 
+                  className="group p-4 flex items-center justify-between 
+                            hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 
+                            transition-all duration-200 cursor-pointer
                             focus-within:bg-gray-50 touch-manipulation
                             sm:p-5"
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`${post.title} 게시글 보기`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      // 게시글 상세보기 로직 추가 필요
+                    }
+                  }}
                 >
                   <div className="flex-1 min-w-0 pr-3">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <h3 className="font-medium text-gray-900 truncate
+                                    group-hover:text-primary-600 transition-colors
                                     sm:text-lg">{post.title}</h3>
                       {post.isHot && (
                         <Badge 
-                          className="bg-red-100 text-red-600 text-xs px-2 py-0.5 border-red-200
+                          className="bg-gradient-to-r from-red-100 to-orange-100 
+                                    text-red-600 text-xs px-2 py-0.5 border-red-200
+                                    animate-pulse font-bold
                                     sm:text-sm sm:px-3 sm:py-1"
                           aria-label="인기 게시글"
                         >
-                          HOT
+                          🔥 HOT
                         </Badge>
                       )}
                     </div>
                     <div className="flex items-center gap-2 text-xs text-gray-500 flex-wrap
                                    sm:text-sm">
-                      <span>{post.author}</span>
-                      <span>•</span>
+                      <span className="font-medium">{post.author}</span>
+                      <span className="text-gray-300">•</span>
                       <div className="flex items-center gap-1">
                         <Clock className="h-3 w-3 
                                         sm:h-4 sm:w-4" />
@@ -317,16 +389,35 @@ export default function HomePage() {
                   </div>
                   <div className="flex items-center gap-3 flex-shrink-0">
                     <div className="flex items-center gap-1 text-xs text-gray-500
-                                   sm:text-sm">
+                                   bg-gray-100 px-2 py-1 rounded-full
+                                   group-hover:bg-primary-100 group-hover:text-primary-600
+                                   transition-colors
+                                   sm:text-sm sm:px-3">
                       <MessageSquare className="h-3 w-3 
                                                sm:h-4 sm:w-4" />
-                      <span>{post.comments}</span>
+                      <span className="font-medium">{post.comments}</span>
                     </div>
                     <ChevronRight className="h-4 w-4 text-gray-400 
+                                           group-hover:text-primary-500 group-hover:translate-x-1
+                                           transition-all duration-200
                                            sm:h-5 sm:w-5" aria-hidden="true" />
                   </div>
                 </article>
               ))}
+              
+              {/* 커뮤니티 바로가기 푸터 */}
+              <div className="p-4 bg-gradient-to-r from-gray-50 to-blue-50 border-t
+                             sm:p-5">
+                <Button 
+                  variant="ghost" 
+                  className="w-full justify-center text-primary-600 hover:text-primary-700
+                            hover:bg-primary-50 font-medium
+                            focus:ring-2 focus:ring-primary-500 touch-manipulation"
+                >
+                  커뮤니티에서 더 많은 이야기 보기 
+                  <ChevronRight className="h-4 w-4 ml-2" />
+                </Button>
+              </div>
             </Card>
           </section>
         </div>
