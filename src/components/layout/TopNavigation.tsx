@@ -17,12 +17,12 @@ export default function TopNavigation() {
   const pathname = usePathname()
 
   return (
-    <nav className="hidden md:block bg-white border-b border-gray-200 sticky top-0 z-50">
+    <nav className="hidden md:block bg-white border-b border-primary-100 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* 로고 */}
           <div className="flex items-center">
-            <Link href="/" className="text-xl font-bold text-primary-500">
+            <Link href="/" className="text-xl font-bold text-primary-600 hover:text-primary-700 transition-colors">
               우리동네
             </Link>
           </div>
@@ -38,10 +38,10 @@ export default function TopNavigation() {
                   key={item.name}
                   href={item.href}
                   className={cn(
-                    'flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                    'flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200',
                     isActive
-                      ? 'text-primary-500 bg-primary-50'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                      ? 'text-primary-600 bg-primary-50 border-b-2 border-primary-500'
+                      : 'text-secondary-600 hover:text-primary-600 hover:bg-primary-50'
                   )}
                 >
                   <Icon className="h-4 w-4" />
@@ -53,11 +53,11 @@ export default function TopNavigation() {
 
           {/* 우측 액션 */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="sm" className="relative">
+            <Button variant="ghost" size="sm" className="relative hover:bg-primary-50 hover:text-primary-600">
               <Bell className="h-5 w-5" />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent-500 rounded-full border-2 border-white"></div>
             </Button>
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-secondary-600 font-medium">
               101동 1001호 홍길동님
             </div>
           </div>
