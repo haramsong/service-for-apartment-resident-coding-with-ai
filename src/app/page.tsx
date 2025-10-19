@@ -251,9 +251,11 @@ export default function HomePage() {
         <div className="space-y-3 lg:space-y-4">
 
           {/* 빠른 액션 */}
-          <section>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 sm:text-xl">빠른 메뉴</h2>
-            <div className="grid grid-cols-4 gap-3 sm:grid-cols-4 sm:gap-4 md:grid-cols-4 md:gap-4">
+          <section aria-labelledby="quick-actions-title">
+            <h2 id="quick-actions-title" className="text-lg font-semibold text-gray-900 mb-4 sm:text-xl">빠른 메뉴</h2>
+            
+            {/* 모바일: 2x4 그리드, 태블릿 이상: 4x2 그리드 */}
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 md:grid-cols-4 md:gap-4">
               {quickActions.map((action, index) => {
                 const Icon = action.icon
                 return (
@@ -262,28 +264,36 @@ export default function HomePage() {
                     className="group relative overflow-hidden p-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer border-0 shadow-sm focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 min-h-[88px] touch-manipulation active:scale-[0.98] sm:p-5 sm:min-h-[96px] md:min-h-[104px] bg-gradient-to-br from-white to-gray-50 hover:from-primary-50 hover:to-blue-50"
                     role="button"
                     tabIndex={0}
-                    aria-label={`${action.title} - ${action.description}`}
+                    aria-label={`${action.title} - ${action.description}${action.badge ? `, ${action.badge}개의 새 항목` : ''}`}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        window.location.href = action.href
+                      }
+                    }}
+                    onClick={() => window.location.href = action.href}
                   >
                     {/* 배경 장식 */}
-                    <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-transparent to-gray-100 opacity-50 rounded-full transform translate-x-8 -translate-y-8 group-hover:scale-150 transition-transform duration-500"></div>
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-transparent to-gray-100 opacity-50 rounded-full transform translate-x-8 -translate-y-8 group-hover:scale-150 transition-transform duration-500" aria-hidden="true"></div>
                     
-                    <div className="relative flex items-center space-x-3 h-full">
-                      <div className={`relative p-3 rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 ${action.color} shadow-sm sm:p-3.5`}>
-                        <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
+                    <div className="relative flex items-center space-x-3 h-full sm:flex-col sm:space-x-0 sm:space-y-2 sm:text-center">
+                      <div className={`relative p-3 rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 ${action.color} shadow-sm sm:p-3.5 flex-shrink-0`}>
+                        <Icon className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
                         {action.badge && (
                           <div 
                             className="absolute -top-2 -right-2 min-w-[24px] h-6 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full flex items-center justify-center font-bold shadow-lg border-2 border-white animate-bounce sm:min-w-[28px] sm:h-7 sm:text-sm"
                             aria-label={`${action.badge}개의 새 항목`}
+                            role="status"
                           >
                             {action.badge}
                           </div>
                         )}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-gray-900 text-sm truncate group-hover:text-primary-600 transition-colors sm:text-base">{action.title}</h3>
-                        <p className="text-xs text-gray-600 mt-1 truncate group-hover:text-primary-500 transition-colors sm:text-sm">{action.description}</p>
+                      <div className="flex-1 min-w-0 sm:flex-initial">
+                        <h3 className="font-semibold text-gray-900 text-sm truncate group-hover:text-primary-600 transition-colors sm:text-base sm:text-center">{action.title}</h3>
+                        <p className="text-xs text-gray-600 mt-1 truncate group-hover:text-primary-500 transition-colors sm:text-sm sm:text-center">{action.description}</p>
                       </div>
-                      <ChevronRight className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200 sm:h-5 sm:w-5" />
+                      <ChevronRight className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200 sm:h-5 sm:w-5 flex-shrink-0 sm:hidden" aria-hidden="true" />
                     </div>
                   </Card>
                 )
