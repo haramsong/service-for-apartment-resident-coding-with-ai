@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, MessageSquare, Building, MoreHorizontal } from 'lucide-react'
+import { Home, MessageSquare, Building, CalendarCheck, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navigation = [
@@ -22,9 +22,14 @@ const navigation = [
     icon: Building,
   },
   {
-    name: '더보기',
-    href: '/more',
-    icon: MoreHorizontal,
+    name: '예약',
+    href: '/reservation',
+    icon: CalendarCheck,
+  },
+  {
+    name: 'MY',
+    href: '/my',
+    icon: User,
   },
 ]
 
@@ -37,7 +42,7 @@ export default function BottomNavigation() {
       role="navigation"
       aria-label="메인 네비게이션"
     >
-      <div className="grid grid-cols-4 h-16 max-w-md mx-auto">
+      <div className="grid grid-cols-5 h-16 max-w-md mx-auto">
         {navigation.map((item) => {
           const isActive = pathname === item.href
           const Icon = item.icon

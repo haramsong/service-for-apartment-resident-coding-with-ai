@@ -3,6 +3,7 @@
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import UserHeader from '@/components/layout/UserHeader'
 import { 
   MessageSquare, 
   Car, 
@@ -11,10 +12,23 @@ import {
   ChevronRight,
   AlertCircle,
   CheckCircle,
-  Clock
+  Clock,
+  FileText,
+  CalendarCheck,
+  CreditCard,
+  Bell
 } from 'lucide-react'
 
 export default function HomePage() {
+  // 사용자 정보 (추후 API에서 가져올 데이터)
+  const userInfo = {
+    name: '홍길동',
+    apartment: '101동',
+    unit: '1001호',
+    profileImage: undefined // 프로필 이미지가 없는 경우
+  }
+
+  const notificationCount = 5
   const quickActions = [
     {
       icon: MessageSquare,
@@ -25,26 +39,54 @@ export default function HomePage() {
       badge: '3'
     },
     {
+      icon: FileText,
+      title: '민원신청',
+      description: '간편 신청',
+      color: 'bg-red-50 text-red-600',
+      href: '/life/complaint'
+    },
+    {
       icon: Car,
       title: '주차현황',
       description: '가능 12대',
       color: 'bg-green-50 text-green-600',
-      href: '/life'
+      href: '/life/parking'
+    },
+    {
+      icon: CalendarCheck,
+      title: '시설예약',
+      description: '예약 가능',
+      color: 'bg-purple-50 text-purple-600',
+      href: '/reservation'
     },
     {
       icon: Package,
       title: '택배',
       description: '도착 2개',
       color: 'bg-orange-50 text-orange-600',
-      href: '/life',
+      href: '/life/delivery',
       badge: '2'
+    },
+    {
+      icon: CreditCard,
+      title: '관리비',
+      description: '10월분 확인',
+      color: 'bg-indigo-50 text-indigo-600',
+      href: '/life/management-fee'
     },
     {
       icon: Calendar,
       title: '일정',
       description: '오늘 1개',
-      color: 'bg-purple-50 text-purple-600',
-      href: '/life'
+      color: 'bg-pink-50 text-pink-600',
+      href: '/life/schedule'
+    },
+    {
+      icon: Bell,
+      title: '알림',
+      description: '설정 관리',
+      color: 'bg-yellow-50 text-yellow-600',
+      href: '/notifications'
     }
   ]
 
@@ -117,14 +159,16 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* 개인화 헤더 */}
+      <UserHeader 
+        user={userInfo}
+        notifications={notificationCount}
+        onNotificationClick={() => console.log('알림 클릭')}
+        onSettingsClick={() => console.log('설정 클릭')}
+      />
+      
       <div className="w-full max-w-sm mx-auto px-4 py-4 space-y-6 sm:max-w-2xl sm:px-6 md:max-w-4xl md:px-8 lg:max-w-6xl lg:px-12 lg:py-6 xl:max-w-7xl">
         
-        {/* 환영 메시지 */}
-        <div className="mb-6">
-          <h1 className="text-xl font-bold text-gray-900 sm:text-2xl lg:text-3xl">안녕하세요! 👋</h1>
-          <p className="text-sm text-gray-600 mt-1 sm:text-base">101동 1001호 홍길동님</p>
-        </div>
-
         {/* 긴급 알림 배너 - 최적화된 버전 */}
         <div 
           className="relative bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl shadow-xl border-l-4 border-red-300 overflow-hidden mb-6" 
@@ -209,7 +253,7 @@ export default function HomePage() {
           {/* 빠른 액션 */}
           <section>
             <h2 className="text-lg font-semibold text-gray-900 mb-4 sm:text-xl">빠른 메뉴</h2>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-4 md:gap-4">
+            <div className="grid grid-cols-4 gap-3 sm:grid-cols-4 sm:gap-4 md:grid-cols-4 md:gap-4">
               {quickActions.map((action, index) => {
                 const Icon = action.icon
                 return (
