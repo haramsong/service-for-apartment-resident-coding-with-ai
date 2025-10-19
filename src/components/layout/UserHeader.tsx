@@ -24,7 +24,7 @@ export default function UserHeader({
   onSettingsClick 
 }: UserHeaderProps) {
   return (
-    <header className="bg-gradient-to-r from-primary-500 to-primary-600 text-white p-4">
+    <header className="bg-gradient-to-br from-primary-400 via-primary-500 to-primary-700 text-white p-4 shadow-lg">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="relative">
@@ -32,10 +32,10 @@ export default function UserHeader({
               <img 
                 src={user.profileImage} 
                 alt={`${user.name} 프로필`}
-                className="w-12 h-12 rounded-full border-2 border-white/30"
+                className="w-12 h-12 rounded-full border-2 border-white/50 shadow-md"
               />
             ) : (
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center border-2 border-white/30">
+              <div className="w-12 h-12 bg-gradient-to-br from-white/30 to-white/10 rounded-full flex items-center justify-center border-2 border-white/50 shadow-md backdrop-blur-sm">
                 <User className="h-6 w-6 text-white" />
               </div>
             )}
@@ -55,13 +55,13 @@ export default function UserHeader({
           <Button
             variant="ghost"
             size="sm"
-            className="relative text-white hover:bg-white/20 p-2"
+            className="relative text-white hover:bg-gradient-to-br hover:from-white/20 hover:to-white/10 hover:shadow-md transition-all duration-200 p-2 rounded-lg"
             onClick={onNotificationClick}
             aria-label={`알림 ${notifications}개`}
           >
             <Bell className="h-5 w-5" />
             {notifications > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[20px] h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+              <span className="absolute -top-1 -right-1 min-w-[20px] h-5 bg-gradient-to-br from-accent-400 to-accent-600 text-white text-xs rounded-full flex items-center justify-center font-bold shadow-lg border border-white/30">
                 {notifications > 99 ? '99+' : notifications}
               </span>
             )}
@@ -70,7 +70,7 @@ export default function UserHeader({
           <Button
             variant="ghost"
             size="sm"
-            className="text-white hover:bg-white/20 p-2"
+            className="text-white hover:bg-gradient-to-br hover:from-white/20 hover:to-white/10 hover:shadow-md transition-all duration-200 p-2 rounded-lg"
             onClick={onSettingsClick}
             aria-label="설정"
           >
