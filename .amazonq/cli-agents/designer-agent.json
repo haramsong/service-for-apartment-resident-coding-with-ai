@@ -13,7 +13,7 @@
     }
   },
   "resources": [
-    "file:///Users/songharam/workspace/apartment-community/**/*",
+    "file:///Users/songharam/workspace/apartment-community/docs/common/agent-work-guidelines.md",
     "file:///Users/songharam/workspace/knowledge_base/common/**/*.md",
     "file:///Users/songharam/workspace/knowledge_base/designer/**/*.md"
   ]
