@@ -1,6 +1,6 @@
 # 에이전트별 작업 목록 관리
 
-*최종 업데이트: 2025-10-20 09:52*
+*최종 업데이트: 2025-10-20 10:03*
 
 ## PM Agent 작업 목록
 
@@ -14,6 +14,7 @@
 | ✅ | 주차 기능 명세서 작성 | 완료 | PM Agent | 2025-10-16 | 2025-10-16 | parking-features-spec.md |
 | ✅ | 사용자 플로우 및 메뉴 구조 설계 | 완료 | PM Agent | 2025-10-16 | 2025-10-16 | user-flow-and-menu-structure.md |
 | ✅ | PM-Designer 협업 결과 정리 | 완료 | PM Agent | 2025-10-17 | 2025-10-17 | pm-designer-collaboration-results.md |
+| ✅ | 작업 목록 관리 가이드 작성 | 완료 | PM Agent | 2025-10-20 | 2025-10-20 | task-management-guide.md |
 
 ## Developer Agent 작업 목록
 
