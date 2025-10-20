@@ -9,6 +9,7 @@ yarn-error.log*
 # Environment variables
 .env
 .env*.local
+.notion-cache.json
 
 # Next.js
 .next/
