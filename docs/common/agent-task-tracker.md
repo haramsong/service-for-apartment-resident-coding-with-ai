@@ -16,9 +16,11 @@
 
 | 우선순위 | 작업명 | 상태 | 담당자 | 시작일 | 완료일 | 비고 |
 |---------|--------|------|--------|--------|--------|------|
+| High | PRD 업데이트 (네비게이션 구조 명시) | 대기 | PM Agent | - | - | 문서 정합성 개선 필요 |
 | High | 기술 스택 최종 검토 및 승인 | 대기 | PM Agent | - | - | Developer Agent 권고안 검토 필요 |
 | Medium | 파일럿 아파트 확보 전략 수립 | 대기 | PM Agent | - | - | 비즈니스 모델 실증 |
 | Low | 경쟁사 분석 업데이트 | 대기 | PM Agent | - | - | 시장 동향 파악 |
+| ✅ | 프로젝트 방향성 검토 | 완료 | PM Agent | 2025-10-20 | 2025-10-20 | 2025-10-20-project-direction-review.md |
 | ✅ | 커뮤니티 기능 분석 | 완료 | PM Agent | 2025-10-16 | 2025-10-16 | community-features-analysis.md |
 | ✅ | 제휴 업체 비즈니스 모델 설계 | 완료 | PM Agent | 2025-10-16 | 2025-10-16 | partner-service-business-model.md |
 | ✅ | 주차 기능 명세서 작성 | 완료 | PM Agent | 2025-10-16 | 2025-10-16 | parking-features-spec.md |
