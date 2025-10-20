@@ -45,6 +45,7 @@
 | ✅ | Bun 런타임 설정 | 완료 | Developer Agent | 2025-10-17 | 2025-10-17 | bun-setup-request.md |
 | ✅ | 개발 준비 상태 보고서 | 완료 | Developer Agent | 2025-10-17 | 2025-10-17 | development-readiness-report.md |
 | ✅ | TailwindCSS 호환성 이슈 해결 | 완료 | Developer Agent | 2025-10-19 | 2025-10-19 | Primary 색상 표시 문제 해결 |
+| ✅ | 네비게이션 구조 확장 | 완료 | Developer Agent | 2025-10-20 | 2025-10-20 | 5개 탭 구조 완성, 예약/MY 페이지 생성 |
 
 ## Designer Agent 작업 목록
 
