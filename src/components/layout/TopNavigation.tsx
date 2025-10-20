@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, MessageSquare, Building, MoreHorizontal, Bell } from 'lucide-react'
+import { Home, MessageSquare, Building, CalendarCheck, User, Bell } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 
@@ -10,7 +10,8 @@ const navigation = [
   { name: '홈', href: '/', icon: Home },
   { name: '커뮤니티', href: '/community', icon: MessageSquare },
   { name: '생활', href: '/life', icon: Building },
-  { name: '더보기', href: '/more', icon: MoreHorizontal },
+  { name: '예약', href: '/reservation', icon: CalendarCheck },
+  { name: 'MY', href: '/my', icon: User },
 ]
 
 export default function TopNavigation() {
