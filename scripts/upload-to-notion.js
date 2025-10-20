@@ -64,7 +64,13 @@ async function recreatePage(title, parentId, blocks) {
 async function uploadMarkdown(filePath, parentId) {
   const md = fs.readFileSync(filePath, "utf-8");
   const blocks = markdownToBlocks(md);
-  const title = path.basename(filePath, ".md");
+
+  // 🔍 첫 번째 제목 추출
+  const match = md.match(/^#\s+(.+)$/m) || md.match(/^##\s+(.+)$/m);
+  const inferredTitle = match ? match[1].trim() : null;
+
+  // 🧱 제목 결정 (없으면 파일명 fallback)
+  const title = inferredTitle || path.basename(filePath, ".md");
 
   console.log(`📄 Syncing: ${title}`);
   await recreatePage(title, parentId, blocks);

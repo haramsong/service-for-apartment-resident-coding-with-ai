@@ -1,7 +1,9 @@
 # Main 영역 Padding-Top 조정 이슈
 
-*작성일: 2025-10-17*  
-*작성자: Designer Agent*  
+*작성일: 2025-10-17*
+
+*작성자: Designer Agent*
+
 *이슈 유형: 레이아웃 개선*
 
 ## 문제 상황

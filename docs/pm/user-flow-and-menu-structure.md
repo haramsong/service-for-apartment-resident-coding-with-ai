@@ -1,7 +1,9 @@
 # User Flow Diagram & 메뉴 구성도
 
-*작성일: 2025-10-16*  
-*작성자: PM Agent*  
+*작성일: 2025-10-16*
+
+*작성자: PM Agent*
+
 *버전: v1.0*
 
 ## 1. 앱 메뉴 구조 (Bottom Navigation)

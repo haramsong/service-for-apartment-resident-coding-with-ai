@@ -1,7 +1,9 @@
 # Figma Component Variant 생성 가이드
 
-*작성일: 2025-10-17*  
-*작성자: Designer Agent*  
+*작성일: 2025-10-17*
+
+*작성자: Designer Agent*
+
 *버전: v1.0*
 
 ## 1. 기본 버튼 컴포넌트 생성

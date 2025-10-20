@@ -1,6 +1,16 @@
 # 에이전트별 작업 목록 관리
 
-*최종 업데이트: 2025-10-20 10:03*
+*최종 업데이트: 2025-10-20 10:44*
+
+## Orchestration Agent 작업 목록
+
+| 우선순위 | 작업명 | 상태 | 담당자 | 시작일 | 완료일 | 비고 |
+|---------|--------|------|--------|--------|--------|------|
+| High | 에이전트 간 작업 조율 | 대기 | Orchestration Agent | - | - | 워크플로우 관리 |
+| High | 프로젝트 진행 상황 모니터링 | 대기 | Orchestration Agent | - | - | 작업 목록 기반 추적 |
+| Medium | 문서 포맷 표준화 관리 | 대기 | Orchestration Agent | - | - | 일관된 문서 품질 유지 |
+| Medium | 에이전트별 성과 분석 | 대기 | Orchestration Agent | - | - | 효율성 개선 방안 도출 |
+| ✅ | Orchestration Agent 생성 | 완료 | Orchestration Agent | 2025-10-20 | 2025-10-20 | orchestration-agent.json 생성 |
 
 ## PM Agent 작업 목록
 

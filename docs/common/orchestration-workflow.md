@@ -1,6 +1,7 @@
 # Orchestration 워크플로우 가이드라인
 
 *작성일: 2025-10-17*
+
 *작성자: Amazon Q Orchestration System*
 
 ## 에이전트 요청 프로토콜
