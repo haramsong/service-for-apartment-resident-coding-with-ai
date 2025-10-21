@@ -41,7 +41,7 @@ const myReservations = [
 
 export default function ReservationPage() {
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 sm:space-y-8">
       {/* 헤더 */}
       <div className="pb-4 border-b border-gray-200">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">시설 예약</h1>
