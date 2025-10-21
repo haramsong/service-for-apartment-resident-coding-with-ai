@@ -41,68 +41,84 @@ const myReservations = [
 
 export default function ReservationPage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">시설 예약</h1>
-        <p className="text-sm text-gray-500 mt-1">아파트 공용 시설을 예약하세요</p>
+    <div className="space-y-6 sm:space-y-8">
+      {/* 헤더 */}
+      <div className="pb-4 border-b border-gray-200">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">시설 예약</h1>
+        <p className="text-sm sm:text-base text-gray-500 mt-1">아파트 공용 시설을 예약하세요</p>
       </div>
 
       {/* 내 예약 현황 */}
       <section>
-        <h2 className="text-lg font-semibold text-gray-900 mb-3">내 예약 현황</h2>
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">내 예약 현황</h2>
         <div className="space-y-3">
-          {myReservations.map((reservation) => (
-            <Card key={reservation.id} className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span className="text-lg font-semibold text-gray-900">{reservation.facility}</span>
-                    <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">
-                      {reservation.status}
-                    </span>
+          {myReservations.length > 0 ? (
+            myReservations.map((reservation) => (
+              <Card key={reservation.id} className="p-4 sm:p-5">
+                <div className="space-y-3 sm:space-y-0 sm:flex sm:items-center sm:justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <span className="text-base sm:text-lg font-semibold text-gray-900">{reservation.facility}</span>
+                      <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">
+                        {reservation.status}
+                      </span>
+                    </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-1 sm:space-y-0 text-sm text-gray-600">
+                      <div className="flex items-center space-x-1">
+                        <CalendarCheck className="h-4 w-4" />
+                        <span>{reservation.date}</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <Clock className="h-4 w-4" />
+                        <span>{reservation.time}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-4 text-sm text-gray-600">
-                    <div className="flex items-center space-x-1">
-                      <CalendarCheck className="h-4 w-4" />
-                      <span>{reservation.date}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Clock className="h-4 w-4" />
-                      <span>{reservation.time}</span>
-                    </div>
+                  <div className="flex space-x-2 pt-2 sm:pt-0">
+                    <Button variant="outline" size="sm" className="flex-1 sm:flex-none min-h-[44px]">변경</Button>
+                    <Button variant="outline" size="sm" className="flex-1 sm:flex-none min-h-[44px] text-red-600 hover:text-red-700 hover:bg-red-50">취소</Button>
                   </div>
                 </div>
-                <div className="flex space-x-2">
-                  <Button variant="outline" size="sm">변경</Button>
-                  <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">취소</Button>
-                </div>
+              </Card>
+            ))
+          ) : (
+            <Card className="p-8 text-center">
+              <div className="text-gray-400 mb-2">
+                <CalendarCheck className="h-12 w-12 mx-auto" />
               </div>
+              <p className="text-gray-500">예약 내역이 없습니다</p>
+              <p className="text-sm text-gray-400 mt-1">아래에서 시설을 예약해보세요</p>
             </Card>
-          ))}
+          )}
         </div>
       </section>
 
       {/* 예약 가능한 시설 */}
       <section>
-        <h2 className="text-lg font-semibold text-gray-900 mb-3">예약 가능한 시설</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">예약 가능한 시설</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {facilities.map((facility) => (
-            <Card key={facility.id} className="p-5 hover:shadow-lg transition-shadow cursor-pointer">
+            <Card 
+              key={facility.id} 
+              className="p-5 sm:p-6 hover:shadow-lg transition-all duration-200 cursor-pointer group"
+            >
               <div className="text-center mb-4">
-                <div className="text-4xl mb-2">{facility.icon}</div>
-                <h3 className="text-lg font-semibold text-gray-900">{facility.name}</h3>
+                <div className="text-4xl sm:text-5xl mb-3 group-hover:scale-110 transition-transform duration-200">
+                  {facility.icon}
+                </div>
+                <h3 className="text-lg sm:text-xl font-semibold text-gray-900">{facility.name}</h3>
               </div>
-              <div className="space-y-2 text-sm text-gray-600 mb-4">
+              <div className="space-y-2 text-sm text-gray-600 mb-5">
                 <div className="flex items-center justify-center space-x-2">
-                  <Clock className="h-4 w-4" />
+                  <Clock className="h-4 w-4 flex-shrink-0" />
                   <span>{facility.hours}</span>
                 </div>
                 <div className="flex items-center justify-center space-x-2">
-                  <Users className="h-4 w-4" />
+                  <Users className="h-4 w-4 flex-shrink-0" />
                   <span>최대 {facility.capacity}</span>
                 </div>
               </div>
-              <Button className="w-full">예약하기</Button>
+              <Button className="w-full min-h-[44px] font-medium">예약하기</Button>
             </Card>
           ))}
         </div>
