@@ -12,6 +12,16 @@
       "autoAllowReadonly": true
     }
   },
+  "mcpServers": {
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://postgres:postgres@localhost:5432/apartment_community"
+      ]
+    }
+  },
   "resources": [
     "file:///Users/songharam/workspace/apartment-community/docs/common/agent-work-guidelines.md",
     "file:///Users/songharam/workspace/apartment-community/docs/**/*.md",

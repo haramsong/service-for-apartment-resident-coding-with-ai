@@ -7,9 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "upload-notion": "node scripts/upload-to-notion.js"
+    "upload-notion": "node scripts/upload-to-notion.js",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "bun prisma/seed.ts",
+    "db:studio": "prisma studio"
   },
   "dependencies": {
+    "@prisma/client": "^6.18.0",
     "@radix-ui/react-slot": "^1.2.3",
     "autoprefixer": "^10.4.21",
     "class-variance-authority": "^0.7.1",
@@ -33,6 +38,7 @@
     "dotenv": "^17.2.3",
     "eslint": "^9.37.0",
     "eslint-config-next": "^15.5.6",
+    "prisma": "^6.18.0",
     "typescript": "^5.9.3"
   }
 }

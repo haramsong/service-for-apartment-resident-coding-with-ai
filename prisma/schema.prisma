@@ -1,0 +1,178 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 아파트 정보
+model Apartment {
+  id         String   @id @default(uuid())
+  name       String   @db.VarChar(100)
+  address    String
+  totalUnits Int      @map("total_units")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  users          User[]
+  notices        Notice[]
+  posts          Post[]
+  complaints     Complaint[]
+  facilities     Facility[]
+  managementFees ManagementFee[]
+
+  @@map("apartments")
+}
+
+// 사용자 정보
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique @db.VarChar(255)
+  name        String   @db.VarChar(50)
+  apartmentId String?  @map("apartment_id")
+  dong        String?  @db.VarChar(10)
+  ho          String?  @db.VarChar(10)
+  role        String   @default("resident") @db.VarChar(20)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  apartment      Apartment?      @relation(fields: [apartmentId], references: [id])
+  notices        Notice[]
+  posts          Post[]
+  comments       Comment[]
+  complaints     Complaint[]
+  reservations   Reservation[]
+  managementFees ManagementFee[]
+
+  @@map("users")
+}
+
+// 공지사항
+model Notice {
+  id          String   @id @default(uuid())
+  apartmentId String   @map("apartment_id")
+  title       String   @db.VarChar(200)
+  content     String
+  category    String?  @db.VarChar(50)
+  isUrgent    Boolean  @default(false) @map("is_urgent")
+  authorId    String   @map("author_id")
+  views       Int      @default(0)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  apartment Apartment @relation(fields: [apartmentId], references: [id])
+  author    User      @relation(fields: [authorId], references: [id])
+
+  @@map("notices")
+}
+
+// 게시글
+model Post {
+  id          String   @id @default(uuid())
+  apartmentId String   @map("apartment_id")
+  authorId    String   @map("author_id")
+  title       String   @db.VarChar(200)
+  content     String
+  category    String?  @db.VarChar(50)
+  isAnonymous Boolean  @default(false) @map("is_anonymous")
+  views       Int      @default(0)
+  likes       Int      @default(0)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  apartment Apartment @relation(fields: [apartmentId], references: [id])
+  author    User      @relation(fields: [authorId], references: [id])
+  comments  Comment[]
+
+  @@map("posts")
+}
+
+// 댓글
+model Comment {
+  id          String   @id @default(uuid())
+  postId      String   @map("post_id")
+  authorId    String   @map("author_id")
+  content     String
+  isAnonymous Boolean  @default(false) @map("is_anonymous")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id])
+
+  @@map("comments")
+}
+
+// 민원
+model Complaint {
+  id          String   @id @default(uuid())
+  apartmentId String   @map("apartment_id")
+  userId      String   @map("user_id")
+  title       String   @db.VarChar(200)
+  content     String
+  category    String?  @db.VarChar(50)
+  status      String   @default("pending") @db.VarChar(20)
+  images      String[]
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  apartment Apartment @relation(fields: [apartmentId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+
+  @@map("complaints")
+}
+
+// 시설
+model Facility {
+  id             String   @id @default(uuid())
+  apartmentId    String   @map("apartment_id")
+  name           String   @db.VarChar(100)
+  description    String?
+  capacity       Int?
+  operatingHours Json?    @map("operating_hours")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  apartment    Apartment     @relation(fields: [apartmentId], references: [id])
+  reservations Reservation[]
+
+  @@map("facilities")
+}
+
+// 예약
+model Reservation {
+  id         String   @id @default(uuid())
+  facilityId String   @map("facility_id")
+  userId     String   @map("user_id")
+  date       DateTime @db.Date
+  startTime  DateTime @map("start_time") @db.Time
+  endTime    DateTime @map("end_time") @db.Time
+  status     String   @default("confirmed") @db.VarChar(20)
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  facility Facility @relation(fields: [facilityId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+
+  @@unique([facilityId, date, startTime])
+  @@map("reservations")
+}
+
+// 관리비
+model ManagementFee {
+  id          String    @id @default(uuid())
+  apartmentId String    @map("apartment_id")
+  userId      String    @map("user_id")
+  year        Int
+  month       Int
+  amount      Int
+  details     Json?
+  paid        Boolean   @default(false)
+  paidAt      DateTime? @map("paid_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  apartment Apartment @relation(fields: [apartmentId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+
+  @@map("management_fees")
+}
