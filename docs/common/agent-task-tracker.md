@@ -33,9 +33,9 @@ _최종 업데이트: 2025-10-20 15:24_
 
 | 우선순위 | 작업명                       | 상태 | 담당자          | 시작일     | 완료일     | 비고                                  |
 | -------- | ---------------------------- | ---- | --------------- | ---------- | ---------- | ------------------------------------- |
-| High     | 프로젝트 아키텍처 설계       | 대기 | Developer Agent | -          | -          | 기술 스택 확정 후 진행                |
+| ✅       | 백엔드 아키텍처 설계         | 완료 | Developer Agent | 2025-10-27 | 2025-10-27 | backend-architecture-design.md        |
 | High     | 데이터베이스 스키마 설계     | 대기 | Developer Agent | -          | -          | 커뮤니티, 사용자, 관리 기능           |
-| High     | API 명세서 작성              | 대기 | Developer Agent | -          | -          | RESTful API 설계                      |
+| High     | API 명세서 작성              | 대기 | Developer Agent | -          | -          | tRPC API 설계                         |
 | Medium   | 인증/권한 시스템 구현        | 대기 | Developer Agent | -          | -          | JWT 기반 인증                         |
 | Medium   | 커뮤니티 기본 기능 구현      | 대기 | Developer Agent | -          | -          | 게시판, 댓글 시스템                   |
 | Low      | 코드 리뷰 가이드라인 작성    | 대기 | Developer Agent | -          | -          | 개발 표준 정립                        |
