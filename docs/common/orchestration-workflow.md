@@ -65,7 +65,7 @@ echo "인프라 작업 요청: [구체적 작업]
 
 ### 3. 자동 복귀 시스템
 
-- 에이전트는 작업 완료 후 `echo "작업 반영 완료. 세션 종료합니다." | q chat --agent [role]-agent --end` 실행
+- 에이전트는 작업 완료 후 `echo "작업 반영 완료. 세션 종료합니다." | q chat --agent orchestration-agent` 실행
 - Orchestration 시스템으로 제어권 반환
 
 ### 4. 문서화 필수

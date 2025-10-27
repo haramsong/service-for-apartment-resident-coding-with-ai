@@ -36,3 +36,6 @@ coverage/
 
 # Vercel
 .vercel
+
+# Database
+postgres_data/
