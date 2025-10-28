@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import { Home, MessageSquare, Building, CalendarCheck, User, Bell } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -16,6 +17,12 @@ const navigation = [
 
 export default function TopNavigation() {
   const pathname = usePathname()
+  const { data: session, status } = useSession()
+
+  // 로딩 중이거나 인증되지 않은 경우 렌더링하지 않음
+  if (status === 'loading' || !session) {
+    return null
+  }
 
   return (
     <nav className="hidden md:block bg-white border-b border-primary-100 sticky top-0 z-50 shadow-sm">
@@ -59,7 +66,7 @@ export default function TopNavigation() {
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-accent-500 rounded-full border-2 border-white"></div>
             </Button>
             <div className="text-sm text-secondary-600 font-medium">
-              101동 1001호 홍길동님
+              {session.user.dong}동 {session.user.ho}호 {session.user.name}님
             </div>
           </div>
         </div>

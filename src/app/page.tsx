@@ -1,5 +1,6 @@
 'use client'
 
+import { useSession } from 'next-auth/react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -20,12 +21,30 @@ import {
 } from 'lucide-react'
 
 export default function HomePage() {
-  // 사용자 정보 (추후 API에서 가져올 데이터)
+  const { data: session, status } = useSession()
+
+  if (status === 'loading') {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg">로딩 중...</div>
+      </div>
+    )
+  }
+
+  if (!session) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg">로그인이 필요합니다.</div>
+      </div>
+    )
+  }
+
+  // 사용자 정보 (세션에서 가져옴)
   const userInfo = {
-    name: '홍길동',
-    apartment: '101동',
-    unit: '1001호',
-    profileImage: undefined // 프로필 이미지가 없는 경우
+    name: session.user.name || '사용자',
+    apartment: `${session.user.dong}동`,
+    unit: `${session.user.ho}호`,
+    profileImage: session.user.image || undefined // 프로필 이미지가 없는 경우
   }
 
   const notificationCount = 5
