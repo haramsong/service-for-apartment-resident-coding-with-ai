@@ -1,6 +1,6 @@
 # 에이전트별 작업 목록 관리
 
-_최종 업데이트: 2025-10-28 09:30_
+_최종 업데이트: 2025-10-28 10:00_
 
 ## Orchestration Agent 작업 목록
 
@@ -64,16 +64,19 @@ _최종 업데이트: 2025-10-28 09:30_
 | ✅       | UI/UX 가이드라인 v2  | 완료 | Designer Agent | 2025-10-17 | 2025-10-17 | ui-ux-guidelines-v2.md              |
 | ✅       | 반응형 레이아웃 개선 | 완료 | Designer Agent | 2025-10-17 | 2025-10-17 | responsive-layout-improvements.md   |
 
-## Infrastructure Agent 작업 목록
+## DevOps Agent 작업 목록 (구 Infrastructure Agent)
 
-| 우선순위 | 작업명                           | 상태 | 담당자               | 시작일 | 완료일 | 비고                  |
-| -------- | -------------------------------- | ---- | -------------------- | ------ | ------ | --------------------- |
-| High     | AWS 인프라 아키텍처 설계         | 대기 | Infrastructure Agent | -      | -      | 확장 가능한 구조      |
-| High     | CI/CD 파이프라인 구축            | 대기 | Infrastructure Agent | -      | -      | GitHub Actions 기반   |
-| High     | 개발/스테이징/프로덕션 환경 구성 | 대기 | Infrastructure Agent | -      | -      | 환경별 분리           |
-| Medium   | 모니터링 시스템 구축             | 대기 | Infrastructure Agent | -      | -      | CloudWatch, 로그 관리 |
-| Medium   | 보안 설정 및 정책 수립           | 대기 | Infrastructure Agent | -      | -      | IAM, VPC, 보안 그룹   |
-| Low      | 백업 및 재해복구 계획            | 대기 | Infrastructure Agent | -      | -      | 데이터 보호 전략      |
+| 우선순위 | 작업명                           | 상태 | 담당자      | 시작일     | 완료일     | 비고                                    |
+| -------- | -------------------------------- | ---- | ----------- | ---------- | ---------- | --------------------------------------- |
+| ✅       | PostgreSQL Docker 로컬 환경 구축 | 완료 | DevOps Agent | 2025-10-27 | 2025-10-27 | Docker Compose 기반 로컬 DB 설정 완료   |
+| High     | GitHub Actions CI/CD 설정        | 대기 | DevOps Agent | -          | -          | 자동 빌드 및 테스트                     |
+| High     | Vercel 배포 환경 설정            | 대기 | DevOps Agent | -          | -          | 개발/프로덕션 환경 분리                 |
+| Medium   | Supabase 환경 설정 및 관리       | 대기 | DevOps Agent | -          | -          | DB 마이그레이션, 백업 전략              |
+| Medium   | 환경 변수 관리 체계 구축         | 대기 | DevOps Agent | -          | -          | .env 파일 관리, 시크릿 관리             |
+| Medium   | 모니터링 도구 통합               | 대기 | DevOps Agent | -          | -          | Sentry + Vercel Analytics               |
+| Low      | Docker 개발 환경 최적화          | 대기 | DevOps Agent | -          | -          | 개발 속도 개선                          |
+| Low      | 백업 및 복구 절차 문서화         | 대기 | DevOps Agent | -          | -          | Supabase 백업 전략                      |
+| 취소     | AWS 인프라 아키텍처 설계         | 취소 | DevOps Agent | -          | -          | Vercel + Supabase 사용으로 불필요       |
 
 ## 작업 상태 범례
 
