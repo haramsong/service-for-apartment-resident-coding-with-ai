@@ -1,15 +1,15 @@
-import { z } from 'zod'
-import { router, publicProcedure, protectedProcedure } from '../trpc'
-import { prisma } from '@/lib/prisma'
-import { hashPassword } from '@/lib/auth-utils'
-import { TRPCError } from '@trpc/server'
+import { z } from "zod";
+import { router, publicProcedure, protectedProcedure } from "../trpc";
+import { prisma } from "@/lib/prisma";
+import { hashPassword } from "@/lib/auth-utils";
+import { TRPCError } from "@trpc/server";
 
 export const authRouter = router({
   // 회원가입
   signUp: publicProcedure
     .input(
       z.object({
-        email: z.string().email(),
+        email: z.email(),
         password: z.string().min(8),
         name: z.string(),
         apartmentId: z.string(),
@@ -21,17 +21,17 @@ export const authRouter = router({
       // 이메일 중복 확인
       const existing = await prisma.user.findUnique({
         where: { email: input.email },
-      })
+      });
 
       if (existing) {
         throw new TRPCError({
-          code: 'CONFLICT',
-          message: '이미 존재하는 이메일입니다',
-        })
+          code: "CONFLICT",
+          message: "이미 존재하는 이메일입니다",
+        });
       }
 
       // 비밀번호 해싱
-      const hashedPassword = await hashPassword(input.password)
+      const hashedPassword = await hashPassword(input.password);
 
       const user = await prisma.user.create({
         data: {
@@ -45,7 +45,7 @@ export const authRouter = router({
         include: {
           apartment: true,
         },
-      })
+      });
 
       return {
         user: {
@@ -57,8 +57,8 @@ export const authRouter = router({
           ho: user.ho,
           role: user.role,
         },
-        message: '회원가입이 완료되었습니다. 로그인해주세요.',
-      }
+        message: "회원가입이 완료되었습니다. 로그인해주세요.",
+      };
     }),
 
   // 프로필 조회
@@ -68,13 +68,13 @@ export const authRouter = router({
       include: {
         apartment: true,
       },
-    })
+    });
 
     if (!user) {
       throw new TRPCError({
-        code: 'NOT_FOUND',
-        message: '사용자를 찾을 수 없습니다',
-      })
+        code: "NOT_FOUND",
+        message: "사용자를 찾을 수 없습니다",
+      });
     }
 
     return {
@@ -89,7 +89,7 @@ export const authRouter = router({
       ho: user.ho,
       role: user.role,
       createdAt: user.createdAt,
-    }
+    };
   }),
 
   // 프로필 업데이트
@@ -105,7 +105,7 @@ export const authRouter = router({
       const user = await prisma.user.update({
         where: { id: ctx.user.id },
         data: input,
-      })
+      });
 
       return {
         id: user.id,
@@ -113,6 +113,6 @@ export const authRouter = router({
         dong: user.dong,
         ho: user.ho,
         updatedAt: user.updatedAt,
-      }
+      };
     }),
-})
+});
