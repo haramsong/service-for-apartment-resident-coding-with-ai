@@ -1,6 +1,6 @@
 # 에이전트별 작업 목록 관리
 
-_최종 업데이트: 2025-10-28 10:52_
+_최종 업데이트: 2025-10-28 14:25_
 
 ## Orchestration Agent 작업 목록
 
@@ -51,6 +51,8 @@ _최종 업데이트: 2025-10-28 10:52_
 | ✅       | TailwindCSS 호환성 이슈 해결 | 완료 | Developer Agent | 2025-10-19 | 2025-10-19 | Primary 색상 표시 문제 해결           |
 | ✅       | UI 레이아웃 개선             | 완료 | Developer Agent | 2025-10-28 | 2025-10-28 | 간격 최적화, 터치 영역 개선, 반응형 최적화 |
 | ✅       | 네비게이션 구조 확장         | 완료 | Developer Agent | 2025-10-20 | 2025-10-20 | 5개 탭 구조 완성, 예약/MY 페이지 생성 |
+| ✅       | MY 페이지 로그아웃 기능 연결 | 완료 | Developer Agent | 2025-10-28 | 2025-10-28 | NextAuth signOut 함수 연결, 안전한 로그아웃 구현 |
+| ✅       | Prisma 데이터베이스 연결 오류 해결 | 완료 | Developer Agent | 2025-10-28 | 2025-10-28 | DATABASE_URL 형식 수정, prisma.config.ts 제거 |
 
 ## Designer Agent 작업 목록
 
