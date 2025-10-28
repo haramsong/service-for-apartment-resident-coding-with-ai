@@ -43,6 +43,7 @@ _최종 업데이트: 2025-10-28 16:11_
 | ✅       | tRPC 라우터 구현             | 완료 | Developer Agent | 2025-10-28 | 2025-10-28 | Auth, Notices, Posts, Reservations 라우터 완료 |
 | ✅       | 인증/권한 시스템 구현        | 완료 | Developer Agent | 2025-10-28 | 2025-10-28 | NextAuth.js + bcryptjs 기반 완전한 인증 시스템 구현 |
 | ✅       | 커뮤니티 기본 기능 구현      | 완료 | Developer Agent | 2025-10-28 | 2025-10-28 | 게시판 CRUD, 댓글 시스템, 홈페이지 연동 완료 - 실제 데이터베이스 연동 |
+| ✅       | Vercel 환경변수 설정 가이드  | 완료 | Developer Agent | 2025-10-28 | 2025-10-28 | vercel-environment-setup.md 작성 완료 |
 | Low      | 코드 리뷰 가이드라인 작성    | 대기 | Developer Agent | -          | -          | 개발 표준 정립                        |
 | ✅       | 기술 스택 분석 및 권고       | 완료 | Developer Agent | 2025-10-17 | 2025-10-17 | tech-stack-recommendation-2025.md     |
 | ✅       | 개발 환경 초기 설정          | 완료 | Developer Agent | 2025-10-17 | 2025-10-17 | setup-complete.md                     |
