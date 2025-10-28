@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import UserHeader from '@/components/layout/UserHeader'
+import { trpc } from '@/lib/trpc/client'
 import { 
   MessageSquare, 
   Car, 
@@ -22,6 +23,16 @@ import {
 
 export default function HomePage() {
   const { data: session, status } = useSession()
+
+  // 최근 커뮤니티 글 가져오기
+  const { data: recentPosts } = trpc.posts.getList.useQuery({
+    apartmentId: session?.user?.apartmentId || '',
+    page: 1,
+    limit: 3,
+    sortBy: 'latest',
+  }, {
+    enabled: !!session?.user?.apartmentId,
+  })
 
   if (status === 'loading') {
     return (
@@ -48,6 +59,19 @@ export default function HomePage() {
   }
 
   const notificationCount = 5
+
+  // 시간 포맷 함수
+  const formatTimeAgo = (date: Date) => {
+    const now = new Date()
+    const diff = now.getTime() - date.getTime()
+    const minutes = Math.floor(diff / (1000 * 60))
+    const hours = Math.floor(diff / (1000 * 60 * 60))
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+
+    if (minutes < 60) return `${minutes}분 전`
+    if (hours < 24) return `${hours}시간 전`
+    return `${days}일 전`
+  }
   const quickActions = [
     {
       icon: MessageSquare,
@@ -426,50 +450,73 @@ export default function HomePage() {
             <section>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">최근 커뮤니티 글</h2>
-                <Button variant="ghost" size="sm" className="text-primary-500 hover:text-primary-600 hover:bg-primary-50 touch-manipulation">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="text-primary-500 hover:text-primary-600 hover:bg-primary-50 touch-manipulation"
+                  onClick={() => window.location.href = '/community'}
+                >
                   더보기 <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               </div>
             
               <Card className="divide-y divide-gray-100 border-0 shadow-sm overflow-hidden">
-                {recentPosts.map((post, index) => (
-                  <article 
-                    key={index} 
-                    className="group p-4 flex items-center justify-between hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-200 cursor-pointer focus-within:bg-gray-50 touch-manipulation sm:p-5"
-                    tabIndex={0}
-                    role="button"
-                    aria-label={`${post.title} 게시글 보기`}
-                  >
-                    <div className="flex-1 min-w-0 pr-3">
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <h3 className="font-medium text-gray-900 truncate group-hover:text-primary-600 transition-colors sm:text-lg">{post.title}</h3>
-                        {post.isHot && (
-                          <Badge 
-                            className="bg-gradient-to-r from-orange-100 to-red-100 text-red-600 text-xs px-2 py-0.5 border border-red-200 font-bold sm:text-sm sm:px-3 sm:py-1"
-                            aria-label="인기 게시글"
-                          >
-                            🔥 HOT
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2 text-xs text-gray-500 flex-wrap sm:text-sm">
-                        <span className="font-medium">{post.author}</span>
-                        <span className="text-gray-300">•</span>
-                        <div className="flex items-center gap-1">
-                          <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
-                          <span>{post.time}</span>
+                {!recentPosts?.items.length ? (
+                  <div className="p-8 text-center text-gray-500">
+                    <MessageSquare className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+                    <p className="mb-2">아직 커뮤니티 글이 없습니다</p>
+                    <Button 
+                      size="sm" 
+                      onClick={() => window.location.href = '/community/write'}
+                    >
+                      첫 번째 글 작성하기
+                    </Button>
+                  </div>
+                ) : (
+                  recentPosts.items.map((post) => (
+                    <article 
+                      key={post.id} 
+                      className="group p-4 flex items-center justify-between hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-200 cursor-pointer focus-within:bg-gray-50 touch-manipulation sm:p-5"
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`${post.title} 게시글 보기`}
+                      onClick={() => window.location.href = `/community/${post.id}`}
+                    >
+                      <div className="flex-1 min-w-0 pr-3">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <h3 className="font-medium text-gray-900 truncate group-hover:text-primary-600 transition-colors sm:text-lg">
+                            {post.title}
+                          </h3>
+                          {post.likes > 10 && (
+                            <Badge 
+                              className="bg-gradient-to-r from-orange-100 to-red-100 text-red-600 text-xs px-2 py-0.5 border border-red-200 font-bold sm:text-sm sm:px-3 sm:py-1"
+                              aria-label="인기 게시글"
+                            >
+                              🔥 HOT
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-gray-500 flex-wrap sm:text-sm">
+                          <span className="font-medium">
+                            {post.isAnonymous ? '익명' : post.author.name}
+                          </span>
+                          <span className="text-gray-300">•</span>
+                          <div className="flex items-center gap-1">
+                            <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
+                            <span>{formatTimeAgo(new Date(post.createdAt))}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-3 flex-shrink-0">
-                      <div className="flex items-center gap-1 text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full group-hover:bg-primary-100 group-hover:text-primary-600 transition-colors sm:text-sm sm:px-3">
-                        <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4" />
-                        <span className="font-medium">{post.comments}</span>
+                      <div className="flex items-center gap-3 flex-shrink-0">
+                        <div className="flex items-center gap-1 text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full group-hover:bg-primary-100 group-hover:text-primary-600 transition-colors sm:text-sm sm:px-3">
+                          <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4" />
+                          <span className="font-medium">{post.commentCount}</span>
+                        </div>
+                        <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-primary-500 group-hover:translate-x-1 transition-all duration-200 sm:h-5 sm:w-5" aria-hidden="true" />
                       </div>
-                      <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-primary-500 group-hover:translate-x-1 transition-all duration-200 sm:h-5 sm:w-5" aria-hidden="true" />
-                    </div>
-                  </article>
-                ))}
+                    </article>
+                  ))
+                )}
                 
                 {/* 커뮤니티 바로가기 푸터 */}
                 <div className="p-4 bg-gradient-to-r from-gray-50 to-blue-50 border-t sm:p-5">
