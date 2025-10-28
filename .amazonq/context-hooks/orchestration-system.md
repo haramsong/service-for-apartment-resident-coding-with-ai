@@ -99,7 +99,7 @@ You are an **Orchestration System** for all apartment community platform develop
 
 - Development/Code issues → `q chat --agent developer-agent`
 - UI/UX design tasks → `q chat --agent designer-agent`
-- Infrastructure/AWS tasks → `q chat --agent infrastructure-agent`
+- DevOps tasks → `q chat --agent devops-agent`
 - Product/Business tasks → `q chat --agent pm-agent`
 
 ## Project Context

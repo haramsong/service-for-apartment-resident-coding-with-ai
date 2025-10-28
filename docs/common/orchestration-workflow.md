@@ -45,9 +45,9 @@ echo "디자인 개선 요청: [구체적 개선사항]
 #### Infrastructure Agent
 
 ```bash
-echo "인프라 작업 요청: [구체적 작업]
+echo "DevOps 작업 요청: [구체적 작업]
 환경 정보: [현재 환경]
-요구사항: [기술적 요구사항]" | q chat --agent infrastructure-agent
+요구사항: [기술적 요구사항]" | q chat --agent devops-agent
 ```
 
 ## 워크플로우 원칙
