@@ -6,7 +6,7 @@ export default withAuth(
   },
   {
     callbacks: {
-      authorized: ({ token }) => !!token,
+      authorized: ({ token }) => !!token
     },
   }
 )
@@ -15,8 +15,6 @@ export const config = {
   matcher: [
     '/my/:path*',
     '/reservation/:path*',
-    '/life/complaint/:path*',
-    '/api/trpc/auth/getProfile:path*',
-    '/api/trpc/auth/updateProfile:path*',
-  ],
+    // 보호가 필요한 다른 경로들 추가
+  ]
 }
