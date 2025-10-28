@@ -1,6 +1,9 @@
+'use client'
+
 import { User, Bell, Settings, HelpCircle, LogOut, ChevronRight } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { signOut } from 'next-auth/react'
 
 const menuItems = [
   {
@@ -20,6 +23,9 @@ const menuItems = [
 ]
 
 export default function MyPage() {
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/auth/signin' })
+  }
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
       {/* 사용자 정보 */}
@@ -82,7 +88,11 @@ export default function MyPage() {
       ))}
 
       {/* 로그아웃 */}
-      <Button variant="outline" className="w-full text-red-600 hover:text-red-700 hover:bg-red-50">
+      <Button 
+        variant="outline" 
+        className="w-full text-red-600 hover:text-red-700 hover:bg-red-50"
+        onClick={handleLogout}
+      >
         <LogOut className="h-4 w-4 mr-2" />
         로그아웃
       </Button>
