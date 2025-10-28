@@ -248,20 +248,20 @@ export default function HomePage() {
         </div>
 
         {/* 메인 콘텐츠 영역 */}
-        <div className="space-y-3 lg:space-y-4">
+        <div className="space-y-4 lg:space-y-6">
 
           {/* 빠른 액션 */}
           <section aria-labelledby="quick-actions-title">
             <h2 id="quick-actions-title" className="text-lg font-semibold text-gray-900 mb-4 sm:text-xl">빠른 메뉴</h2>
             
             {/* 모바일: 2x4 그리드, 태블릿 이상: 4x2 그리드 */}
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 md:grid-cols-4 md:gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 md:grid-cols-4 md:gap-4 lg:gap-5">
               {quickActions.map((action, index) => {
                 const Icon = action.icon
                 return (
                   <Card 
                     key={index} 
-                    className="group relative overflow-hidden p-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer border-0 shadow-sm focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 min-h-[88px] touch-manipulation active:scale-[0.98] sm:p-5 sm:min-h-[96px] md:min-h-[104px] bg-gradient-to-br from-white to-gray-50 hover:from-primary-50 hover:to-blue-50"
+                    className="group relative overflow-hidden p-3 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer border-0 shadow-sm focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 min-h-[92px] touch-manipulation active:scale-[0.98] sm:p-4 sm:min-h-[100px] md:min-h-[108px] lg:p-5 lg:min-h-[112px] bg-gradient-to-br from-white to-gray-50 hover:from-primary-50 hover:to-blue-50"
                     role="button"
                     tabIndex={0}
                     aria-label={`${action.title} - ${action.description}${action.badge ? `, ${action.badge}개의 새 항목` : ''}`}
@@ -276,12 +276,12 @@ export default function HomePage() {
                     {/* 배경 장식 */}
                     <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-transparent to-gray-100 opacity-50 rounded-full transform translate-x-8 -translate-y-8 group-hover:scale-150 transition-transform duration-500" aria-hidden="true"></div>
                     
-                    <div className="relative flex items-center space-x-3 h-full sm:flex-col sm:space-x-0 sm:space-y-2 sm:text-center">
-                      <div className={`relative p-3 rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 ${action.color} shadow-sm sm:p-3.5 flex-shrink-0`}>
-                        <Icon className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
+                    <div className="relative flex items-center space-x-2 h-full sm:flex-col sm:space-x-0 sm:space-y-2 sm:text-center lg:space-y-3">
+                      <div className={`relative p-2.5 rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 ${action.color} shadow-sm sm:p-3 lg:p-3.5 flex-shrink-0`}>
+                        <Icon className="h-5 w-5 sm:h-6 sm:w-6 lg:h-7 lg:w-7" aria-hidden="true" />
                         {action.badge && (
                           <div 
-                            className="absolute -top-2 -right-2 min-w-[24px] h-6 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full flex items-center justify-center font-bold shadow-lg border-2 border-white animate-bounce sm:min-w-[28px] sm:h-7 sm:text-sm"
+                            className="absolute -top-1.5 -right-1.5 min-w-[22px] h-5 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs rounded-full flex items-center justify-center font-bold shadow-lg border-2 border-white animate-bounce sm:min-w-[24px] sm:h-6 lg:min-w-[26px] lg:h-7 lg:text-sm"
                             aria-label={`${action.badge}개의 새 항목`}
                             role="status"
                           >
@@ -290,8 +290,8 @@ export default function HomePage() {
                         )}
                       </div>
                       <div className="flex-1 min-w-0 sm:flex-initial">
-                        <h3 className="font-semibold text-gray-900 text-sm truncate group-hover:text-primary-600 transition-colors sm:text-base sm:text-center">{action.title}</h3>
-                        <p className="text-xs text-gray-600 mt-1 truncate group-hover:text-primary-500 transition-colors sm:text-sm sm:text-center">{action.description}</p>
+                        <h3 className="font-semibold text-gray-900 text-sm truncate group-hover:text-primary-600 transition-colors sm:text-base sm:text-center lg:text-lg">{action.title}</h3>
+                        <p className="text-xs text-gray-600 mt-0.5 truncate group-hover:text-primary-500 transition-colors sm:text-sm sm:text-center sm:mt-1">{action.description}</p>
                       </div>
                       <ChevronRight className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200 sm:h-5 sm:w-5 flex-shrink-0 sm:hidden" aria-hidden="true" />
                     </div>
@@ -302,7 +302,7 @@ export default function HomePage() {
           </section>
 
           {/* 하단 섹션 - 공지사항과 커뮤니티 글 */}
-          <div className="lg:grid lg:grid-cols-2 lg:gap-6 space-y-3 lg:space-y-0">
+          <div className="lg:grid lg:grid-cols-2 lg:gap-6 space-y-4 lg:space-y-0">
             {/* 공지사항 */}
             <section>
               <div className="flex items-center justify-between mb-4">
@@ -312,7 +312,7 @@ export default function HomePage() {
                 </Button>
               </div>
             
-              <div className="space-y-3">
+              <div className="space-y-3 sm:space-y-4">
                 {notices.slice(0, 3).map((notice) => (
                   <Card 
                     key={notice.id} 
@@ -468,7 +468,7 @@ export default function HomePage() {
         </div>
 
         {/* 하단 여백 (네비게이션 바 공간 확보) */}
-        <div className="h-20 sm:h-24 lg:h-8"></div>
+        <div className="h-20 sm:h-24 lg:h-12"></div>
       </div>
     </div>
   )
