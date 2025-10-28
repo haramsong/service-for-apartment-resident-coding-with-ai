@@ -143,10 +143,10 @@ export default function CommunityWritePage() {
               </Button>
               <Button
                 type="submit"
-                disabled={createPost.isLoading || !title.trim() || !content.trim()}
+                disabled={createPost.isPending || !title.trim() || !content.trim()}
                 className="flex-1"
               >
-                {createPost.isLoading ? '작성 중...' : '작성 완료'}
+                {createPost.isPending ? '작성 중...' : '작성 완료'}
               </Button>
             </div>
           </form>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { Card } from '@/components/ui/card'
@@ -17,22 +17,23 @@ const categoryLabels: Record<string, string> = {
   suggestion: '건의사항',
 }
 
-export default function PostDetailPage({ params }: { params: { id: string } }) {
+export default function PostDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = use(params)
   const router = useRouter()
   const { data: session } = useSession()
   const [comment, setComment] = useState('')
   const [isAnonymous, setIsAnonymous] = useState(false)
 
   const { data: post, isLoading } = trpc.posts.getById.useQuery({
-    id: params.id,
+    id: resolvedParams.id,
   })
 
-  const createComment = trpc.comments.create.useMutation({
+  const createComment = trpc.posts.createComment.useMutation({
     onSuccess: () => {
       setComment('')
       setIsAnonymous(false)
       // 댓글 목록 새로고침을 위해 쿼리 무효화
-      trpc.useContext().posts.getById.invalidate({ id: params.id })
+      trpc.useContext().posts.getById.invalidate({ id: resolvedParams.id })
     },
     onError: (error) => {
       alert('댓글 작성에 실패했습니다: ' + error.message)
@@ -41,7 +42,7 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
 
   const likePost = trpc.posts.like.useMutation({
     onSuccess: () => {
-      trpc.useContext().posts.getById.invalidate({ id: params.id })
+      trpc.useContext().posts.getById.invalidate({ id: resolvedParams.id })
     }
   })
 
@@ -50,7 +51,7 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
     if (!comment.trim()) return
 
     createComment.mutate({
-      postId: params.id,
+      postId: resolvedParams.id,
       content: comment.trim(),
       isAnonymous,
     })
@@ -109,7 +110,7 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
         <Card className="p-6 mb-6">
           <div className="flex items-start justify-between mb-4">
             <Badge variant="secondary" className="text-xs">
-              {categoryLabels[post.category] || post.category}
+              {post.category ? (categoryLabels[post.category] || post.category) : '기타'}
             </Badge>
             <span className="text-xs text-gray-500">
               {formatTimeAgo(new Date(post.createdAt))}
@@ -138,7 +139,7 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => likePost.mutate({ postId: params.id })}
+                onClick={() => likePost.mutate({ postId: resolvedParams.id })}
                 className="flex items-center gap-1 text-sm"
               >
                 <Heart className="h-4 w-4" />
@@ -181,10 +182,10 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
                 <Button
                   type="submit"
                   size="sm"
-                  disabled={!comment.trim() || createComment.isLoading}
+                  disabled={!comment.trim() || createComment.isPending}
                 >
                   <Send className="h-4 w-4 mr-1" />
-                  {createComment.isLoading ? '작성 중...' : '댓글 작성'}
+                  {createComment.isPending ? '작성 중...' : '댓글 작성'}
                 </Button>
               </div>
             </form>

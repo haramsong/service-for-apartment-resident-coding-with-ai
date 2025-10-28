@@ -53,9 +53,8 @@ export default function HomePage() {
   // 사용자 정보 (세션에서 가져옴)
   const userInfo = {
     name: session.user.name || '사용자',
-    apartment: `${session.user.dong}동`,
-    unit: `${session.user.ho}호`,
-    profileImage: session.user.image || undefined // 프로필 이미지가 없는 경우
+    apartment: `${session.user.dong || '?'}동`,
+    unit: `${session.user.ho || '?'}호`,
   }
 
   const notificationCount = 5
@@ -160,30 +159,6 @@ export default function HomePage() {
       time: '1일 전',
       isImportant: false,
       category: 'info'
-    }
-  ]
-
-  const recentPosts = [
-    {
-      title: '엘리베이터 고장 신고',
-      author: '101동 주민',
-      comments: 5,
-      time: '30분 전',
-      isHot: true
-    },
-    {
-      title: '반려동물 산책 시간 문의',
-      author: '205동 주민',
-      comments: 8,
-      time: '1시간 전',
-      isHot: false
-    },
-    {
-      title: '택배함 이용 관련 건의',
-      author: '304동 주민',
-      comments: 3,
-      time: '2시간 전',
-      isHot: false
     }
   ]
 

@@ -81,10 +81,10 @@ export const authRouter = router({
       id: user.id,
       email: user.email,
       name: user.name,
-      apartment: {
+      apartment: user.apartment ? {
         id: user.apartment.id,
         name: user.apartment.name,
-      },
+      } : null,
       dong: user.dong,
       ho: user.ho,
       role: user.role,

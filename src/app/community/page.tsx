@@ -109,7 +109,7 @@ export default function CommunityPage() {
                     variant="secondary"
                     className="text-xs"
                   >
-                    {categoryLabels[post.category] || post.category}
+                    {post.category ? (categoryLabels[post.category] || post.category) : '기타'}
                   </Badge>
                   <span className="text-xs text-gray-500">
                     {formatTimeAgo(new Date(post.createdAt))}

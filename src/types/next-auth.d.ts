@@ -6,26 +6,26 @@ declare module 'next-auth' {
       id: string
       email: string
       name: string
-      apartmentId: string
-      dong: string
-      ho: string
+      apartmentId: string | null
+      dong: string | null
+      ho: string | null
       role: string
     }
   }
 
   interface User {
-    apartmentId: string
-    dong: string
-    ho: string
+    apartmentId: string | null
+    dong: string | null
+    ho: string | null
     role: string
   }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT {
-    apartmentId: string
-    dong: string
-    ho: string
+    apartmentId: string | null
+    dong: string | null
+    ho: string | null
     role: string
   }
 }

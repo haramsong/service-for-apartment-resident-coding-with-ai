@@ -111,9 +111,9 @@ export default function SignUpPage() {
             <Button
               type="submit"
               className="w-full"
-              disabled={signUpMutation.isLoading}
+              disabled={signUpMutation.isPending}
             >
-              {signUpMutation.isLoading ? '가입 중...' : '회원가입'}
+              {signUpMutation.isPending ? '가입 중...' : '회원가입'}
             </Button>
           </form>
           <div className="mt-4 text-center">

@@ -131,4 +131,29 @@ export const postsRouter = router({
         isLiked: true,
       }
     }),
+
+  // 댓글 생성
+  createComment: protectedProcedure
+    .input(
+      z.object({
+        postId: z.string(),
+        content: z.string(),
+        isAnonymous: z.boolean().default(false),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const comment = await prisma.comment.create({
+        data: {
+          ...input,
+          authorId: 'temp-user-id', // TODO: ctx.user.id
+        },
+        include: {
+          author: {
+            select: { id: true, name: true },
+          },
+        },
+      })
+
+      return comment
+    }),
 })
