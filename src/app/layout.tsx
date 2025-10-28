@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import TopNavigation from "@/components/layout/TopNavigation";
 import BottomNavigation from "@/components/layout/BottomNavigation";
+import AuthSessionProvider from "@/components/providers/session-provider";
+import { TRPCProvider } from "@/lib/trpc/provider";
 
 export const metadata: Metadata = {
   title: "우리동네 - 아파트 커뮤니티",
@@ -16,11 +18,15 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <div className="min-h-screen bg-gray-50">
-          <TopNavigation />
-          <main className="pb-16 md:pb-0">{children}</main>
-          <BottomNavigation />
-        </div>
+        <AuthSessionProvider>
+          <TRPCProvider>
+            <div className="min-h-screen bg-gray-50">
+              <TopNavigation />
+              <main className="pb-16 md:pb-0">{children}</main>
+              <BottomNavigation />
+            </div>
+          </TRPCProvider>
+        </AuthSessionProvider>
       </body>
     </html>
   );
