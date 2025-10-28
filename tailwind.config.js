@@ -21,6 +21,16 @@ module.exports = {
         'wide': '1440px',
       },
       colors: {
+        // shadcn/ui 필수 색상
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
         // 기존 디자인 가이드라인 색상 시스템 적용
         primary: {
           50: 'var(--primary-50)',
@@ -33,9 +43,11 @@ module.exports = {
           700: 'var(--primary-700)',
           800: 'var(--primary-800)',
           900: 'var(--primary-900)',
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          50: 'var(--ssecondaryy-50)',
+          50: 'var(--secondary-50)',
           100: 'var(--secondary-100)',
           200: 'var(--secondary-200)',
           300: 'var(--secondary-300)',
@@ -45,6 +57,8 @@ module.exports = {
           700: 'var(--secondary-700)',
           800: 'var(--secondary-800)',
           900: 'var(--secondary-900)',
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
         accent: {
           50: 'var(--accent-50)',
@@ -55,23 +69,12 @@ module.exports = {
           500: 'var(--accent-500)',
           600: 'var(--accent-600)',
           700: 'var(--accent-700)',
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
-        success: {
-          50: 'var(--success-50)',
-          500: 'var(--success-500)',
-          600: 'var(--success-600)',
-          700: 'var(--success-700)',
-        },
-        warning: {
-          50: 'var(--warning-50)',
-          500: 'var(--warning-500)',
-          600: 'var(--warning-600)',
-        },
-        error: {
-          50: 'var(--error-50)',
-          500: 'var(--error-500)',
-          600: 'var(--error-600)',
-          700: 'var(--error-700)',
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
       },
       fontFamily: {
