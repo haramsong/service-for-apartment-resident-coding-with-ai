@@ -37,7 +37,8 @@ _최종 업데이트: 2025-10-28 09:30_
 | ✅       | PostgreSQL 로컬 환경 구축    | 완료 | Developer Agent | 2025-10-27 | 2025-10-27 | Docker Compose 기반 로컬 DB 설정 완료 |
 | ✅       | 데이터베이스 스키마 설계     | 완료 | Developer Agent | 2025-10-27 | 2025-10-27 | Prisma ORM 기반 9개 모델 정의 완료 |
 | ✅       | API 명세서 작성              | 완료 | Developer Agent | 2025-10-28 | 2025-10-28 | tRPC 기반 8개 도메인 API 정의 완료    |
-| Medium   | 인증/권한 시스템 구현        | 대기 | Developer Agent | -          | -          | JWT 기반 인증                         |
+| ✅       | tRPC 라우터 구현             | 완료 | Developer Agent | 2025-10-28 | 2025-10-28 | Auth, Notices, Posts, Reservations 라우터 완료 |
+| High     | 인증/권한 시스템 구현        | 대기 | Developer Agent | -          | -          | NextAuth.js 또는 Supabase Auth 연동   |
 | Medium   | 커뮤니티 기본 기능 구현      | 대기 | Developer Agent | -          | -          | 게시판, 댓글 시스템                   |
 | Low      | 코드 리뷰 가이드라인 작성    | 대기 | Developer Agent | -          | -          | 개발 표준 정립                        |
 | ✅       | 기술 스택 분석 및 권고       | 완료 | Developer Agent | 2025-10-17 | 2025-10-17 | tech-stack-recommendation-2025.md     |
