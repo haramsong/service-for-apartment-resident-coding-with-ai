@@ -8,7 +8,7 @@ echo "🚀 Setting up environment for: $ENV"
 
 if [ "$ENV" = "production" ]; then
     echo "📦 Copying production environment variables..."
-    cp .env.prod .env.local
+    cp .env.prod .env
     echo "✅ Production environment configured"
 elif [ "$ENV" = "development" ]; then
     echo "🔧 Using development environment..."
