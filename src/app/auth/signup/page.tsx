@@ -48,7 +48,8 @@ export default function SignUpPage() {
     let strength = 0;
     if (passwordValidation.minLength) strength++;
     if (password.length >= 12) strength++;
-    if (passwordValidation.hasLowerCase && passwordValidation.hasUpperCase) strength++;
+    if (passwordValidation.hasLowerCase && passwordValidation.hasUpperCase)
+      strength++;
     if (passwordValidation.hasNumber) strength++;
     if (passwordValidation.hasSpecialChar) strength++;
 
@@ -199,60 +200,60 @@ export default function SignUpPage() {
                 )}
 
                 {/* 비밀번호 요구사항 */}
-                <div className="mt-2 space-y-1">
-                  <p className="text-xs font-medium text-gray-700 mb-1">
+                <div className="mt-2">
+                  <p className="text-xs font-medium text-gray-700 mb-2">
                     비밀번호 요구사항:
                   </p>
-                  <p
-                    className={`text-xs flex items-center gap-1 ${
-                      passwordValidation.minLength
-                        ? "text-green-600"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    <span>{passwordValidation.minLength ? "✓" : "○"}</span>
-                    <span>8자 이상 (필수)</span>
-                  </p>
-                  <p
-                    className={`text-xs flex items-center gap-1 ${
-                      passwordValidation.hasLowerCase
-                        ? "text-green-600"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    <span>{passwordValidation.hasLowerCase ? "✓" : "○"}</span>
-                    <span>영문 소문자 포함 (권장)</span>
-                  </p>
-                  <p
-                    className={`text-xs flex items-center gap-1 ${
-                      passwordValidation.hasUpperCase
-                        ? "text-green-600"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    <span>{passwordValidation.hasUpperCase ? "✓" : "○"}</span>
-                    <span>영문 대문자 포함 (권장)</span>
-                  </p>
-                  <p
-                    className={`text-xs flex items-center gap-1 ${
-                      passwordValidation.hasNumber
-                        ? "text-green-600"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    <span>{passwordValidation.hasNumber ? "✓" : "○"}</span>
-                    <span>숫자 포함 (권장)</span>
-                  </p>
-                  <p
-                    className={`text-xs flex items-center gap-1 ${
-                      passwordValidation.hasSpecialChar
-                        ? "text-green-600"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    <span>{passwordValidation.hasSpecialChar ? "✓" : "○"}</span>
-                    <span>특수문자 포함 (권장)</span>
-                  </p>
+                  <div className="flex justify-between gap-x-4 gap-y-1">
+                    <p
+                      className={`text-xs flex items-center gap-1 ${
+                        passwordValidation.minLength
+                          ? "text-green-600"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      <span>{passwordValidation.minLength ? "✓" : "○"}</span>
+                      <span>8자 이상</span>
+                    </p>
+                    <p
+                      className={`text-xs flex items-center gap-1 ${
+                        passwordValidation.hasLowerCase ||
+                        passwordValidation.hasUpperCase
+                          ? "text-green-600"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      <span>
+                        {passwordValidation.hasLowerCase ||
+                        passwordValidation.hasUpperCase
+                          ? "✓"
+                          : "○"}
+                      </span>
+                      <span>영문 대/소문자</span>
+                    </p>
+                    <p
+                      className={`text-xs flex items-center gap-1 ${
+                        passwordValidation.hasNumber
+                          ? "text-green-600"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      <span>{passwordValidation.hasNumber ? "✓" : "○"}</span>
+                      <span>숫자</span>
+                    </p>
+                    <p
+                      className={`text-xs flex items-center gap-1 ${
+                        passwordValidation.hasSpecialChar
+                          ? "text-green-600"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      <span>
+                        {passwordValidation.hasSpecialChar ? "✓" : "○"}
+                      </span>
+                      <span>특수문자</span>
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -396,13 +397,13 @@ export default function SignUpPage() {
               </Dialog>
 
               {selectedApartment && (
-                <div className="mt-2 p-2 bg-blue-50 rounded-md flex items-start">
-                  <MapPin className="w-4 h-4 text-blue-600 mr-2 mt-0.5 flex-shrink-0" />
+                <div className="mt-2 p-3 bg-primary-50 border border-primary-200 rounded-lg flex items-start">
+                  <MapPin className="w-4 h-4 text-primary-600 mr-2 mt-0.5 flex-shrink-0" />
                   <div className="text-sm">
-                    <p className="font-medium text-blue-900">
+                    <p className="font-medium text-primary-900">
                       {selectedApartment.name}
                     </p>
-                    <p className="text-blue-700">{selectedApartment.address}</p>
+                    <p className="text-primary-700">{selectedApartment.address}</p>
                   </div>
                 </div>
               )}
