@@ -19,6 +19,7 @@ export default function SignUpPage() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    passwordConfirm: '',
     name: '',
     apartmentId: '',
     dong: '',
@@ -28,6 +29,7 @@ export default function SignUpPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
   const router = useRouter()
 
   // 비밀번호 강도 계산
@@ -72,6 +74,11 @@ export default function SignUpPage() {
 
     if (formData.password.length < 8) {
       setError('비밀번호는 8자 이상이어야 합니다.')
+      return
+    }
+
+    if (formData.password !== formData.passwordConfirm) {
+      setError('비밀번호가 일치하지 않습니다.')
       return
     }
 
@@ -196,6 +203,49 @@ export default function SignUpPage() {
                   onChange={handleChange}
                   required
                 />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">
+                  비밀번호 확인
+                </label>
+                <div className="relative">
+                  <Input
+                    name="passwordConfirm"
+                    type={showPasswordConfirm ? "text" : "password"}
+                    placeholder="비밀번호를 다시 입력해주세요"
+                    value={formData.passwordConfirm}
+                    onChange={handleChange}
+                    required
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    {showPasswordConfirm ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+                
+                {/* 비밀번호 일치 여부 표시 */}
+                {formData.passwordConfirm && (
+                  <div className="mt-2">
+                    {formData.password === formData.passwordConfirm ? (
+                      <p className="text-xs text-green-600 flex items-center">
+                        <span className="mr-1">✓</span> 비밀번호가 일치합니다
+                      </p>
+                    ) : (
+                      <p className="text-xs text-red-600 flex items-center">
+                        <span className="mr-1">✗</span> 비밀번호가 일치하지 않습니다
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 
