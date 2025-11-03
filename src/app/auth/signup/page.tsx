@@ -403,7 +403,9 @@ export default function SignUpPage() {
                     <p className="font-medium text-primary-900">
                       {selectedApartment.name}
                     </p>
-                    <p className="text-primary-700">{selectedApartment.address}</p>
+                    <p className="text-primary-700">
+                      {selectedApartment.address}
+                    </p>
                   </div>
                 </div>
               )}
