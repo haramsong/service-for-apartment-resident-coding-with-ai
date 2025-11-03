@@ -106,11 +106,18 @@ export const postsRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      if (!ctx.user.apartmentId) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: '아파트 정보가 없습니다',
+        })
+      }
+
       const post = await prisma.post.create({
         data: {
           ...input,
-          apartmentId: 'temp-apt-id', // TODO: ctx에서 가져오기
-          authorId: 'temp-user-id', // TODO: ctx.user.id
+          apartmentId: ctx.user.apartmentId,
+          authorId: ctx.user.id,
         },
       })
 
@@ -145,7 +152,7 @@ export const postsRouter = router({
       const comment = await prisma.comment.create({
         data: {
           ...input,
-          authorId: 'temp-user-id', // TODO: ctx.user.id
+          authorId: ctx.user.id,
         },
         include: {
           author: {
