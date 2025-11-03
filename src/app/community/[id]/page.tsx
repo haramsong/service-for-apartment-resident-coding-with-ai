@@ -23,6 +23,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
   const { data: session } = useSession()
   const [comment, setComment] = useState('')
   const [isAnonymous, setIsAnonymous] = useState(false)
+  const utils = trpc.useContext()
 
   const { data: post, isLoading } = trpc.posts.getById.useQuery({
     id: resolvedParams.id,
@@ -32,8 +33,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
     onSuccess: () => {
       setComment('')
       setIsAnonymous(false)
-      // 댓글 목록 새로고침을 위해 쿼리 무효화
-      trpc.useContext().posts.getById.invalidate({ id: resolvedParams.id })
+      utils.posts.getById.invalidate({ id: resolvedParams.id })
     },
     onError: (error) => {
       alert('댓글 작성에 실패했습니다: ' + error.message)
@@ -42,7 +42,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
 
   const likePost = trpc.posts.like.useMutation({
     onSuccess: () => {
-      trpc.useContext().posts.getById.invalidate({ id: resolvedParams.id })
+      utils.posts.getById.invalidate({ id: resolvedParams.id })
     }
   })
 
