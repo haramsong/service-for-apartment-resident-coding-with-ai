@@ -1,6 +1,6 @@
 # 에이전트별 작업 목록 관리
 
-_최종 업데이트: 2025-10-28 16:11_
+_최종 업데이트: 2025-11-03 15:00_
 
 ## Orchestration Agent 작업 목록
 
@@ -76,10 +76,11 @@ _최종 업데이트: 2025-10-28 16:11_
 | 우선순위 | 작업명                           | 상태 | 담당자      | 시작일     | 완료일     | 비고                                    |
 | -------- | -------------------------------- | ---- | ----------- | ---------- | ---------- | --------------------------------------- |
 | ✅       | PostgreSQL Docker 로컬 환경 구축 | 완료 | DevOps Agent | 2025-10-27 | 2025-10-27 | Docker Compose 기반 로컬 DB 설정 완료   |
+| ✅       | 환경 분리 가이드 작성            | 완료 | DevOps Agent | 2025-10-31 | 2025-10-31 | 로컬/프로덕션 환경 분리 체계 구축       |
 | High     | GitHub Actions CI/CD 설정        | 대기 | DevOps Agent | -          | -          | 자동 빌드 및 테스트                     |
 | High     | Vercel 배포 환경 설정            | 대기 | DevOps Agent | -          | -          | 개발/프로덕션 환경 분리                 |
 | Medium   | Supabase 환경 설정 및 관리       | 대기 | DevOps Agent | -          | -          | DB 마이그레이션, 백업 전략              |
-| Medium   | 환경 변수 관리 체계 구축         | 대기 | DevOps Agent | -          | -          | .env 파일 관리, 시크릿 관리             |
+| Medium   | 환경 변수 관리 체계 구축         | 완료 | DevOps Agent | 2025-10-31 | 2025-10-31 | .env 파일 관리, 환경 전환 스크립트 완성 |
 | Medium   | 모니터링 도구 통합               | 대기 | DevOps Agent | -          | -          | Sentry + Vercel Analytics               |
 | Low      | Docker 개발 환경 최적화          | 대기 | DevOps Agent | -          | -          | 개발 속도 개선                          |
 | Low      | 백업 및 복구 절차 문서화         | 대기 | DevOps Agent | -          | -          | Supabase 백업 전략                      |
