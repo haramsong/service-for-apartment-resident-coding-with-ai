@@ -7,13 +7,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { Building2, MapPin } from 'lucide-react'
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { Building2, MapPin, Search } from 'lucide-react'
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
@@ -25,6 +25,8 @@ export default function SignUpPage() {
     ho: '',
   })
   const [error, setError] = useState('')
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const router = useRouter()
 
   // 실제로는 API에서 가져와야 하지만, 현재는 더미 데이터 사용
@@ -33,6 +35,12 @@ export default function SignUpPage() {
     { id: 'apt-2', name: '행복아파트', address: '서울시 서초구' },
     { id: 'apt-3', name: '푸른아파트', address: '서울시 송파구' },
   ]
+
+  // 검색 필터링
+  const filteredApartments = apartments.filter(apt =>
+    apt.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    apt.address.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   const signUpMutation = trpc.auth.signUp.useMutation({
     onSuccess: () => {
@@ -65,6 +73,12 @@ export default function SignUpPage() {
       ...prev,
       [e.target.name]: e.target.value
     }))
+  }
+
+  const handleApartmentSelect = (apartmentId: string) => {
+    setFormData(prev => ({ ...prev, apartmentId }))
+    setIsDialogOpen(false)
+    setSearchQuery('')
   }
 
   const selectedApartment = apartments.find(apt => apt.id === formData.apartmentId)
@@ -131,24 +145,70 @@ export default function SignUpPage() {
                 <Building2 className="w-4 h-4 mr-1" />
                 거주 아파트
               </label>
-              <Select
-                value={formData.apartmentId}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, apartmentId: value }))}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="아파트를 선택해주세요" />
-                </SelectTrigger>
-                <SelectContent>
-                  {apartments.map((apt) => (
-                    <SelectItem key={apt.id} value={apt.id}>
-                      <div className="flex flex-col">
-                        <span className="font-medium">{apt.name}</span>
-                        <span className="text-xs text-gray-500">{apt.address}</span>
+              
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full justify-start text-left font-normal"
+                  >
+                    {selectedApartment ? (
+                      <div className="flex items-center">
+                        <Building2 className="w-4 h-4 mr-2" />
+                        <span>{selectedApartment.name}</span>
                       </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                    ) : (
+                      <span className="text-gray-500">아파트를 검색해주세요</span>
+                    )}
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>아파트 검색</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    {/* 검색 입력 */}
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <Input
+                        placeholder="아파트명 또는 주소로 검색"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-10"
+                      />
+                    </div>
+                    
+                    {/* 검색 결과 */}
+                    <div className="max-h-[300px] overflow-y-auto space-y-2">
+                      {filteredApartments.length > 0 ? (
+                        filteredApartments.map((apt) => (
+                          <button
+                            key={apt.id}
+                            type="button"
+                            onClick={() => handleApartmentSelect(apt.id)}
+                            className="w-full p-3 text-left border rounded-lg hover:bg-gray-50 transition-colors"
+                          >
+                            <div className="flex items-start">
+                              <Building2 className="w-5 h-5 text-primary-500 mr-3 mt-0.5 flex-shrink-0" />
+                              <div>
+                                <p className="font-medium text-gray-900">{apt.name}</p>
+                                <p className="text-sm text-gray-500 mt-0.5">{apt.address}</p>
+                              </div>
+                            </div>
+                          </button>
+                        ))
+                      ) : (
+                        <div className="text-center py-8 text-gray-500">
+                          <Building2 className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+                          <p>검색 결과가 없습니다</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+              
               {selectedApartment && (
                 <div className="mt-2 p-2 bg-blue-50 rounded-md flex items-start">
                   <MapPin className="w-4 h-4 text-blue-600 mr-2 mt-0.5 flex-shrink-0" />
