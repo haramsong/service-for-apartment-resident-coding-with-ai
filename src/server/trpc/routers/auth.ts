@@ -5,6 +5,14 @@ import { hashPassword } from "@/lib/auth-utils";
 import { TRPCError } from "@trpc/server";
 
 export const authRouter = router({
+  // 아파트 목록 조회
+  getApartments: publicProcedure.query(async () => {
+    const apartments = await prisma.apartment.findMany({
+      orderBy: { name: "asc" },
+    });
+    return apartments;
+  }),
+
   // 회원가입
   signUp: publicProcedure
     .input(

@@ -29,12 +29,8 @@ export default function SignUpPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const router = useRouter()
 
-  // 실제로는 API에서 가져와야 하지만, 현재는 더미 데이터 사용
-  const apartments = [
-    { id: 'apt-1', name: '우리아파트', address: '서울시 강남구' },
-    { id: 'apt-2', name: '행복아파트', address: '서울시 서초구' },
-    { id: 'apt-3', name: '푸른아파트', address: '서울시 송파구' },
-  ]
+  // 실제 DB에서 아파트 목록 조회
+  const { data: apartments = [], isLoading: isLoadingApartments } = trpc.auth.getApartments.useQuery()
 
   // 검색 필터링
   const filteredApartments = apartments.filter(apt =>
@@ -181,7 +177,11 @@ export default function SignUpPage() {
                     
                     {/* 검색 결과 */}
                     <div className="max-h-[300px] overflow-y-auto space-y-2">
-                      {filteredApartments.length > 0 ? (
+                      {isLoadingApartments ? (
+                        <div className="text-center py-8 text-gray-500">
+                          <p>아파트 목록을 불러오는 중...</p>
+                        </div>
+                      ) : filteredApartments.length > 0 ? (
                         filteredApartments.map((apt) => (
                           <button
                             key={apt.id}
