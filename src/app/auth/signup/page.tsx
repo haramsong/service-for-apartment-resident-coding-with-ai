@@ -201,9 +201,6 @@ export default function SignUpPage() {
 
                 {/* 비밀번호 요구사항 */}
                 <div className="mt-2">
-                  <p className="text-xs font-medium text-gray-700 mb-2">
-                    비밀번호 요구사항:
-                  </p>
                   <div className="flex justify-between gap-x-4 gap-y-1">
                     <p
                       className={`text-xs flex items-center gap-1 ${
