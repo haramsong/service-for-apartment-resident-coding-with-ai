@@ -85,13 +85,13 @@
   --text-secondary: #6b7280;
   --text-muted: #9ca3af;
 
-  /* 배경 색상 */
-  --background: #ffffff;
-  --background-secondary: #f8f9fa;
-  --background-muted: #f3f4f6;
+  /* 커스텀 배경 색상 (shadcn/ui --background와 구분) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-muted: #f3f4f6;
 
   /* 테두리 및 구분선 */
-  --border: #e5e7eb;
+  --border-color: #e5e7eb;
   --border-light: #f3f4f6;
 
   /* 그림자 */
@@ -135,24 +135,24 @@
   --input: 217.2 32.6% 17.5%;
   --ring: 224.3 76.3% 94.1%;
 
-  --background-secondary: #1e293b;
-  --background-muted: #334155;
+  --bg-secondary: #1e293b;
+  --bg-muted: #334155;
 
   --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
   --text-muted: #94a3b8;
 
-  --border: #334155;
+  --border-color: #334155;
   --border-light: #475569;
 }
 
 * {
-  border-color: var(--border);
+  border-color: hsl(var(--border));
 }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: var(--background);
+  background-color: hsl(var(--background));
   color: var(--text-primary);
   line-height: 1.6;
 }
@@ -195,8 +195,8 @@ body {
 }
 
 .card {
-  background-color: var(--background);
-  border: 1px solid var(--border);
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   padding: var(--spacing-lg);
@@ -230,7 +230,7 @@ body {
   height: 12px;
   background-color: var(--error-500);
   border-radius: 50%;
-  border: 2px solid var(--background);
+  border: 2px solid hsl(var(--background));
 }
 
 /* 상태 배지 */
@@ -280,12 +280,12 @@ body {
 
 /* 입력 필드 스타일 */
 .input {
-  border: 1px solid var(--border);
+  border: 1px solid hsl(var(--border));
   border-radius: var(--radius-md);
   padding: 12px;
   font-size: 16px;
   transition: border-color 200ms ease;
-  background-color: var(--background);
+  background-color: hsl(var(--background));
   color: var(--text-primary);
 }
 
