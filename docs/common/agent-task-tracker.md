@@ -1,6 +1,6 @@
 # 에이전트별 작업 목록 관리
 
-_최종 업데이트: 2025-11-03 15:00_
+_최종 업데이트: 2025-11-03 15:27_
 
 ## Orchestration Agent 작업 목록
 
@@ -55,6 +55,7 @@ _최종 업데이트: 2025-11-03 15:00_
 | ✅       | 네비게이션 구조 확장         | 완료 | Developer Agent | 2025-10-20 | 2025-10-20 | 5개 탭 구조 완성, 예약/MY 페이지 생성 |
 | ✅       | MY 페이지 로그아웃 기능 연결 | 완료 | Developer Agent | 2025-10-28 | 2025-10-28 | NextAuth signOut 함수 연결, 안전한 로그아웃 구현 |
 | ✅       | Prisma 데이터베이스 연결 오류 해결 | 완료 | Developer Agent | 2025-10-28 | 2025-10-28 | DATABASE_URL 형식 수정, prisma.config.ts 제거 |
+| ✅       | 회원가입 아파트 선택 UI/UX 개선 | 완료 | Developer Agent | 2025-11-03 | 2025-11-03 | shadcn/ui Select 컴포넌트, 드롭다운 선택 방식, 단계별 입력 필드 |
 
 ## Designer Agent 작업 목록
 
