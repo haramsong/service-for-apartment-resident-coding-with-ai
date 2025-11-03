@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Building2, MapPin, Search } from 'lucide-react'
+import { Building2, MapPin, Search, Eye, EyeOff } from 'lucide-react'
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
@@ -27,7 +27,26 @@ export default function SignUpPage() {
   const [error, setError] = useState('')
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
+
+  // 비밀번호 강도 계산
+  const getPasswordStrength = (password: string) => {
+    if (!password) return { strength: 0, label: '', color: '' }
+    
+    let strength = 0
+    if (password.length >= 8) strength++
+    if (password.length >= 12) strength++
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++
+    if (/\d/.test(password)) strength++
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++
+
+    if (strength <= 2) return { strength: 1, label: '약함', color: 'bg-red-500' }
+    if (strength <= 3) return { strength: 2, label: '보통', color: 'bg-yellow-500' }
+    return { strength: 3, label: '강함', color: 'bg-green-500' }
+  }
+
+  const passwordStrength = getPasswordStrength(formData.password)
 
   // 실제 DB에서 아파트 목록 조회
   const { data: apartments = [], isLoading: isLoadingApartments } = trpc.auth.getApartments.useQuery()
@@ -110,14 +129,59 @@ export default function SignUpPage() {
                 <label className="text-sm font-medium text-gray-700 mb-1 block">
                   비밀번호
                 </label>
-                <Input
-                  name="password"
-                  type="password"
-                  placeholder="8자 이상 입력해주세요"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                />
+                <div className="relative">
+                  <Input
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="8자 이상 입력해주세요"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+                
+                {/* 비밀번호 강도 표시 */}
+                {formData.password && (
+                  <div className="mt-2 space-y-1">
+                    <div className="flex gap-1">
+                      {[1, 2, 3].map((level) => (
+                        <div
+                          key={level}
+                          className={`h-1 flex-1 rounded-full transition-colors ${
+                            level <= passwordStrength.strength
+                              ? passwordStrength.color
+                              : 'bg-gray-200'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-xs text-gray-600">
+                      비밀번호 강도: <span className="font-medium">{passwordStrength.label}</span>
+                    </p>
+                  </div>
+                )}
+                
+                {/* 비밀번호 요구사항 */}
+                <div className="mt-2 space-y-1">
+                  <p className={`text-xs ${formData.password.length >= 8 ? 'text-green-600' : 'text-gray-500'}`}>
+                    {formData.password.length >= 8 ? '✓' : '○'} 8자 이상
+                  </p>
+                  <p className={`text-xs ${/[a-zA-Z]/.test(formData.password) && /\d/.test(formData.password) ? 'text-green-600' : 'text-gray-500'}`}>
+                    {/[a-zA-Z]/.test(formData.password) && /\d/.test(formData.password) ? '✓' : '○'} 영문과 숫자 포함 (권장)
+                  </p>
+                </div>
               </div>
 
               <div>
