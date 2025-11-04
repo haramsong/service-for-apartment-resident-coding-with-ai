@@ -59,6 +59,7 @@ _최종 업데이트: 2025-11-04 15:56_
 | ✅       | 회원가입 비밀번호 입력 UI/UX 개선 | 완료 | Developer Agent | 2025-11-03 | 2025-11-03 | 비밀번호 표시/숨김 토글, 강도 표시기, 실시간 유효성 검증 |
 | ✅       | Dialog 오버레이 배경 투명도 개선 | 완료 | Developer Agent | 2025-11-03 | 2025-11-03 | bg-black/50 + backdrop-blur-sm 적용, 세련된 모달 UI |
 | ✅       | Client Component props 에러 수정 | 완료 | Developer Agent | 2025-11-04 | 2025-11-04 | formatDate 타입 수정, life/page.tsx Client Component 변환 |
+| ✅       | Admin 공지사항 작성 UI 구현 | 완료 | Developer Agent | 2025-11-04 | 2025-11-04 | 공지사항 작성 페이지, Textarea 컴포넌트, 권한 검증 |
 
 ## Designer Agent 작업 목록
 
