@@ -34,6 +34,27 @@ export default function HomePage() {
     enabled: !!session?.user?.apartmentId,
   })
 
+  // 최근 공지사항 가져오기
+  const { data: recentNotices } = trpc.notices.getList.useQuery({
+    apartmentId: session?.user?.apartmentId || '',
+    page: 1,
+    limit: 3,
+  }, {
+    enabled: !!session?.user?.apartmentId,
+  })
+
+  // 긴급 공지사항 가져오기
+  const { data: urgentNotices } = trpc.notices.getList.useQuery({
+    apartmentId: session?.user?.apartmentId || '',
+    page: 1,
+    limit: 1,
+    isUrgent: true,
+  }, {
+    enabled: !!session?.user?.apartmentId,
+  })
+
+  const urgentNotice = urgentNotices?.items[0]
+
   if (status === 'loading') {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -129,47 +150,10 @@ export default function HomePage() {
     }
   ]
 
-  const notices = [
-    {
-      id: 1,
-      title: '정기 소독 실시 안내',
-      content: '10월 20일(일) 오후 2시부터 아파트 전체 방역 소독을 실시합니다. 해당 시간에는 외출을 자제해 주시기 바랍니다.',
-      type: '긴급',
-      time: '2시간 전',
-      isImportant: true,
-      category: 'urgent'
-    },
-    {
-      id: 2,
-      title: '주차장 보수공사 완료',
-      content: '지하 1층 주차장 보수공사가 완료되어 정상 이용 가능합니다.',
-      type: '완료',
-      time: '5시간 전',
-      isImportant: false,
-      category: 'completed'
-    },
-    {
-      id: 3,
-      title: '관리비 고지서 발송',
-      content: '10월 관리비 고지서가 발송되었습니다. 확인 부탁드립니다.',
-      type: '안내',
-      time: '1일 전',
-      isImportant: false,
-      category: 'info'
-    }
-  ]
-
-  const getBadgeStyle = (category: string) => {
-    switch (category) {
-      case 'urgent':
-        return 'bg-red-50 text-red-600 border-red-200'
-      case 'completed':
-        return 'bg-green-50 text-green-600 border-green-200'
-      case 'info':
-        return 'bg-blue-50 text-blue-600 border-blue-200'
-      default:
-        return 'bg-gray-50 text-gray-600 border-gray-200'
-    }
+  const getBadgeStyle = (isUrgent: boolean) => {
+    return isUrgent 
+      ? 'bg-red-50 text-red-600 border-red-200'
+      : 'bg-blue-50 text-blue-600 border-blue-200'
   }
 
   return (
@@ -183,83 +167,86 @@ export default function HomePage() {
       
       <div className="w-full max-w-sm mx-auto px-4 py-4 space-y-6 sm:max-w-2xl sm:px-6 md:max-w-4xl md:px-8 lg:max-w-6xl lg:px-12 lg:py-6 xl:max-w-7xl">
         
-        {/* 긴급 알림 배너 - 최적화된 버전 */}
-        <div 
-          className="relative bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl shadow-xl border-l-4 border-red-300 overflow-hidden mb-6" 
-          role="alert" 
-          aria-live="assertive"
-          aria-labelledby="emergency-title"
-          aria-describedby="emergency-content"
-        >
-          {/* 배경 패턴 */}
-          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-white/10"></div>
-          
-          <div className="relative p-5 sm:p-6">
-            <div className="flex items-start gap-4">
-              {/* 아이콘 영역 - 개선된 애니메이션 */}
-              <div className="relative flex-shrink-0">
-                <div className="absolute inset-0 bg-white rounded-full opacity-20 animate-pulse"></div>
-                <div className="relative bg-white/20 backdrop-blur-sm p-3 rounded-full border border-white/30">
-                  <AlertCircle className="h-6 w-6 text-white sm:h-7 sm:w-7" aria-hidden="true" />
-                </div>
-              </div>
-              
-              {/* 콘텐츠 영역 */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-3 mb-2 flex-wrap">
-                  <span 
-                    className="inline-flex items-center gap-1 bg-white/25 backdrop-blur-sm text-white text-sm font-bold px-3 py-1.5 rounded-full border border-white/30 shadow-sm"
-                    aria-label="긴급 공지"
-                  >
-                    🚨 긴급
-                  </span>
-                  <span className="text-red-100 text-sm font-medium">즉시 확인 필요</span>
+        {/* 긴급 알림 배너 - 긴급 공지가 있을 때만 표시 */}
+        {urgentNotice && (
+          <div 
+            className="relative bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl shadow-xl border-l-4 border-red-300 overflow-hidden mb-6" 
+            role="alert" 
+            aria-live="assertive"
+            aria-labelledby="emergency-title"
+            aria-describedby="emergency-content"
+          >
+            {/* 배경 패턴 */}
+            <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-white/10"></div>
+            
+            <div className="relative p-5 sm:p-6">
+              <div className="flex items-start gap-4">
+                {/* 아이콘 영역 - 개선된 애니메이션 */}
+                <div className="relative flex-shrink-0">
+                  <div className="absolute inset-0 bg-white rounded-full opacity-20 animate-pulse"></div>
+                  <div className="relative bg-white/20 backdrop-blur-sm p-3 rounded-full border border-white/30">
+                    <AlertCircle className="h-6 w-6 text-white sm:h-7 sm:w-7" aria-hidden="true" />
+                  </div>
                 </div>
                 
-                <h3 
-                  id="emergency-title"
-                  className="font-bold text-white text-lg leading-tight mb-2 sm:text-xl"
+                {/* 콘텐츠 영역 */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3 mb-2 flex-wrap">
+                    <span 
+                      className="inline-flex items-center gap-1 bg-white/25 backdrop-blur-sm text-white text-sm font-bold px-3 py-1.5 rounded-full border border-white/30 shadow-sm"
+                      aria-label="긴급 공지"
+                    >
+                      🚨 긴급
+                    </span>
+                    <span className="text-red-100 text-sm font-medium">즉시 확인 필요</span>
+                  </div>
+                  
+                  <h3 
+                    id="emergency-title"
+                    className="font-bold text-white text-lg leading-tight mb-2 sm:text-xl"
+                  >
+                    {urgentNotice.title}
+                  </h3>
+                  
+                  <p 
+                    id="emergency-content"
+                    className="text-red-50 text-base leading-relaxed sm:text-lg line-clamp-2"
+                  >
+                    {urgentNotice.content}
+                  </p>
+                  
+                  {/* 액션 버튼 */}
+                  <div className="flex gap-3 mt-4">
+                    <button 
+                      className="inline-flex items-center gap-2 bg-white text-red-600 font-semibold px-4 py-2 rounded-lg hover:bg-red-50 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-500 text-sm sm:text-base"
+                      aria-label="긴급 공지 자세히 보기"
+                      onClick={() => window.location.href = `/notices/${urgentNotice.id}`}
+                    >
+                      자세히 보기
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                    <button 
+                      className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white font-medium px-4 py-2 rounded-lg hover:bg-white/30 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-500 border border-white/30 text-sm sm:text-base"
+                      aria-label="나중에 알림"
+                    >
+                      나중에
+                    </button>
+                  </div>
+                </div>
+                
+                {/* 닫기 버튼 */}
+                <button 
+                  className="flex-shrink-0 p-2 hover:bg-white/20 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-500 min-w-[44px] min-h-[44px] flex items-center justify-center" 
+                  aria-label="긴급 알림 닫기"
                 >
-                  정기 소독 실시 안내
-                </h3>
-                
-                <p 
-                  id="emergency-content"
-                  className="text-red-50 text-base leading-relaxed sm:text-lg"
-                >
-                  오늘 오후 2시부터 아파트 전체 방역 소독을 실시합니다. 해당 시간에는 외출을 자제해 주시기 바랍니다.
-                </p>
-                
-                {/* 액션 버튼 */}
-                <div className="flex gap-3 mt-4">
-                  <button 
-                    className="inline-flex items-center gap-2 bg-white text-red-600 font-semibold px-4 py-2 rounded-lg hover:bg-red-50 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-500 text-sm sm:text-base"
-                    aria-label="긴급 공지 자세히 보기"
-                  >
-                    자세히 보기
-                    <ChevronRight className="h-4 w-4" />
-                  </button>
-                  <button 
-                    className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white font-medium px-4 py-2 rounded-lg hover:bg-white/30 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-500 border border-white/30 text-sm sm:text-base"
-                    aria-label="나중에 알림"
-                  >
-                    나중에
-                  </button>
-                </div>
+                  <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
-              
-              {/* 닫기 버튼 */}
-              <button 
-                className="flex-shrink-0 p-2 hover:bg-white/20 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-500 min-w-[44px] min-h-[44px] flex items-center justify-center" 
-                aria-label="긴급 알림 닫기"
-              >
-                <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
             </div>
           </div>
-        </div>
+        )}
 
         {/* 메인 콘텐츠 영역 */}
         <div className="space-y-4 lg:space-y-6">
@@ -332,27 +319,43 @@ export default function HomePage() {
               </div>
             
               <div className="space-y-3 sm:space-y-4">
-                {notices.slice(0, 3).map((notice) => (
+                {!recentNotices ? (
+                  // 로딩 상태
+                  <div className="text-center py-8 text-gray-500">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mx-auto"></div>
+                    <p className="mt-2">공지사항을 불러오는 중...</p>
+                  </div>
+                ) : recentNotices.items.length === 0 ? (
+                  // 빈 데이터
+                  <Card className="p-8 text-center">
+                    <div className="text-gray-400 mb-2">
+                      <FileText className="h-12 w-12 mx-auto" />
+                    </div>
+                    <p className="text-gray-600">등록된 공지사항이 없습니다.</p>
+                  </Card>
+                ) : (
+                  // 데이터 표시
+                  recentNotices.items.map((notice) => (
                   <Card 
                     key={notice.id} 
                     className={`group relative overflow-hidden border-0 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer touch-manipulation ${
-                      notice.isImportant 
+                      notice.isUrgent 
                         ? 'bg-gradient-to-r from-red-50 via-orange-50 to-yellow-50 border-l-4 border-l-red-500 hover:from-red-100 hover:via-orange-100 hover:to-yellow-100 shadow-red-100' 
                         : 'bg-white hover:bg-gray-50'
                     }`}
-                    role={notice.isImportant ? 'alert' : 'article'}
-                    aria-live={notice.isImportant ? 'assertive' : 'polite'}
+                    role={notice.isUrgent ? 'alert' : 'article'}
+                    aria-live={notice.isUrgent ? 'assertive' : 'polite'}
                     tabIndex={0}
                   >
                     {/* 중요 공지 강조 스트라이프 */}
-                    {notice.isImportant && (
+                    {notice.isUrgent && (
                       <div className="absolute top-0 right-0 w-0 h-0 border-l-[20px] border-l-transparent border-t-[20px] border-t-red-500 opacity-80"></div>
                     )}
                     
                     <div className="p-4 sm:p-5">
                       <div className="flex items-start space-x-3">
                         <div className="flex-shrink-0 mt-1">
-                          {notice.isImportant ? (
+                          {notice.isUrgent ? (
                             <div className="relative">
                               <div className="bg-red-100 p-2 rounded-full">
                                 <AlertCircle className="h-5 w-5 text-red-600 sm:h-6 sm:w-6" aria-label="중요 공지" />
@@ -368,47 +371,35 @@ export default function HomePage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-2 flex-wrap">
                             <Badge 
-                              className={`text-xs font-bold border-2 transition-colors sm:text-sm ${getBadgeStyle(notice.category)}`}
+                              className={`text-xs font-bold border-2 transition-colors sm:text-sm ${getBadgeStyle(notice.isUrgent)}`}
                             >
-                              {notice.type}
+                              {notice.isUrgent ? '긴급' : '안내'}
                             </Badge>
                             <div className="flex items-center gap-1 text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full sm:text-sm">
                               <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
-                              <span className="font-medium">{notice.time}</span>
+                              <span className="font-medium">{formatTimeAgo(new Date(notice.createdAt))}</span>
                             </div>
                           </div>
                           
                           <h3 className={`font-semibold mb-2 leading-tight group-hover:text-primary-600 transition-colors ${
-                            notice.isImportant ? 'text-red-900 text-lg sm:text-xl' : 'text-gray-900 sm:text-lg'
+                            notice.isUrgent ? 'text-red-900 text-lg sm:text-xl' : 'text-gray-900 sm:text-lg'
                           }`}>
                             {notice.title}
                           </h3>
                           
                           <p className={`text-sm leading-relaxed line-clamp-2 sm:text-base ${
-                            notice.isImportant ? 'text-red-800' : 'text-gray-600'
+                            notice.isUrgent ? 'text-red-800' : 'text-gray-600'
                           }`}>
                             {notice.content}
                           </p>
-                          
-                          {/* 중요 공지 액션 버튼 */}
-                          {notice.isImportant && (
-                            <div className="mt-3 flex gap-2">
-                              <button className="inline-flex items-center gap-1 bg-red-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:text-sm">
-                                확인했습니다
-                                <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" />
-                              </button>
-                              <button className="inline-flex items-center gap-1 bg-white text-red-600 text-xs font-medium px-3 py-1.5 rounded-full border border-red-300 hover:bg-red-50 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:text-sm">
-                                자세히 보기
-                              </button>
-                            </div>
-                          )}
                         </div>
                         
                         <ChevronRight className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200 flex-shrink-0 sm:h-5 sm:w-5" />
                       </div>
                     </div>
                   </Card>
-                ))}
+                ))
+                )}
                 
                 {/* 더보기 버튼 (태블릿 이상에서 표시) */}
                 <div className="hidden md:block pt-2">
