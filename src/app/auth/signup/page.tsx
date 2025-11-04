@@ -6,6 +6,7 @@ import { trpc } from "@/lib/trpc/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FormField } from "@/components/ui/form-field";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Building2, MapPin, Search, Eye, EyeOff } from "lucide-react";
+import { Building2, MapPin, Search } from "lucide-react";
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
@@ -25,11 +26,9 @@ export default function SignUpPage() {
     dong: "",
     ho: "",
   });
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const router = useRouter();
 
   // 비밀번호 검증 조건
@@ -57,46 +56,79 @@ export default function SignUpPage() {
       router.push("/auth/signin?message=회원가입이 완료되었습니다");
     },
     onError: (error) => {
-      setError(error.message);
+      setErrors({ submit: error.message });
     },
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
 
-    if (!passwordValidation.minLength) {
-      setError("비밀번호는 8자 이상이어야 합니다.");
-      return;
+    // 실시간 검증 수행
+    const validationErrors: Record<string, string> = {};
+
+    // 이메일 검증
+    if (!formData.email) {
+      validationErrors.email = "이메일을 입력해주세요";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      validationErrors.email = "올바른 이메일 형식이 아닙니다";
     }
 
-    if (!passwordValidation.hasLowerCase && !passwordValidation.hasUpperCase) {
-      setError("비밀번호는 영문 대/소문자를 포함해야 합니다.");
-      return;
+    // 비밀번호 검증
+    if (!formData.password) {
+      validationErrors.password = "비밀번호를 입력해주세요";
+    } else if (!passwordValidation.minLength) {
+      validationErrors.password = "비밀번호는 8자 이상이어야 합니다";
+    } else if (
+      !passwordValidation.hasLowerCase &&
+      !passwordValidation.hasUpperCase
+    ) {
+      validationErrors.password = "영문 대/소문자를 포함해야 합니다";
+    } else if (!passwordValidation.hasSpecialChar) {
+      validationErrors.password = "특수문자를 포함해야 합니다";
     }
 
-    if (!passwordValidation.hasSpecialChar) {
-      setError("비밀번호는 특수문자를 포함해야 합니다.");
-      return;
+    // 비밀번호 확인 검증
+    if (!formData.passwordConfirm) {
+      validationErrors.passwordConfirm = "비밀번호 확인을 입력해주세요";
+    } else if (formData.password !== formData.passwordConfirm) {
+      validationErrors.passwordConfirm = "비밀번호가 일치하지 않습니다";
     }
 
-    if (formData.password !== formData.passwordConfirm) {
-      setError("비밀번호가 일치하지 않습니다.");
-      return;
+    // 이름 검증
+    if (!formData.name) {
+      validationErrors.name = "이름을 입력해주세요";
+    } else if (formData.name.length < 2) {
+      validationErrors.name = "이름은 2자 이상이어야 합니다";
     }
 
+    // 아파트 선택 확인
     if (!formData.apartmentId) {
-      setError("아파트를 선택해주세요.");
+      validationErrors.apartmentId = "아파트를 선택해주세요";
+    }
+
+    // 동/호수 검증
+    if (!formData.dong) {
+      validationErrors.dong = "동을 입력해주세요";
+    }
+    if (!formData.ho) {
+      validationErrors.ho = "호를 입력해주세요";
+    }
+
+    // 에러가 있으면 상태 업데이트 후 중단
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
       return;
     }
 
+    // 모든 검증 통과 시 회원가입 진행
     signUpMutation.mutate(formData);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
@@ -123,46 +155,45 @@ export default function SignUpPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* 기본 정보 */}
             <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  이메일 <span className="text-red-500">*</span>
-                </label>
-                <Input
-                  name="email"
-                  type="email"
-                  placeholder="example@email.com"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  autoFocus
-                />
-              </div>
+              <FormField
+                id="email"
+                name="email"
+                label="이메일"
+                type="email"
+                placeholder="example@email.com"
+                value={formData.email}
+                onChange={handleChange}
+                error={errors.email}
+                required
+                autoFocus
+                autoComplete="email"
+              />
 
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
+                <label
+                  className="text-sm font-medium text-gray-700 mb-1 block"
+                  htmlFor="password"
+                >
                   비밀번호 <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Input
+                    id="password"
                     name="password"
-                    type={showPassword ? "text" : "password"}
+                    type="password"
                     placeholder="8자 이상 입력해주세요"
                     value={formData.password}
                     onChange={handleChange}
-                    required
-                    className="pr-10"
+                    className={`pr-10 ${
+                      errors.password ? "border-red-500" : ""
+                    }`}
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="w-4 h-4" />
-                    ) : (
-                      <Eye className="w-4 h-4" />
-                    )}
-                  </button>
+
+                  {errors.password && (
+                    <p className="text-xs text-red-600 mt-1 flex items-center">
+                      <span className="mr-1">✗</span> {errors.password}
+                    </p>
+                  )}
                 </div>
 
                 {/* 비밀번호 요구사항 */}
@@ -221,30 +252,30 @@ export default function SignUpPage() {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
+                <label
+                  className="text-sm font-medium text-gray-700 mb-1 block"
+                  htmlFor="passwordConfirm"
+                >
                   비밀번호 확인 <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Input
+                    id="passwordConfirm"
                     name="passwordConfirm"
-                    type={showPasswordConfirm ? "text" : "password"}
+                    type="password"
                     placeholder="비밀번호를 다시 입력해주세요"
                     value={formData.passwordConfirm}
                     onChange={handleChange}
-                    required
-                    className="pr-10"
+                    className={
+                      errors.passwordConfirm ? "border-red-500 pr-10" : "pr-10"
+                    }
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                  >
-                    {showPasswordConfirm ? (
-                      <EyeOff className="w-4 h-4" />
-                    ) : (
-                      <Eye className="w-4 h-4" />
-                    )}
-                  </button>
+
+                  {errors.passwordConfirm && (
+                    <p className="text-xs text-red-600 mt-1 flex items-center">
+                      <span className="mr-1">✗</span> {errors.passwordConfirm}
+                    </p>
+                  )}
                 </div>
 
                 {/* 비밀번호 일치 여부 표시 */}
@@ -264,24 +295,26 @@ export default function SignUpPage() {
                 )}
               </div>
 
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  이름 <span className="text-red-500">*</span>
-                </label>
-                <Input
-                  name="name"
-                  type="text"
-                  placeholder="홍길동"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+              <FormField
+                id="name"
+                name="name"
+                label="이름"
+                type="text"
+                placeholder="홍길동"
+                value={formData.name}
+                onChange={handleChange}
+                error={errors.name}
+                required
+                autoComplete="name"
+              />
             </div>
 
             {/* 아파트 선택 */}
             <div className="pt-4 border-t">
-              <label className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+              <label
+                className="text-sm font-medium text-gray-700 mb-2 flex items-center"
+                htmlFor="apartmentName"
+              >
                 <Building2 className="w-4 h-4 mr-1" />
                 거주 아파트 <span className="text-red-500 ml-1">*</span>
               </label>
@@ -289,6 +322,7 @@ export default function SignUpPage() {
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
                   <Button
+                    id="apartmentName"
                     type="button"
                     variant="outline"
                     className="w-full justify-start text-left font-normal"
@@ -312,8 +346,15 @@ export default function SignUpPage() {
                   <div className="space-y-4">
                     {/* 검색 입력 */}
                     <div className="relative">
+                      <label
+                        className="hidden sr-only"
+                        htmlFor="apartmentSearch"
+                      >
+                        아파트 검색
+                      </label>
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                       <Input
+                        id="apartmentSearch"
                         placeholder="아파트명 또는 주소로 검색"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -372,43 +413,53 @@ export default function SignUpPage() {
                   </div>
                 </div>
               )}
+
+              {errors.apartmentId && (
+                <p className="text-xs text-red-600 mt-1 flex items-center">
+                  <span className="mr-1">✗</span> {errors.apartmentId}
+                </p>
+              )}
             </div>
 
             {/* 동/호수 입력 */}
             {formData.apartmentId && (
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 mb-1 block">
+                <label
+                  className="text-sm font-medium text-gray-700 mb-1 block"
+                  htmlFor="dong"
+                >
                   동/호수 <span className="text-red-500">*</span>
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <Input
+                      id="dong"
                       name="dong"
                       type="text"
                       placeholder="동"
                       value={formData.dong}
                       onChange={handleChange}
-                      required
+                      className={errors.dong ? "border-red-500" : ""}
                     />
                   </div>
                   <div>
                     <Input
+                      id="ho"
                       name="ho"
                       type="text"
                       placeholder="호"
                       value={formData.ho}
                       onChange={handleChange}
-                      required
+                      className={errors.ho ? "border-red-500" : ""}
                     />
                   </div>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">예: 101동 1001호</p>
-              </div>
-            )}
 
-            {error && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-                <p className="text-red-600 text-sm">{error}</p>
+                {(errors.dong || errors.ho) && (
+                  <p className="text-xs text-red-600 mt-1 flex items-center">
+                    <span className="mr-1">✗</span> {errors.dong || errors.ho}
+                  </p>
+                )}
               </div>
             )}
 
