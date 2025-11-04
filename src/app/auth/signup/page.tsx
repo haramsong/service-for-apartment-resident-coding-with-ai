@@ -41,27 +41,6 @@ export default function SignUpPage() {
     hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(formData.password),
   };
 
-  // 비밀번호 강도 계산
-  const getPasswordStrength = (password: string) => {
-    if (!password) return { strength: 0, label: "", color: "" };
-
-    let strength = 0;
-    if (passwordValidation.minLength) strength++;
-    if (password.length >= 12) strength++;
-    if (passwordValidation.hasLowerCase && passwordValidation.hasUpperCase)
-      strength++;
-    if (passwordValidation.hasNumber) strength++;
-    if (passwordValidation.hasSpecialChar) strength++;
-
-    if (strength <= 2)
-      return { strength: 1, label: "약함", color: "bg-red-500" };
-    if (strength <= 3)
-      return { strength: 2, label: "보통", color: "bg-yellow-500" };
-    return { strength: 3, label: "강함", color: "bg-green-500" };
-  };
-
-  const passwordStrength = getPasswordStrength(formData.password);
-
   // 실제 DB에서 아파트 목록 조회
   const { data: apartments = [], isLoading: isLoadingApartments } =
     trpc.auth.getApartments.useQuery();
@@ -86,8 +65,18 @@ export default function SignUpPage() {
     e.preventDefault();
     setError("");
 
-    if (formData.password.length < 8) {
+    if (!passwordValidation.minLength) {
       setError("비밀번호는 8자 이상이어야 합니다.");
+      return;
+    }
+
+    if (!passwordValidation.hasLowerCase && !passwordValidation.hasUpperCase) {
+      setError("비밀번호는 영문 대/소문자를 포함해야 합니다.");
+      return;
+    }
+
+    if (!passwordValidation.hasSpecialChar) {
+      setError("비밀번호는 특수문자를 포함해야 합니다.");
       return;
     }
 
@@ -136,7 +125,7 @@ export default function SignUpPage() {
             <div className="space-y-4">
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  이메일
+                  이메일 <span className="text-red-500">*</span>
                 </label>
                 <Input
                   name="email"
@@ -145,12 +134,13 @@ export default function SignUpPage() {
                   value={formData.email}
                   onChange={handleChange}
                   required
+                  autoFocus
                 />
               </div>
 
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  비밀번호
+                  비밀번호 <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Input
@@ -175,33 +165,9 @@ export default function SignUpPage() {
                   </button>
                 </div>
 
-                {/* 비밀번호 강도 표시 */}
-                {formData.password && (
-                  <div className="mt-2 space-y-1">
-                    <div className="flex gap-1">
-                      {[1, 2, 3].map((level) => (
-                        <div
-                          key={level}
-                          className={`h-1 flex-1 rounded-full transition-colors ${
-                            level <= passwordStrength.strength
-                              ? passwordStrength.color
-                              : "bg-gray-200"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <p className="text-xs text-gray-600">
-                      비밀번호 강도:{" "}
-                      <span className="font-medium">
-                        {passwordStrength.label}
-                      </span>
-                    </p>
-                  </div>
-                )}
-
                 {/* 비밀번호 요구사항 */}
                 <div className="mt-2">
-                  <div className="flex justify-between gap-x-4 gap-y-1">
+                  <div className="flex gap-x-6 gap-y-1">
                     <p
                       className={`text-xs flex items-center gap-1 ${
                         passwordValidation.minLength
@@ -256,7 +222,7 @@ export default function SignUpPage() {
 
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  비밀번호 확인
+                  비밀번호 확인 <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <Input
@@ -300,7 +266,7 @@ export default function SignUpPage() {
 
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  이름
+                  이름 <span className="text-red-500">*</span>
                 </label>
                 <Input
                   name="name"
@@ -317,7 +283,7 @@ export default function SignUpPage() {
             <div className="pt-4 border-t">
               <label className="text-sm font-medium text-gray-700 mb-2 flex items-center">
                 <Building2 className="w-4 h-4 mr-1" />
-                거주 아파트
+                거주 아파트 <span className="text-red-500 ml-1">*</span>
               </label>
 
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -412,14 +378,14 @@ export default function SignUpPage() {
             {formData.apartmentId && (
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 mb-1 block">
-                  동/호수
+                  동/호수 <span className="text-red-500">*</span>
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <Input
                       name="dong"
                       type="text"
-                      placeholder="101동"
+                      placeholder="동"
                       value={formData.dong}
                       onChange={handleChange}
                       required
@@ -429,7 +395,7 @@ export default function SignUpPage() {
                     <Input
                       name="ho"
                       type="text"
-                      placeholder="1001호"
+                      placeholder="호"
                       value={formData.ho}
                       onChange={handleChange}
                       required
