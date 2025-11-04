@@ -23,7 +23,7 @@ export default function NoticeDetailPage({ params }: { params: Promise<{ id: str
     id: resolvedParams.id,
   })
 
-  const formatDate = (date: Date) => {
+  const formatDate = (date: Date | string) => {
     const d = new Date(date)
     return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`
   }
