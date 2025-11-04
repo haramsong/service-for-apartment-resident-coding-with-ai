@@ -113,7 +113,12 @@ export default function LifePage() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900">최근 공지사항</h2>
-            <Button variant="ghost" size="sm" className="text-primary-500 hover:text-primary-600 hover:bg-primary-50">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-primary-500 hover:text-primary-600 hover:bg-primary-50"
+              onClick={() => window.location.href = '/notices'}
+            >
               더보기 <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
           </div>

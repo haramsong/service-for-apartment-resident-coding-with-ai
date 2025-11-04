@@ -321,7 +321,12 @@ export default function HomePage() {
             <section>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-gray-900 sm:text-xl lg:text-2xl">공지사항</h2>
-                <Button variant="ghost" size="sm" className="text-primary-500 hover:text-primary-600 hover:bg-primary-50 md:hidden touch-manipulation">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="text-primary-500 hover:text-primary-600 hover:bg-primary-50 md:hidden touch-manipulation"
+                  onClick={() => window.location.href = '/notices'}
+                >
                   전체보기 <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               </div>
@@ -410,6 +415,7 @@ export default function HomePage() {
                   <Button 
                     variant="outline" 
                     className="w-full justify-center hover:bg-primary-50 hover:border-primary-300 focus:ring-2 focus:ring-primary-500 touch-manipulation"
+                    onClick={() => window.location.href = '/notices'}
                   >
                     공지사항 전체보기 <ChevronRight className="h-4 w-4 ml-2" />
                   </Button>
