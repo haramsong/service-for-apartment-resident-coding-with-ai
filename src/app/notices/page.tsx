@@ -46,9 +46,19 @@ export default function NoticesPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="p-4 space-y-6 max-w-md mx-auto lg:max-w-4xl lg:px-8">
         {/* 헤더 */}
-        <div className="pt-2 lg:pt-6">
-          <h1 className="text-2xl font-bold text-gray-900 lg:text-3xl">공지사항</h1>
-          <p className="text-sm text-gray-600 mt-1 lg:text-base">관리사무소의 중요한 소식</p>
+        <div className="pt-2 lg:pt-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 lg:text-3xl">공지사항</h1>
+            <p className="text-sm text-gray-600 mt-1 lg:text-base">관리사무소의 중요한 소식</p>
+          </div>
+          {session?.user?.role === 'admin' && (
+            <button
+              onClick={() => router.push('/notices/new')}
+              className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+            >
+              작성
+            </button>
+          )}
         </div>
 
         {/* 카테고리 필터 */}

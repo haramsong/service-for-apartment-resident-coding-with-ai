@@ -91,12 +91,19 @@ export const noticesRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      // TODO: 관리자 권한 확인
+      // 관리자 권한 확인
+      if (ctx.user.role !== 'admin') {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: '관리자만 공지사항을 작성할 수 있습니다',
+        })
+      }
+
       const notice = await prisma.notice.create({
         data: {
           ...input,
-          apartmentId: 'temp-apt-id', // TODO: ctx에서 가져오기
-          authorId: 'temp-user-id', // TODO: ctx.user.id
+          apartmentId: ctx.user.apartmentId,
+          authorId: ctx.user.id,
         },
       })
 
