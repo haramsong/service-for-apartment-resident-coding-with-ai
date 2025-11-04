@@ -99,6 +99,13 @@ export const noticesRouter = router({
         })
       }
 
+      if (!ctx.user.apartmentId) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: '아파트 정보가 없습니다.',
+        })
+      }
+
       const notice = await prisma.notice.create({
         data: {
           ...input,
