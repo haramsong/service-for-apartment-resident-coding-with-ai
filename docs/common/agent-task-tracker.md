@@ -1,6 +1,6 @@
 # 에이전트별 작업 목록 관리
 
-_최종 업데이트: 2025-11-03 16:14_
+_최종 업데이트: 2025-11-04 15:56_
 
 ## Orchestration Agent 작업 목록
 
@@ -58,6 +58,7 @@ _최종 업데이트: 2025-11-03 16:14_
 | ✅       | 회원가입 아파트 선택 UI/UX 개선 | 완료 | Developer Agent | 2025-11-03 | 2025-11-03 | Dialog 모달 검색 방식, 실시간 필터링, 모바일 최적화 |
 | ✅       | 회원가입 비밀번호 입력 UI/UX 개선 | 완료 | Developer Agent | 2025-11-03 | 2025-11-03 | 비밀번호 표시/숨김 토글, 강도 표시기, 실시간 유효성 검증 |
 | ✅       | Dialog 오버레이 배경 투명도 개선 | 완료 | Developer Agent | 2025-11-03 | 2025-11-03 | bg-black/50 + backdrop-blur-sm 적용, 세련된 모달 UI |
+| ✅       | Client Component props 에러 수정 | 완료 | Developer Agent | 2025-11-04 | 2025-11-04 | formatDate 타입 수정, life/page.tsx Client Component 변환 |
 
 ## Designer Agent 작업 목록
 
