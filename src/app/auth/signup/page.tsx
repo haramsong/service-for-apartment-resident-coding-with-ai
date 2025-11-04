@@ -7,14 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormField } from "@/components/ui/form-field";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Building2, MapPin, Search } from "lucide-react";
+import { ApartmentSelectDialog } from "@/components/auth/ApartmentSelectDialog";
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState({
@@ -27,8 +20,6 @@ export default function SignUpPage() {
     ho: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
 
   // 비밀번호 검증 조건
@@ -39,17 +30,6 @@ export default function SignUpPage() {
     hasNumber: /\d/.test(formData.password),
     hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(formData.password),
   };
-
-  // 실제 DB에서 아파트 목록 조회
-  const { data: apartments = [], isLoading: isLoadingApartments } =
-    trpc.auth.getApartments.useQuery();
-
-  // 검색 필터링
-  const filteredApartments = apartments.filter(
-    (apt) =>
-      apt.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      apt.address.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   const signUpMutation = trpc.auth.signUp.useMutation({
     onSuccess: () => {
@@ -134,13 +114,7 @@ export default function SignUpPage() {
 
   const handleApartmentSelect = (apartmentId: string) => {
     setFormData((prev) => ({ ...prev, apartmentId }));
-    setIsDialogOpen(false);
-    setSearchQuery("");
   };
-
-  const selectedApartment = apartments.find(
-    (apt) => apt.id === formData.apartmentId
-  );
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8">
@@ -169,6 +143,18 @@ export default function SignUpPage() {
                 autoComplete="email"
               />
 
+              <FormField
+                id="password"
+                name="password"
+                label="비밀번호"
+                type="password"
+                placeholder="8자 이상 입력해주세요"
+                value={formData.password}
+                onChange={handleChange}
+                error={errors.password}
+                required
+              />
+
               <div>
                 <label
                   className="text-sm font-medium text-gray-700 mb-1 block"
@@ -176,25 +162,21 @@ export default function SignUpPage() {
                 >
                   비밀번호 <span className="text-red-500">*</span>
                 </label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    placeholder="8자 이상 입력해주세요"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className={`pr-10 ${
-                      errors.password ? "border-red-500" : ""
-                    }`}
-                  />
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="8자 이상 입력해주세요"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={`pr-10 ${errors.password ? "border-red-500" : ""}`}
+                />
 
-                  {errors.password && (
-                    <p className="text-xs text-red-600 mt-1 flex items-center">
-                      <span className="mr-1">✗</span> {errors.password}
-                    </p>
-                  )}
-                </div>
+                {errors.password && (
+                  <p className="text-xs text-red-600 mt-1 flex items-center">
+                    <span className="mr-1">✗</span> {errors.password}
+                  </p>
+                )}
 
                 {/* 비밀번호 요구사항 */}
                 <div className="mt-2">
@@ -258,40 +240,22 @@ export default function SignUpPage() {
                 >
                   비밀번호 확인 <span className="text-red-500">*</span>
                 </label>
-                <div className="relative">
-                  <Input
-                    id="passwordConfirm"
-                    name="passwordConfirm"
-                    type="password"
-                    placeholder="비밀번호를 다시 입력해주세요"
-                    value={formData.passwordConfirm}
-                    onChange={handleChange}
-                    className={
-                      errors.passwordConfirm ? "border-red-500 pr-10" : "pr-10"
-                    }
-                  />
+                <Input
+                  id="passwordConfirm"
+                  name="passwordConfirm"
+                  type="password"
+                  placeholder="비밀번호를 다시 입력해주세요"
+                  value={formData.passwordConfirm}
+                  onChange={handleChange}
+                  className={
+                    errors.passwordConfirm ? "border-red-500 pr-10" : "pr-10"
+                  }
+                />
 
-                  {errors.passwordConfirm && (
-                    <p className="text-xs text-red-600 mt-1 flex items-center">
-                      <span className="mr-1">✗</span> {errors.passwordConfirm}
-                    </p>
-                  )}
-                </div>
-
-                {/* 비밀번호 일치 여부 표시 */}
-                {formData.passwordConfirm && (
-                  <div className="mt-2">
-                    {formData.password === formData.passwordConfirm ? (
-                      <p className="text-xs text-green-600 flex items-center">
-                        <span className="mr-1">✓</span> 비밀번호가 일치합니다
-                      </p>
-                    ) : (
-                      <p className="text-xs text-red-600 flex items-center">
-                        <span className="mr-1">✗</span> 비밀번호가 일치하지
-                        않습니다
-                      </p>
-                    )}
-                  </div>
+                {errors.passwordConfirm && (
+                  <p className="text-xs text-red-600 mt-1 flex items-center">
+                    <span className="mr-1">✗</span> {errors.passwordConfirm}
+                  </p>
                 )}
               </div>
 
@@ -311,114 +275,11 @@ export default function SignUpPage() {
 
             {/* 아파트 선택 */}
             <div className="pt-4 border-t">
-              <label
-                className="text-sm font-medium text-gray-700 mb-2 flex items-center"
-                htmlFor="apartmentName"
-              >
-                <Building2 className="w-4 h-4 mr-1" />
-                거주 아파트 <span className="text-red-500 ml-1">*</span>
-              </label>
-
-              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button
-                    id="apartmentName"
-                    type="button"
-                    variant="outline"
-                    className="w-full justify-start text-left font-normal"
-                  >
-                    {selectedApartment ? (
-                      <div className="flex items-center">
-                        <Building2 className="w-4 h-4 mr-2" />
-                        <span>{selectedApartment.name}</span>
-                      </div>
-                    ) : (
-                      <span className="text-gray-500">
-                        아파트를 검색해주세요
-                      </span>
-                    )}
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <DialogHeader>
-                    <DialogTitle>아파트 검색</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    {/* 검색 입력 */}
-                    <div className="relative">
-                      <label
-                        className="hidden sr-only"
-                        htmlFor="apartmentSearch"
-                      >
-                        아파트 검색
-                      </label>
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                      <Input
-                        id="apartmentSearch"
-                        placeholder="아파트명 또는 주소로 검색"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10"
-                      />
-                    </div>
-
-                    {/* 검색 결과 */}
-                    <div className="max-h-[300px] overflow-y-auto space-y-2">
-                      {isLoadingApartments ? (
-                        <div className="text-center py-8 text-gray-500">
-                          <p>아파트 목록을 불러오는 중...</p>
-                        </div>
-                      ) : filteredApartments.length > 0 ? (
-                        filteredApartments.map((apt) => (
-                          <button
-                            key={apt.id}
-                            type="button"
-                            onClick={() => handleApartmentSelect(apt.id)}
-                            className="w-full p-3 text-left border rounded-lg hover:bg-gray-50 transition-colors"
-                          >
-                            <div className="flex items-start">
-                              <Building2 className="w-5 h-5 text-primary-500 mr-3 mt-0.5 flex-shrink-0" />
-                              <div>
-                                <p className="font-medium text-gray-900">
-                                  {apt.name}
-                                </p>
-                                <p className="text-sm text-gray-500 mt-0.5">
-                                  {apt.address}
-                                </p>
-                              </div>
-                            </div>
-                          </button>
-                        ))
-                      ) : (
-                        <div className="text-center py-8 text-gray-500">
-                          <Building2 className="w-12 h-12 mx-auto mb-2 text-gray-300" />
-                          <p>검색 결과가 없습니다</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
-
-              {selectedApartment && (
-                <div className="mt-2 p-3 bg-primary-50 border border-primary-200 rounded-lg flex items-start">
-                  <MapPin className="w-4 h-4 text-primary-600 mr-2 mt-0.5 flex-shrink-0" />
-                  <div className="text-sm">
-                    <p className="font-medium text-primary-900">
-                      {selectedApartment.name}
-                    </p>
-                    <p className="text-primary-700">
-                      {selectedApartment.address}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {errors.apartmentId && (
-                <p className="text-xs text-red-600 mt-1 flex items-center">
-                  <span className="mr-1">✗</span> {errors.apartmentId}
-                </p>
-              )}
+              <ApartmentSelectDialog
+                selectedApartmentId={formData.apartmentId}
+                onSelect={handleApartmentSelect}
+                error={errors.apartmentId}
+              />
             </div>
 
             {/* 동/호수 입력 */}
