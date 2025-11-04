@@ -60,6 +60,7 @@ _최종 업데이트: 2025-11-04 15:56_
 | ✅       | Dialog 오버레이 배경 투명도 개선 | 완료 | Developer Agent | 2025-11-03 | 2025-11-03 | bg-black/50 + backdrop-blur-sm 적용, 세련된 모달 UI |
 | ✅       | Client Component props 에러 수정 | 완료 | Developer Agent | 2025-11-04 | 2025-11-04 | formatDate 타입 수정, life/page.tsx Client Component 변환 |
 | ✅       | Admin 공지사항 작성 UI 구현 | 완료 | Developer Agent | 2025-11-04 | 2025-11-04 | 공지사항 작성 페이지, Textarea 컴포넌트, 권한 검증 |
+| ✅       | apartmentId null 타입 에러 수정 | 완료 | Developer Agent | 2025-11-04 | 2025-11-04 | 빌드 에러 해결, null 체크 추가, 타입 안전성 확보 |
 
 ## Designer Agent 작업 목록
 
