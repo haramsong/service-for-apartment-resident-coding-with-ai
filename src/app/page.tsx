@@ -270,16 +270,16 @@ export default function HomePage() {
 
           {/* 빠른 액션 */}
           <section aria-labelledby="quick-actions-title">
-            <h2 id="quick-actions-title" className="text-lg font-semibold text-gray-900 mb-4 sm:text-xl">빠른 메뉴</h2>
+            <h2 id="quick-actions-title" className="text-lg font-semibold text-gray-900 mb-4 sm:text-xl lg:text-2xl">빠른 메뉴</h2>
             
-            {/* 모바일: 2x4 그리드, 태블릿 이상: 4x2 그리드 */}
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 md:grid-cols-4 md:gap-4 lg:gap-5">
+            {/* 모바일: 2컬럼, 태블릿: 3컬럼, 데스크톱: 4컬럼 */}
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-5 xl:gap-6">
               {quickActions.map((action, index) => {
                 const Icon = action.icon
                 return (
                   <Card 
                     key={index} 
-                    className="group relative overflow-hidden p-3 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer border-0 shadow-sm focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 min-h-[92px] touch-manipulation active:scale-[0.98] sm:p-4 sm:min-h-[100px] md:min-h-[108px] lg:p-5 lg:min-h-[112px] bg-gradient-to-br from-white to-gray-50 hover:from-primary-50 hover:to-blue-50"
+                    className="group relative overflow-hidden p-3 hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer border-0 shadow-sm focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 min-h-[100px] touch-manipulation active:scale-[0.98] sm:p-4 sm:min-h-[110px] md:min-h-[120px] lg:p-5 lg:min-h-[130px] bg-gradient-to-br from-white to-gray-50 hover:from-primary-50 hover:to-blue-50"
                     role="button"
                     tabIndex={0}
                     aria-label={`${action.title} - ${action.description}${action.badge ? `, ${action.badge}개의 새 항목` : ''}`}
@@ -320,12 +320,12 @@ export default function HomePage() {
           </section>
 
           {/* 하단 섹션 - 공지사항과 커뮤니티 글 */}
-          <div className="lg:grid lg:grid-cols-2 lg:gap-6 space-y-4 lg:space-y-0">
+          <div className="space-y-4 md:grid md:grid-cols-2 md:gap-5 md:space-y-0 lg:gap-6 xl:gap-8">
             {/* 공지사항 */}
             <section>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">공지사항</h2>
-                <Button variant="ghost" size="sm" className="text-primary-500 hover:text-primary-600 hover:bg-primary-50 lg:hidden touch-manipulation">
+                <h2 className="text-lg font-semibold text-gray-900 sm:text-xl lg:text-2xl">공지사항</h2>
+                <Button variant="ghost" size="sm" className="text-primary-500 hover:text-primary-600 hover:bg-primary-50 md:hidden touch-manipulation">
                   전체보기 <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               </div>
@@ -409,8 +409,8 @@ export default function HomePage() {
                   </Card>
                 ))}
                 
-                {/* 더보기 버튼 (데스크톱에서만 표시) */}
-                <div className="hidden lg:block pt-2">
+                {/* 더보기 버튼 (태블릿 이상에서 표시) */}
+                <div className="hidden md:block pt-2">
                   <Button 
                     variant="outline" 
                     className="w-full justify-center hover:bg-primary-50 hover:border-primary-300 focus:ring-2 focus:ring-primary-500 touch-manipulation"
@@ -424,7 +424,7 @@ export default function HomePage() {
             {/* 최근 커뮤니티 글 */}
             <section>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">최근 커뮤니티 글</h2>
+                <h2 className="text-lg font-semibold text-gray-900 sm:text-xl lg:text-2xl">최근 커뮤니티 글</h2>
                 <Button 
                   variant="ghost" 
                   size="sm" 
