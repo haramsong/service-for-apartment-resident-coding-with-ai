@@ -61,6 +61,7 @@ _최종 업데이트: 2025-11-04 15:56_
 | ✅       | Client Component props 에러 수정 | 완료 | Developer Agent | 2025-11-04 | 2025-11-04 | formatDate 타입 수정, life/page.tsx Client Component 변환 |
 | ✅       | Admin 공지사항 작성 UI 구현 | 완료 | Developer Agent | 2025-11-04 | 2025-11-04 | 공지사항 작성 페이지, Textarea 컴포넌트, 권한 검증 |
 | ✅       | apartmentId null 타입 에러 수정 | 완료 | Developer Agent | 2025-11-04 | 2025-11-04 | 빌드 에러 해결, null 체크 추가, 타입 안전성 확보 |
+| ✅       | 공지사항 API 연동 | 완료 | Developer Agent | 2025-11-04 | 2025-11-04 | 홈페이지 공지사항 실제 데이터 연동, 긴급 알림 배너 구현 |
 
 ## Designer Agent 작업 목록
 
