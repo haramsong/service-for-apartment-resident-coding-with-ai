@@ -346,6 +346,13 @@ export default function HomePage() {
                     role={notice.isUrgent ? 'alert' : 'article'}
                     aria-live={notice.isUrgent ? 'assertive' : 'polite'}
                     tabIndex={0}
+                    onClick={() => window.location.href = `/notices/${notice.id}`}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        window.location.href = `/notices/${notice.id}`
+                      }
+                    }}
                   >
                     {/* 중요 공지 강조 스트라이프 */}
                     {notice.isUrgent && (
