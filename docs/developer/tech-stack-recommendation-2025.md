@@ -1,12 +1,13 @@
 # 아파트 커뮤니티 플랫폼 기술 스택 추천 (2025)
 
-*작성일: 2025-10-17*
+_작성일: 2025-10-17_
 
-*기준: 2025년 최신 트렌드 및 MVP 개발 최적화*
+_기준: 2025년 최신 트렌드 및 MVP 개발 최적화_
 
 ## 🎯 추천 기술 스택 개요
 
 ### Frontend (모바일 우선 PWA)
+
 - **Framework**: Next.js 15 (App Router)
 - **UI Library**: Tailwind CSS + shadcn/ui
 - **State Management**: Zustand
@@ -14,6 +15,7 @@
 - **Real-time**: Socket.io-client
 
 ### Backend (서버리스 + 마이크로서비스)
+
 - **Runtime**: Node.js 20 (TypeScript)
 - **Framework**: Fastify 5.0
 - **API**: tRPC (타입 안전성)
@@ -21,12 +23,14 @@
 - **Authentication**: NextAuth.js v5
 
 ### Database & Storage
+
 - **Primary DB**: PostgreSQL (Supabase)
 - **Cache**: Redis (Upstash)
 - **File Storage**: AWS S3 + CloudFront
 - **Search**: Elasticsearch (AWS OpenSearch)
 
 ### Infrastructure & DevOps
+
 - **Hosting**: Vercel (Frontend) + AWS Lambda (Backend)
 - **Container**: Docker + AWS ECS (필요시)
 - **CI/CD**: GitHub Actions
@@ -35,31 +39,31 @@
 ## 📱 Frontend 상세 구성
 
 ### Next.js 15 선택 이유
+
 ```typescript
 // 2025년 최신 기능 활용
 // app/layout.tsx
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="ko">
       <body className="font-pretendard">
         <PWAProvider>
           <AuthProvider>
-            <NotificationProvider>
-              {children}
-            </NotificationProvider>
+            <NotificationProvider>{children}</NotificationProvider>
           </AuthProvider>
         </PWAProvider>
       </body>
     </html>
-  )
+  );
 }
 ```
 
 ### UI 컴포넌트 시스템
+
 ```bash
 # shadcn/ui 설치 및 설정
 npx shadcn-ui@latest init
@@ -67,41 +71,43 @@ npx shadcn-ui@latest add button card input textarea
 ```
 
 ### PWA 설정
+
 ```javascript
 // next.config.js
-const withPWA = require('next-pwa')({
-  dest: 'public',
+const withPWA = require("next-pwa")({
+  dest: "public",
   register: true,
   skipWaiting: true,
   runtimeCaching: [
     {
       urlPattern: /^https:\/\/api\./,
-      handler: 'NetworkFirst',
+      handler: "NetworkFirst",
       options: {
-        cacheName: 'api-cache',
+        cacheName: "api-cache",
         expiration: {
           maxEntries: 32,
-          maxAgeSeconds: 24 * 60 * 60 // 24시간
-        }
-      }
-    }
-  ]
-})
+          maxAgeSeconds: 24 * 60 * 60, // 24시간
+        },
+      },
+    },
+  ],
+});
 
 module.exports = withPWA({
   experimental: {
     appDir: true,
   },
-})
+});
 ```
 
 ## 🚀 Backend 아키텍처
 
 ### tRPC + Fastify 구성
+
 ```typescript
 // server/trpc/router.ts
-import { z } from 'zod'
-import { router, publicProcedure, protectedProcedure } from './trpc'
+import { z } from "zod";
+import { router, publicProcedure, protectedProcedure } from "./trpc";
 
 export const appRouter = router({
   // 공지사항 조회
@@ -110,56 +116,60 @@ export const appRouter = router({
     .query(async ({ input }) => {
       return await db.notice.findMany({
         where: { apartmentId: input.apartmentId },
-        orderBy: { createdAt: 'desc' }
-      })
+        orderBy: { createdAt: "desc" },
+      });
     }),
-  
+
   // 민원 접수
   createComplaint: protectedProcedure
-    .input(z.object({
-      title: z.string(),
-      content: z.string(),
-      category: z.enum(['maintenance', 'noise', 'parking', 'other'])
-    }))
+    .input(
+      z.object({
+        title: z.string(),
+        content: z.string(),
+        category: z.enum(["maintenance", "noise", "parking", "other"]),
+      })
+    )
     .mutation(async ({ input, ctx }) => {
       return await db.complaint.create({
         data: {
           ...input,
           userId: ctx.user.id,
-          apartmentId: ctx.user.apartmentId
-        }
-      })
-    })
-})
+          apartmentId: ctx.user.apartmentId,
+        },
+      });
+    }),
+});
 ```
 
 ### 실시간 알림 시스템
+
 ```typescript
 // server/socket.ts
-import { Server } from 'socket.io'
+import { Server } from "socket.io";
 
 export const setupSocket = (server: any) => {
   const io = new Server(server, {
-    cors: { origin: process.env.FRONTEND_URL }
-  })
+    cors: { origin: process.env.FRONTEND_URL },
+  });
 
-  io.on('connection', (socket) => {
+  io.on("connection", (socket) => {
     // 아파트별 룸 참여
-    socket.on('join-apartment', (apartmentId) => {
-      socket.join(`apartment-${apartmentId}`)
-    })
+    socket.on("join-apartment", (apartmentId) => {
+      socket.join(`apartment-${apartmentId}`);
+    });
 
     // 실시간 공지사항 전송
-    socket.on('new-notice', (data) => {
-      io.to(`apartment-${data.apartmentId}`).emit('notice-update', data)
-    })
-  })
-}
+    socket.on("new-notice", (data) => {
+      io.to(`apartment-${data.apartmentId}`).emit("notice-update", data);
+    });
+  });
+};
 ```
 
 ## 🗄️ Database 설계
 
 ### Supabase 스키마
+
 ```sql
 -- 아파트 정보
 CREATE TABLE apartments (
@@ -194,8 +204,8 @@ CREATE TABLE notices (
 
 -- 실시간 알림을 위한 RLS 정책
 ALTER TABLE notices ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Users can view notices from their apartment" 
-ON notices FOR SELECT 
+CREATE POLICY "Users can view notices from their apartment"
+ON notices FOR SELECT
 USING (apartment_id IN (
   SELECT apartment_id FROM users WHERE id = auth.uid()
 ));
@@ -204,6 +214,7 @@ USING (apartment_id IN (
 ## 🔧 개발 환경 설정
 
 ### 프로젝트 초기화
+
 ```bash
 # Next.js 프로젝트 생성
 npx create-next-app@latest apartment-community --typescript --tailwind --app
@@ -220,13 +231,14 @@ npm install -D eslint-config-next @typescript-eslint/eslint-plugin
 ```
 
 ### 환경 변수 설정
+
 ```bash
 # .env.local
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
-NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_URL=http://localhost:2555
 NEXTAUTH_SECRET=your_nextauth_secret
 
 REDIS_URL=your_upstash_redis_url
@@ -236,6 +248,7 @@ AWS_S3_BUCKET=your_s3_bucket
 ## 📋 MVP 개발 우선순위
 
 ### Phase 1 (2주) - 핵심 인증 & 기본 UI
+
 ```typescript
 // 구현 순서
 1. Next.js 프로젝트 설정 + Tailwind CSS
@@ -245,6 +258,7 @@ AWS_S3_BUCKET=your_s3_bucket
 ```
 
 ### Phase 2 (3주) - 핵심 기능
+
 ```typescript
 // 구현 순서
 1. 공지사항 CRUD + 실시간 업데이트
@@ -254,6 +268,7 @@ AWS_S3_BUCKET=your_s3_bucket
 ```
 
 ### Phase 3 (3주) - 고급 기능
+
 ```typescript
 // 구현 순서
 1. 민원 접수 + 처리 상태 추적
@@ -265,6 +280,7 @@ AWS_S3_BUCKET=your_s3_bucket
 ## 🚀 배포 전략
 
 ### Vercel 배포 설정
+
 ```javascript
 // vercel.json
 {
@@ -283,6 +299,7 @@ AWS_S3_BUCKET=your_s3_bucket
 ```
 
 ### AWS Lambda 백엔드 (필요시)
+
 ```yaml
 # serverless.yml
 service: apartment-community-api
@@ -290,7 +307,7 @@ provider:
   name: aws
   runtime: nodejs20.x
   region: ap-northeast-2
-  
+
 functions:
   api:
     handler: dist/lambda.handler
@@ -304,22 +321,26 @@ functions:
 ## 💡 2025년 트렌드 반영 포인트
 
 ### 1. 타입 안전성 극대화
+
 - tRPC로 End-to-End 타입 안전성
 - Zod 스키마 검증
 - TypeScript 5.0+ 최신 기능 활용
 
 ### 2. 개발자 경험 최적화
+
 - Turbopack (Next.js 15)
 - Hot Module Replacement
 - 자동 코드 생성 (Prisma, tRPC)
 
 ### 3. 성능 최적화
+
 - React Server Components
 - Streaming SSR
 - 이미지 최적화 (Next.js Image)
 - 번들 크기 최적화
 
 ### 4. 사용자 경험
+
 - PWA 네이티브 앱 수준 경험
 - 오프라인 지원
 - 실시간 업데이트
@@ -328,31 +349,33 @@ functions:
 ## 🔒 보안 고려사항
 
 ### 인증 & 권한
+
 ```typescript
 // middleware.ts
-import { withAuth } from "next-auth/middleware"
+import { withAuth } from "next-auth/middleware";
 
 export default withAuth(
   function middleware(req) {
     // 아파트별 접근 제어
-    const apartmentId = req.nextUrl.pathname.split('/')[2]
+    const apartmentId = req.nextUrl.pathname.split("/")[2];
     if (req.nextauth.token?.apartmentId !== apartmentId) {
-      return new Response("Unauthorized", { status: 401 })
+      return new Response("Unauthorized", { status: 401 });
     }
   },
   {
     callbacks: {
-      authorized: ({ token }) => !!token
+      authorized: ({ token }) => !!token,
     },
   }
-)
+);
 
 export const config = {
-  matcher: ["/apartment/:path*", "/api/protected/:path*"]
-}
+  matcher: ["/apartment/:path*", "/api/protected/:path*"],
+};
 ```
 
 ### 데이터 보호
+
 - Row Level Security (Supabase)
 - API Rate Limiting
 - CSRF 보호
