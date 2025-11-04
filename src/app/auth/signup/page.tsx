@@ -22,11 +22,17 @@ export default function SignUpPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
 
+  const passwordRules = [
+    { key: "minLength", label: "8자 이상" },
+    { key: "hasLetter", label: "영문 대/소문자" },
+    { key: "hasNumber", label: "숫자" },
+    { key: "hasSpecialChar", label: "특수문자" },
+  ];
+
   // 비밀번호 검증 조건
   const passwordValidation = {
     minLength: formData.password.length >= 8,
-    hasLowerCase: /[a-z]/.test(formData.password),
-    hasUpperCase: /[A-Z]/.test(formData.password),
+    hasLetter: /[a-zA-Z]/.test(formData.password),
     hasNumber: /\d/.test(formData.password),
     hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(formData.password),
   };
@@ -58,10 +64,7 @@ export default function SignUpPage() {
       validationErrors.password = "비밀번호를 입력해주세요";
     } else if (!passwordValidation.minLength) {
       validationErrors.password = "비밀번호는 8자 이상이어야 합니다";
-    } else if (
-      !passwordValidation.hasLowerCase &&
-      !passwordValidation.hasUpperCase
-    ) {
+    } else if (!passwordValidation.hasLetter) {
       validationErrors.password = "영문 대/소문자를 포함해야 합니다";
     } else if (!passwordValidation.hasSpecialChar) {
       validationErrors.password = "특수문자를 포함해야 합니다";
@@ -153,111 +156,42 @@ export default function SignUpPage() {
                 onChange={handleChange}
                 error={errors.password}
                 required
-              />
-
-              <div>
-                <label
-                  className="text-sm font-medium text-gray-700 mb-1 block"
-                  htmlFor="password"
-                >
-                  비밀번호 <span className="text-red-500">*</span>
-                </label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="8자 이상 입력해주세요"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className={`pr-10 ${errors.password ? "border-red-500" : ""}`}
-                />
-
-                {errors.password && (
-                  <p className="text-xs text-red-600 mt-1 flex items-center">
-                    <span className="mr-1">✗</span> {errors.password}
-                  </p>
-                )}
-
+              >
                 {/* 비밀번호 요구사항 */}
-                <div className="mt-2">
+                <div className="mt-1">
                   <div className="flex gap-x-6 gap-y-1">
-                    <p
-                      className={`text-xs flex items-center gap-1 ${
-                        passwordValidation.minLength
-                          ? "text-green-600"
-                          : "text-gray-500"
-                      }`}
-                    >
-                      <span>{passwordValidation.minLength ? "✓" : "○"}</span>
-                      <span>8자 이상</span>
-                    </p>
-                    <p
-                      className={`text-xs flex items-center gap-1 ${
-                        passwordValidation.hasLowerCase ||
-                        passwordValidation.hasUpperCase
-                          ? "text-green-600"
-                          : "text-gray-500"
-                      }`}
-                    >
-                      <span>
-                        {passwordValidation.hasLowerCase ||
-                        passwordValidation.hasUpperCase
-                          ? "✓"
-                          : "○"}
-                      </span>
-                      <span>영문 대/소문자</span>
-                    </p>
-                    <p
-                      className={`text-xs flex items-center gap-1 ${
-                        passwordValidation.hasNumber
-                          ? "text-green-600"
-                          : "text-gray-500"
-                      }`}
-                    >
-                      <span>{passwordValidation.hasNumber ? "✓" : "○"}</span>
-                      <span>숫자</span>
-                    </p>
-                    <p
-                      className={`text-xs flex items-center gap-1 ${
-                        passwordValidation.hasSpecialChar
-                          ? "text-green-600"
-                          : "text-gray-500"
-                      }`}
-                    >
-                      <span>
-                        {passwordValidation.hasSpecialChar ? "✓" : "○"}
-                      </span>
-                      <span>특수문자</span>
-                    </p>
+                    {passwordRules.map(({ key, label }) => {
+                      const valid =
+                        passwordValidation[
+                          key as keyof typeof passwordValidation
+                        ];
+                      return (
+                        <p
+                          key={key}
+                          className={`text-xs flex items-center gap-1 ${
+                            valid ? "text-green-600" : "text-gray-500"
+                          }`}
+                        >
+                          <span>{valid ? "✓" : "○"}</span>
+                          <span>{label}</span>
+                        </p>
+                      );
+                    })}
                   </div>
                 </div>
-              </div>
+              </FormField>
 
-              <div>
-                <label
-                  className="text-sm font-medium text-gray-700 mb-1 block"
-                  htmlFor="passwordConfirm"
-                >
-                  비밀번호 확인 <span className="text-red-500">*</span>
-                </label>
-                <Input
-                  id="passwordConfirm"
-                  name="passwordConfirm"
-                  type="password"
-                  placeholder="비밀번호를 다시 입력해주세요"
-                  value={formData.passwordConfirm}
-                  onChange={handleChange}
-                  className={
-                    errors.passwordConfirm ? "border-red-500 pr-10" : "pr-10"
-                  }
-                />
-
-                {errors.passwordConfirm && (
-                  <p className="text-xs text-red-600 mt-1 flex items-center">
-                    <span className="mr-1">✗</span> {errors.passwordConfirm}
-                  </p>
-                )}
-              </div>
+              <FormField
+                id="passwordConfirm"
+                name="passwordConfirm"
+                label="비밀번호 확인"
+                type="password"
+                placeholder="비밀번호를 다시 입력해주세요"
+                value={formData.passwordConfirm}
+                onChange={handleChange}
+                error={errors.passwordConfirm}
+                required
+              />
 
               <FormField
                 id="name"

@@ -50,14 +50,11 @@ export default function HomePage() {
     )
   }
 
-  // 사용자 정보 (세션에서 가져옴)
   const userInfo = {
     name: session.user.name || '사용자',
     apartment: `${session.user.dong || '?'}동`,
     unit: `${session.user.ho || '?'}호`,
   }
-
-  const notificationCount = 5
 
   // 시간 포맷 함수
   const formatTimeAgo = (date: Date) => {
@@ -180,7 +177,6 @@ export default function HomePage() {
       {/* 개인화 헤더 */}
       <UserHeader 
         user={userInfo}
-        notifications={notificationCount}
         onNotificationClick={() => console.log('알림 클릭')}
         onSettingsClick={() => console.log('설정 클릭')}
       />

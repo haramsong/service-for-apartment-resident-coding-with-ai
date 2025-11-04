@@ -1,3 +1,4 @@
+import React from "react";
 import { Input } from "./input";
 
 interface FormFieldProps {
@@ -13,6 +14,7 @@ interface FormFieldProps {
   autoFocus?: boolean;
   autoComplete?: string;
   className?: string;
+  children?: React.ReactNode;
 }
 
 export function FormField({
@@ -28,6 +30,7 @@ export function FormField({
   autoFocus = false,
   autoComplete,
   className = "",
+  children,
 }: FormFieldProps) {
   return (
     <div>
@@ -53,6 +56,7 @@ export function FormField({
           <span className="mr-1">✗</span> {error}
         </p>
       )}
+      {children}
     </div>
   );
 }
