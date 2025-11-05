@@ -1,22 +1,23 @@
-import { supabase } from './supabase';
+import { supabase } from "./supabase";
 
 export const STORAGE_BUCKETS = {
-  AVATARS: 'avatars',
-  POSTS: 'posts',
-  NOTICES: 'notices',
+  AVATARS: "avatars",
+  POSTS: "posts",
+  NOTICES: "notices",
 } as const;
 
-export async function uploadFile(
-  bucket: string,
-  path: string,
-  file: File
-) {
+export async function uploadFile(bucket: string, path: string, file: File) {
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+
   const { data, error } = await supabase.storage
     .from(bucket)
-    .upload(path, file, { upsert: true });
+    .upload(path, buffer, {
+      contentType: file.type,
+      upsert: true,
+    });
 
-  if (error) throw error;
-  return data;
+  return { data, error };
 }
 
 export async function getPublicUrl(bucket: string, path: string) {
