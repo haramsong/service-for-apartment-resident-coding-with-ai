@@ -86,17 +86,43 @@ export const reservationsRouter = router({
       // 시간 문자열을 DateTime으로 변환
       const startDateTime = new Date(`1970-01-01T${input.startTime}:00`)
       const endDateTime = new Date(`1970-01-01T${input.endTime}:00`)
+      const reservationDate = new Date(input.date)
 
-      // 중복 예약 확인
-      const existing = await prisma.reservation.findFirst({
+      // 본인의 같은 날짜 예약 확인
+      const myReservations = await prisma.reservation.findMany({
         where: {
-          facilityId: input.facilityId,
-          date: new Date(input.date),
-          startTime: startDateTime,
+          userId: ctx.session.user.id,
+          date: reservationDate,
+          status: 'confirmed',
         },
       })
 
-      if (existing) {
+      // 시간 겹침 확인
+      for (const existing of myReservations) {
+        const existingStart = existing.startTime.getTime()
+        const existingEnd = existing.endTime.getTime()
+        const newStart = startDateTime.getTime()
+        const newEnd = endDateTime.getTime()
+
+        if (newStart < existingEnd && newEnd > existingStart) {
+          throw new TRPCError({
+            code: 'CONFLICT',
+            message: '이미 해당 시간에 다른 예약이 있습니다',
+          })
+        }
+      }
+
+      // 시설 중복 예약 확인
+      const facilityReservation = await prisma.reservation.findFirst({
+        where: {
+          facilityId: input.facilityId,
+          date: reservationDate,
+          startTime: startDateTime,
+          status: 'confirmed',
+        },
+      })
+
+      if (facilityReservation) {
         throw new TRPCError({
           code: 'CONFLICT',
           message: '이미 예약된 시간입니다',
@@ -107,7 +133,7 @@ export const reservationsRouter = router({
         data: {
           facilityId: input.facilityId,
           userId: ctx.session.user.id,
-          date: new Date(input.date),
+          date: reservationDate,
           startTime: startDateTime,
           endTime: endDateTime,
         },
