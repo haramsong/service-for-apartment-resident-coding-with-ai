@@ -24,17 +24,50 @@ export const reservationsRouter = router({
       })
     )
     .query(async ({ input }) => {
+      const facility = await prisma.facility.findUnique({
+        where: { id: input.facilityId },
+      })
+
+      if (!facility) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: '시설을 찾을 수 없습니다',
+        })
+      }
+
       const reservations = await prisma.reservation.findMany({
         where: {
           facilityId: input.facilityId,
           date: new Date(input.date),
+          status: 'confirmed',
         },
       })
 
-      // TODO: 운영시간 기반 슬롯 생성 및 예약 여부 체크
+      // 운영시간 파싱 (기본값: 09:00-22:00)
+      const operatingHours = facility.operatingHours as { start: string; end: string } | null
+      const startHour = operatingHours?.start ? parseInt(operatingHours.start.split(':')[0]) : 9
+      const endHour = operatingHours?.end ? parseInt(operatingHours.end.split(':')[0]) : 22
+
+      // 1시간 단위 슬롯 생성
+      const slots = []
+      for (let hour = startHour; hour < endHour; hour++) {
+        const startTime = `${hour.toString().padStart(2, '0')}:00`
+        const endTime = `${(hour + 1).toString().padStart(2, '0')}:00`
+
+        const isReserved = reservations.some(
+          (r) => r.startTime === startTime
+        )
+
+        slots.push({
+          startTime,
+          endTime,
+          isAvailable: !isReserved,
+        })
+      }
+
       return {
         date: input.date,
-        slots: [],
+        slots,
       }
     }),
 

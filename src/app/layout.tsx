@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "react-day-picker/dist/style.css";
 import TopNavigation from "@/components/layout/TopNavigation";
 import BottomNavigation from "@/components/layout/BottomNavigation";
 import AuthSessionProvider from "@/components/providers/session-provider";
