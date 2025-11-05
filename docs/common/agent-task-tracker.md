@@ -65,6 +65,7 @@ _최종 업데이트: 2025-11-04 15:56_
 | ✅       | 프로필 아바타 업로드 기능 구현 | 완료 | Developer Agent | 2025-11-05 | 2025-11-05 | User 모델 avatar 필드, 파일 업로드 API, MY 페이지 UI 구현 |
 | ✅       | 파일 업로드 API Supabase Storage 연동 | 완료 | Developer Agent | 2025-11-05 | 2025-11-05 | 로컬 파일 시스템에서 Supabase Storage로 변경, CDN 지원 |
 | ✅       | MY 페이지 최근 활동 데이터 연동 | 완료 | Developer Agent | 2025-11-04 | 2025-11-04 | User 라우터 생성, 작성한 글/댓글/예약 수 실시간 조회 |
+| ✅       | 아바타 이미지 최적화 | 완료 | Developer Agent | 2025-11-05 | 2025-11-05 | 클라이언트 압축(400x400, JPEG 80%), 파일 크기 제한(2MB), Next.js Image 최적화 |
 
 ## Designer Agent 작업 목록
 
