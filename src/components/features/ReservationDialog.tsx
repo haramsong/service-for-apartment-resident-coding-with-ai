@@ -79,6 +79,8 @@ export function ReservationDialog({
 
   // 시간 제한 로직 (오늘 날짜인 경우 현재 시간 이후만 선택 가능, 한국 시간대 기준)
   const isSlotAvailable = (slot: any) => {
+    // 본인 예약은 비활성화
+    if (slot.isMyReservation) return false;
     if (!slot.isAvailable) return false;
     if (!date) return false;
 
@@ -135,6 +137,7 @@ export function ReservationDialog({
                 {slots.map((slot: any) => {
                   const available = isSlotAvailable(slot);
                   const showCapacity = slot.capacity && slot.capacity > 1;
+                  const isMySlot = slot.isMyReservation;
                   return (
                     <button
                       key={`${slot.startTime}-${slot.endTime}`}
@@ -147,7 +150,9 @@ export function ReservationDialog({
                       }
                       disabled={!available}
                       className={`p-4 rounded-xl border-2 text-sm font-medium transition-all min-h-[56px] ${
-                        selectedSlot?.start === slot.startTime
+                        isMySlot
+                          ? "bg-green-50 text-green-700 border-green-300 cursor-not-allowed"
+                          : selectedSlot?.start === slot.startTime
                           ? "bg-[#2B5CE6] text-white border-[#2B5CE6] shadow-md"
                           : available
                           ? "hover:bg-blue-50 hover:border-[#2B5CE6] border-gray-200 text-gray-700"
@@ -161,11 +166,13 @@ export function ReservationDialog({
                             {slot.startTime} - {slot.endTime}
                           </span>
                         </div>
-                        {showCapacity && (
+                        {isMySlot ? (
+                          <span className="text-xs">내 예약</span>
+                        ) : showCapacity ? (
                           <span className="text-xs">
                             {slot.currentCount}/{slot.capacity}
                           </span>
-                        )}
+                        ) : null}
                       </div>
                     </button>
                   );
