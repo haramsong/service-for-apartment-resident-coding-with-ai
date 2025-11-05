@@ -68,6 +68,7 @@ _최종 업데이트: 2025-11-05 13:35_
 | ✅       | 아바타 이미지 최적화 | 완료 | Developer Agent | 2025-11-05 | 2025-11-05 | 클라이언트 압축(400x400, JPEG 80%), 파일 크기 제한(2MB), Next.js Image 최적화 |
 | ✅       | JWT 토큰 리프레시 구현 | 완료 | Developer Agent | 2025-11-05 | 2025-11-05 | 아바타 업로드 후 세션 자동 갱신, trigger: 'update' 처리, 실시간 UI 반영 |
 | ✅       | 예약 페이지 API 연동 | 완료 | Developer Agent | 2025-11-05 | 2025-11-05 | tRPC 클라이언트 연동, 시설 목록/내 예약 조회, 시설 데이터 시드 |
+| ✅       | 예약 Dialog 구현 및 API 연동 | 완료 | Developer Agent | 2025-11-05 | 2025-11-05 | ReservationDialog 컴포넌트, Calendar/Dialog UI, 날짜/시간 선택 기능 |
 
 ## Designer Agent 작업 목록
 
