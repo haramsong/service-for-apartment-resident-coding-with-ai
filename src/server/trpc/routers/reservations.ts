@@ -68,7 +68,7 @@ export const reservationsRouter = router({
       const reservation = await prisma.reservation.create({
         data: {
           facilityId: input.facilityId,
-          userId: 'temp-user-id', // TODO: ctx.user.id
+          userId: ctx.session.user.id,
           date: new Date(input.date),
           startTime: input.startTime,
           endTime: input.endTime,
@@ -96,7 +96,7 @@ export const reservationsRouter = router({
       const skip = (input.page - 1) * input.limit
 
       const where = {
-        userId: 'temp-user-id', // TODO: ctx.user.id
+        userId: ctx.session.user.id,
         ...(input.status && { status: input.status }),
       }
 
