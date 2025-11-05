@@ -1,127 +1,143 @@
-'use client'
+"use client";
 
-import { User, Bell, Settings, HelpCircle, LogOut, ChevronRight, Camera } from 'lucide-react'
-import { Card } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { signOut, useSession } from 'next-auth/react'
-import { trpc } from '@/lib/trpc/client'
-import { useRef, useState } from 'react'
-import Image from 'next/image'
+import {
+  User,
+  Bell,
+  Settings,
+  HelpCircle,
+  LogOut,
+  ChevronRight,
+  Camera,
+} from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { signOut, useSession } from "next-auth/react";
+import { trpc } from "@/lib/trpc/client";
+import { useRef, useState } from "react";
+import Image from "next/image";
 
 const menuItems = [
   {
-    category: '계정',
+    category: "계정",
     items: [
-      { icon: User, label: '프로필 관리', href: '/my/profile' },
-      { icon: Bell, label: '알림 설정', href: '/my/notifications' },
-      { icon: Settings, label: '환경 설정', href: '/my/settings' },
+      { icon: User, label: "프로필 관리", href: "/my/profile" },
+      { icon: Bell, label: "알림 설정", href: "/my/notifications" },
+      { icon: Settings, label: "환경 설정", href: "/my/settings" },
     ],
   },
   {
-    category: '지원',
-    items: [
-      { icon: HelpCircle, label: '고객센터', href: '/my/support' },
-    ],
+    category: "지원",
+    items: [{ icon: HelpCircle, label: "고객센터", href: "/my/support" }],
   },
-]
+];
 
 export default function MyPage() {
-  const { data: session, update } = useSession()
-  const { data: stats, isLoading } = trpc.user.getActivityStats.useQuery(undefined, {
-    enabled: !!session,
-  })
-  const updateAvatar = trpc.user.updateAvatar.useMutation()
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [uploading, setUploading] = useState(false)
+  const { data: session, update } = useSession();
+  const { data: stats, isLoading } = trpc.user.getActivityStats.useQuery(
+    undefined,
+    {
+      enabled: !!session,
+    }
+  );
+  const updateAvatar = trpc.user.updateAvatar.useMutation();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
 
   const handleLogout = async () => {
-    await signOut({ callbackUrl: '/auth/signin' })
-  }
+    await signOut({ callbackUrl: "/auth/signin" });
+  };
 
   const handleAvatarClick = () => {
-    fileInputRef.current?.click()
-  }
+    fileInputRef.current?.click();
+  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const file = e.target.files?.[0];
+    if (!file) return;
 
     // 파일 크기 제한 (2MB)
     if (file.size > 2 * 1024 * 1024) {
-      alert('이미지 크기는 2MB 이하여야 합니다.')
-      return
+      alert("이미지 크기는 2MB 이하여야 합니다.");
+      return;
     }
 
     // 이미지 타입 확인
-    if (!file.type.startsWith('image/')) {
-      alert('이미지 파일만 업로드 가능합니다.')
-      return
+    if (!file.type.startsWith("image/")) {
+      alert("이미지 파일만 업로드 가능합니다.");
+      return;
     }
 
-    setUploading(true)
+    setUploading(true);
     try {
       // 이미지 압축
-      const compressedFile = await compressImage(file)
-      
-      const formData = new FormData()
-      formData.append('file', compressedFile)
+      const compressedFile = await compressImage(file);
 
-      const response = await fetch('/api/upload', {
-        method: 'POST',
+      const formData = new FormData();
+      formData.append("file", compressedFile);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
         body: formData,
-      })
+      });
 
-      if (!response.ok) throw new Error('Upload failed')
+      if (!response.ok) throw new Error("Upload failed");
 
-      const { url } = await response.json()
-      
-      await updateAvatar.mutateAsync({ avatar: url })
-      await update()
+      const { url } = await response.json();
+
+      console.log(url);
+
+      await updateAvatar.mutateAsync({ avatar: url });
+      await update();
+      console.log(session?.user);
     } catch (error) {
-      console.error('Upload failed:', error)
-      alert('업로드에 실패했습니다. 다시 시도해주세요.')
+      console.error("Upload failed:", error);
+      alert("업로드에 실패했습니다. 다시 시도해주세요.");
     } finally {
-      setUploading(false)
+      setUploading(false);
     }
-  }
+  };
 
   const compressImage = (file: File): Promise<File> => {
     return new Promise((resolve) => {
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
       reader.onload = (e) => {
-        const img = document.createElement('img')
-        img.src = e.target?.result as string
+        const img = document.createElement("img");
+        img.src = e.target?.result as string;
         img.onload = () => {
-          const canvas = document.createElement('canvas')
-          const MAX_SIZE = 400
-          let width = img.width
-          let height = img.height
+          const canvas = document.createElement("canvas");
+          const MAX_SIZE = 400;
+          let width = img.width;
+          let height = img.height;
 
           if (width > height) {
             if (width > MAX_SIZE) {
-              height *= MAX_SIZE / width
-              width = MAX_SIZE
+              height *= MAX_SIZE / width;
+              width = MAX_SIZE;
             }
           } else {
             if (height > MAX_SIZE) {
-              width *= MAX_SIZE / height
-              height = MAX_SIZE
+              width *= MAX_SIZE / height;
+              height = MAX_SIZE;
             }
           }
 
-          canvas.width = width
-          canvas.height = height
-          const ctx = canvas.getContext('2d')!
-          ctx.drawImage(img, 0, 0, width, height)
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d")!;
+          ctx.drawImage(img, 0, 0, width, height);
 
-          canvas.toBlob((blob) => {
-            resolve(new File([blob!], file.name, { type: 'image/jpeg' }))
-          }, 'image/jpeg', 0.8)
-        }
-      }
-    })
-  }
+          canvas.toBlob(
+            (blob) => {
+              resolve(new File([blob!], file.name, { type: "image/jpeg" }));
+            },
+            "image/jpeg",
+            0.8
+          );
+        };
+      };
+    });
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
@@ -131,14 +147,14 @@ export default function MyPage() {
           <div className="relative">
             <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center overflow-hidden">
               {session?.user?.avatar ? (
-                <Image 
-                  src={session.user.avatar} 
-                  alt="Avatar" 
-                  width={64} 
-                  height={64} 
+                <Image
+                  src={session.user.avatar}
+                  alt="Avatar"
+                  width={64}
+                  height={64}
                   className="object-cover w-full h-full"
                   priority
-                  unoptimized={session.user.avatar.includes('supabase')}
+                  unoptimized={session.user.avatar.includes("supabase")}
                 />
               ) : (
                 <User className="h-8 w-8 text-primary-600" />
@@ -165,8 +181,12 @@ export default function MyPage() {
             />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-gray-900">{session?.user?.name || '사용자'}</h2>
-            <p className="text-sm text-gray-500">{session?.user?.dong}동 {session?.user?.ho}호</p>
+            <h2 className="text-xl font-bold text-gray-900">
+              {session?.user?.name || "사용자"}
+            </h2>
+            <p className="text-sm text-gray-500">
+              {session?.user?.dong}동 {session?.user?.ho}호
+            </p>
           </div>
           <Button variant="outline" size="sm">
             프로필 수정
@@ -180,19 +200,19 @@ export default function MyPage() {
         <div className="grid grid-cols-3 gap-4">
           <Card className="p-4 text-center">
             <div className="text-2xl font-bold text-primary-600 mb-1">
-              {isLoading ? '-' : stats?.postsCount || 0}
+              {isLoading ? "-" : stats?.postsCount || 0}
             </div>
             <div className="text-sm text-gray-600">작성한 글</div>
           </Card>
           <Card className="p-4 text-center">
             <div className="text-2xl font-bold text-primary-600 mb-1">
-              {isLoading ? '-' : stats?.commentsCount || 0}
+              {isLoading ? "-" : stats?.commentsCount || 0}
             </div>
             <div className="text-sm text-gray-600">댓글</div>
           </Card>
           <Card className="p-4 text-center">
             <div className="text-2xl font-bold text-primary-600 mb-1">
-              {isLoading ? '-' : stats?.reservationsCount || 0}
+              {isLoading ? "-" : stats?.reservationsCount || 0}
             </div>
             <div className="text-sm text-gray-600">예약</div>
           </Card>
@@ -202,10 +222,12 @@ export default function MyPage() {
       {/* 메뉴 */}
       {menuItems.map((section) => (
         <section key={section.category}>
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">{section.category}</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">
+            {section.category}
+          </h2>
           <Card className="divide-y">
             {section.items.map((item) => {
-              const Icon = item.icon
+              const Icon = item.icon;
               return (
                 <button
                   key={item.label}
@@ -217,15 +239,15 @@ export default function MyPage() {
                   </div>
                   <ChevronRight className="h-5 w-5 text-gray-400" />
                 </button>
-              )
+              );
             })}
           </Card>
         </section>
       ))}
 
       {/* 로그아웃 */}
-      <Button 
-        variant="outline" 
+      <Button
+        variant="outline"
         className="w-full text-red-600 hover:text-red-700 hover:bg-red-50"
         onClick={handleLogout}
       >
@@ -233,5 +255,5 @@ export default function MyPage() {
         로그아웃
       </Button>
     </div>
-  )
+  );
 }

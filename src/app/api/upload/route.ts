@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const publicUrl = getPublicUrl("avatars", data!.path);
+    const publicUrl = await getPublicUrl("avatars", data!.path);
 
     return NextResponse.json({ url: publicUrl });
   } catch (error) {

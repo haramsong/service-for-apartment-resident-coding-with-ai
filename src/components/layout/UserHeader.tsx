@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Bell, Settings, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNotificationStore } from "@/store/useNotificationStore";
@@ -28,17 +29,20 @@ export default function UserHeader({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="relative">
-            {user.profileImage ? (
-              <img
-                src={user.profileImage}
-                alt={`${user.name} 프로필`}
-                className="w-12 h-12 rounded-full border-2 border-white/50 shadow-md"
-              />
-            ) : (
-              <div className="w-12 h-12 bg-gradient-to-br from-white/30 to-white/10 rounded-full flex items-center justify-center border-2 border-white/50 shadow-md backdrop-blur-sm">
+            <div className="w-12 h-12 bg-gradient-to-br from-white/30 to-white/10 rounded-full flex items-center justify-center overflow-hidden border-2 border-white/50 shadow-md backdrop-blur-sm">
+              {user.profileImage ? (
+                <Image
+                  src={user.profileImage}
+                  alt="Avatar"
+                  width={48}
+                  height={48}
+                  className="object-cover w-full h-full"
+                  priority
+                />
+              ) : (
                 <User className="h-6 w-6 text-white" />
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
           <div>
