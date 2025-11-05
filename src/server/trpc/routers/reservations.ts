@@ -3,6 +3,17 @@ import { router, publicProcedure, protectedProcedure } from '../trpc'
 import { prisma } from '@/lib/prisma'
 import { TRPCError } from '@trpc/server'
 
+// 한국 시간대 유틸리티
+const toKST = (date: Date) => {
+  return new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Seoul' }))
+}
+
+const parseKSTDate = (dateStr: string) => {
+  // YYYY-MM-DD 형식을 한국 시간대로 파싱
+  const [year, month, day] = dateStr.split('-').map(Number)
+  return new Date(year, month - 1, day)
+}
+
 export const reservationsRouter = router({
   // 시설 목록
   getFacilities: publicProcedure
@@ -38,7 +49,7 @@ export const reservationsRouter = router({
       const reservations = await prisma.reservation.findMany({
         where: {
           facilityId: input.facilityId,
-          date: new Date(input.date),
+          date: parseKSTDate(input.date),
           status: 'confirmed',
         },
       })
@@ -89,10 +100,16 @@ export const reservationsRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      // 시간 문자열을 DateTime으로 변환
-      const startDateTime = new Date(`1970-01-01T${input.startTime}:00`)
-      const endDateTime = new Date(`1970-01-01T${input.endTime}:00`)
-      const reservationDate = new Date(input.date)
+      // 시간 문자열을 DateTime으로 변환 (한국 시간대)
+      const [startHour, startMin] = input.startTime.split(':').map(Number)
+      const [endHour, endMin] = input.endTime.split(':').map(Number)
+      const reservationDate = parseKSTDate(input.date)
+      
+      const startDateTime = new Date(reservationDate)
+      startDateTime.setHours(startHour, startMin, 0, 0)
+      
+      const endDateTime = new Date(reservationDate)
+      endDateTime.setHours(endHour, endMin, 0, 0)
 
       // 시설 정보 조회
       const facility = await prisma.facility.findUnique({

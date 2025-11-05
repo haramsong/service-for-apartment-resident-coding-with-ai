@@ -65,8 +65,15 @@ export function ReservationDialog({
 
   const slots = slotsData?.slots || [];
 
-  // 날짜 제한 로직
-  const today = new Date();
+  // 날짜 제한 로직 (한국 시간대 기준)
+  const getKSTDate = () => {
+    const now = new Date();
+    const kstOffset = 9 * 60; // UTC+9
+    const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+    return new Date(utc + kstOffset * 60000);
+  };
+
+  const today = getKSTDate();
   today.setHours(0, 0, 0, 0);
   const maxDate = new Date(today);
   maxDate.setDate(maxDate.getDate() + 30); // 30일 이내만 예약 가능
@@ -77,23 +84,23 @@ export function ReservationDialog({
     return dateOnly < today || dateOnly > maxDate;
   };
 
-  // 시간 제한 로직 (오늘 날짜인 경우 현재 시간 이후만 선택 가능)
+  // 시간 제한 로직 (오늘 날짜인 경우 현재 시간 이후만 선택 가능, 한국 시간대 기준)
   const isSlotAvailable = (slot: any) => {
     if (!slot.isAvailable) return false;
     if (!date) return false;
 
     const selectedDate = new Date(date);
     selectedDate.setHours(0, 0, 0, 0);
-    const todayDate = new Date();
+    const todayDate = getKSTDate();
     todayDate.setHours(0, 0, 0, 0);
 
     // 오늘이 아니면 모든 시간 선택 가능
     if (selectedDate.getTime() !== todayDate.getTime()) return true;
 
-    // 오늘인 경우 현재 시간 이후만 선택 가능
-    const now = new Date();
+    // 오늘인 경우 현재 시간 이후만 선택 가능 (한국 시간 기준)
+    const now = getKSTDate();
     const [startHour, startMinute] = slot.startTime.split(":").map(Number);
-    const slotTime = new Date();
+    const slotTime = new Date(now);
     slotTime.setHours(startHour, startMinute, 0, 0);
 
     return slotTime > now;
