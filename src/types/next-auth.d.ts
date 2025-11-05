@@ -10,6 +10,7 @@ declare module 'next-auth' {
       dong: string | null
       ho: string | null
       role: string
+      avatar: string | null
     }
   }
 
@@ -18,6 +19,7 @@ declare module 'next-auth' {
     dong: string | null
     ho: string | null
     role: string
+    avatar: string | null
   }
 }
 
@@ -27,5 +29,6 @@ declare module 'next-auth/jwt' {
     dong: string | null
     ho: string | null
     role: string
+    avatar: string | null
   }
 }

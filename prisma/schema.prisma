@@ -33,6 +33,7 @@ model User {
   dong           String?         @db.VarChar(10)
   ho             String?         @db.VarChar(10)
   role           String          @default("resident") @db.VarChar(20)
+  avatar         String?         @db.VarChar(500)
   createdAt      DateTime        @default(now()) @map("created_at")
   updatedAt      DateTime        @updatedAt @map("updated_at")
   password       String          @default("temp_password") @db.VarChar(255)

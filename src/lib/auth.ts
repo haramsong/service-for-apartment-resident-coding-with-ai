@@ -44,6 +44,7 @@ export const authOptions: NextAuthOptions = {
           dong: user.dong,
           ho: user.ho,
           role: user.role,
+          avatar: user.avatar,
         }
       }
     })
@@ -58,6 +59,7 @@ export const authOptions: NextAuthOptions = {
         token.dong = user.dong
         token.ho = user.ho
         token.role = user.role
+        token.avatar = user.avatar
       }
       return token
     },
@@ -68,6 +70,7 @@ export const authOptions: NextAuthOptions = {
         session.user.dong = token.dong as string
         session.user.ho = token.ho as string
         session.user.role = token.role as string
+        session.user.avatar = token.avatar as string | null
       }
       return session
     }

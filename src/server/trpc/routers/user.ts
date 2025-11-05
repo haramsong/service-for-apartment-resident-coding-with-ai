@@ -23,4 +23,17 @@ export const userRouter = router({
       reservationsCount,
     }
   }),
+
+  // 아바타 업로드
+  updateAvatar: protectedProcedure
+    .input(z.object({ avatar: z.string().url() }))
+    .mutation(async ({ ctx, input }) => {
+      const user = await prisma.user.update({
+        where: { id: ctx.user.id },
+        data: { avatar: input.avatar },
+        select: { id: true, avatar: true },
+      })
+
+      return user
+    }),
 })

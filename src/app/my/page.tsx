@@ -1,10 +1,12 @@
 'use client'
 
-import { User, Bell, Settings, HelpCircle, LogOut, ChevronRight } from 'lucide-react'
+import { User, Bell, Settings, HelpCircle, LogOut, ChevronRight, Camera } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { signOut, useSession } from 'next-auth/react'
 import { trpc } from '@/lib/trpc/client'
+import { useRef, useState } from 'react'
+import Image from 'next/image'
 
 const menuItems = [
   {
@@ -24,13 +26,45 @@ const menuItems = [
 ]
 
 export default function MyPage() {
-  const { data: session } = useSession()
+  const { data: session, update } = useSession()
   const { data: stats, isLoading } = trpc.user.getActivityStats.useQuery(undefined, {
     enabled: !!session,
   })
+  const updateAvatar = trpc.user.updateAvatar.useMutation()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
 
   const handleLogout = async () => {
     await signOut({ callbackUrl: '/auth/signin' })
+  }
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
+
+      const { url } = await response.json()
+      
+      await updateAvatar.mutateAsync({ avatar: url })
+      await update()
+    } catch (error) {
+      console.error('Upload failed:', error)
+    } finally {
+      setUploading(false)
+    }
   }
 
   return (
@@ -38,8 +72,28 @@ export default function MyPage() {
       {/* 사용자 정보 */}
       <Card className="p-6">
         <div className="flex items-center space-x-4">
-          <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
-            <User className="h-8 w-8 text-primary-600" />
+          <div className="relative">
+            <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center overflow-hidden">
+              {session?.user?.avatar ? (
+                <Image src={session.user.avatar} alt="Avatar" width={64} height={64} className="object-cover" />
+              ) : (
+                <User className="h-8 w-8 text-primary-600" />
+              )}
+            </div>
+            <button
+              onClick={handleAvatarClick}
+              disabled={uploading}
+              className="absolute bottom-0 right-0 w-6 h-6 bg-primary-600 rounded-full flex items-center justify-center hover:bg-primary-700 transition-colors"
+            >
+              <Camera className="h-3 w-3 text-white" />
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
           </div>
           <div className="flex-1">
             <h2 className="text-xl font-bold text-gray-900">{session?.user?.name || '사용자'}</h2>
