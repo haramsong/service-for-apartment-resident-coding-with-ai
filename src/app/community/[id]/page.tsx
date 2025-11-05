@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
 import { ArrowLeft, Heart, MessageSquare, Eye, Send } from 'lucide-react'
 import { trpc } from '@/lib/trpc/client'
+import { getKSTDate } from '@/lib/dayjs'
 
 const categoryLabels: Record<string, string> = {
   free: '자유게시판',
@@ -58,15 +59,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
   }
 
   const formatTimeAgo = (date: Date) => {
-    const now = new Date()
-    const diff = now.getTime() - date.getTime()
-    const minutes = Math.floor(diff / (1000 * 60))
-    const hours = Math.floor(diff / (1000 * 60 * 60))
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-
-    if (minutes < 60) return `${minutes}분 전`
-    if (hours < 24) return `${hours}시간 전`
-    return `${days}일 전`
+    return getKSTDate(date).fromNow()
   }
 
   if (isLoading) {

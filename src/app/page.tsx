@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import UserHeader from "@/components/layout/UserHeader";
 import { trpc } from "@/lib/trpc/client";
+import { getKSTDate } from "@/lib/dayjs";
 import {
   MessageSquare,
   Car,
@@ -90,16 +91,9 @@ export default function HomePage() {
 
   // 시간 포맷 함수
   const formatTimeAgo = (date: Date) => {
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    const minutes = Math.floor(diff / (1000 * 60));
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-    if (minutes < 60) return `${minutes}분 전`;
-    if (hours < 24) return `${hours}시간 전`;
-    return `${days}일 전`;
+    return getKSTDate(date).fromNow();
   };
+
   const quickActions = [
     {
       icon: MessageSquare,

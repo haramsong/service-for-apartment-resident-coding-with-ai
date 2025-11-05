@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { trpc } from "@/lib/trpc/client";
 import { Clock } from "lucide-react";
+import { getKSTDate } from "@/lib/dayjs";
 
 interface ReservationDialogProps {
   facility: {
@@ -38,7 +39,7 @@ export function ReservationDialog({
   const { data: slotsData } = trpc.reservations.getAvailableSlots.useQuery(
     {
       facilityId: facility.id,
-      date: date?.toISOString().split("T")[0] || "",
+      date: date ? getKSTDate(date).format('YYYY-MM-DD') : "",
     },
     { enabled: !!date }
   );
@@ -57,7 +58,7 @@ export function ReservationDialog({
 
     createReservation.mutate({
       facilityId: facility.id,
-      date: date.toISOString().split("T")[0],
+      date: getKSTDate(date).format('YYYY-MM-DD'),
       startTime: selectedSlot.start,
       endTime: selectedSlot.end,
     });
@@ -66,22 +67,14 @@ export function ReservationDialog({
   const slots = slotsData?.slots || [];
 
   // 날짜 제한 로직 (한국 시간대 기준)
-  const getKSTDate = () => {
-    const now = new Date();
-    const kstOffset = 9 * 60; // UTC+9
-    const utc = now.getTime() + now.getTimezoneOffset() * 60000;
-    return new Date(utc + kstOffset * 60000);
-  };
-
-  const today = getKSTDate();
-  today.setHours(0, 0, 0, 0);
-  const maxDate = new Date(today);
-  maxDate.setDate(maxDate.getDate() + 30); // 30일 이내만 예약 가능
+  const today = getKSTDate().startOf('day').toDate();
+  const maxDate = getKSTDate().add(30, 'day').toDate(); // 30일 이내만 예약 가능
 
   const isDateDisabled = (checkDate: Date) => {
-    const dateOnly = new Date(checkDate);
-    dateOnly.setHours(0, 0, 0, 0);
-    return dateOnly < today || dateOnly > maxDate;
+    const dateOnly = getKSTDate(checkDate).startOf('day')
+    const todayStart = getKSTDate().startOf('day')
+    const maxDateEnd = getKSTDate().add(30, 'day').startOf('day')
+    return dateOnly.isBefore(todayStart) || dateOnly.isAfter(maxDateEnd);
   };
 
   // 시간 제한 로직 (오늘 날짜인 경우 현재 시간 이후만 선택 가능, 한국 시간대 기준)
@@ -89,21 +82,18 @@ export function ReservationDialog({
     if (!slot.isAvailable) return false;
     if (!date) return false;
 
-    const selectedDate = new Date(date);
-    selectedDate.setHours(0, 0, 0, 0);
-    const todayDate = getKSTDate();
-    todayDate.setHours(0, 0, 0, 0);
+    const selectedDate = getKSTDate(date).startOf('day')
+    const todayDate = getKSTDate().startOf('day')
 
     // 오늘이 아니면 모든 시간 선택 가능
-    if (selectedDate.getTime() !== todayDate.getTime()) return true;
+    if (!selectedDate.isSame(todayDate, 'day')) return true;
 
     // 오늘인 경우 현재 시간 이후만 선택 가능 (한국 시간 기준)
-    const now = getKSTDate();
+    const now = getKSTDate()
     const [startHour, startMinute] = slot.startTime.split(":").map(Number);
-    const slotTime = new Date(now);
-    slotTime.setHours(startHour, startMinute, 0, 0);
+    const slotTime = getKSTDate().hour(startHour).minute(startMinute).second(0)
 
-    return slotTime > now;
+    return slotTime.isAfter(now);
   };
 
   return (
@@ -135,8 +125,7 @@ export function ReservationDialog({
             <div>
               <label className="text-sm font-semibold text-gray-900 mb-3 block">
                 시간 선택
-                {new Date(date).setHours(0, 0, 0, 0) ===
-                  new Date().setHours(0, 0, 0, 0) && (
+                {getKSTDate(date).isSame(getKSTDate(), 'day') && (
                   <span className="text-xs text-gray-500 ml-2">
                     (현재 시간 이후만 선택 가능)
                   </span>

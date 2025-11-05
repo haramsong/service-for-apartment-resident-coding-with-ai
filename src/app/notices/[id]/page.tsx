@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Eye, AlertCircle } from 'lucide-react'
 import { trpc } from '@/lib/trpc/client'
+import { getKSTDate } from '@/lib/dayjs'
 
 const categoryLabels: Record<string, string> = {
   general: '일반',
@@ -24,8 +25,7 @@ export default function NoticeDetailPage({ params }: { params: Promise<{ id: str
   })
 
   const formatDate = (date: Date | string) => {
-    const d = new Date(date)
-    return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일`
+    return getKSTDate(date).format('YYYY년 M월 D일')
   }
 
   if (isLoading) {

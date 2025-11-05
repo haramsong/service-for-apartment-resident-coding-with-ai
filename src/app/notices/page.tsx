@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Eye, AlertCircle } from 'lucide-react'
 import { trpc } from '@/lib/trpc/client'
+import { getKSTDate } from '@/lib/dayjs'
 
 const categories = [
   { value: '', label: '전체' },
@@ -38,8 +39,7 @@ export default function NoticesPage() {
   })
 
   const formatDate = (date: Date | string) => {
-    const d = new Date(date)
-    return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
+    return getKSTDate(date).format('YYYY.MM.DD')
   }
 
   return (

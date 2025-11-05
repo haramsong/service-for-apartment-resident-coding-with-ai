@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { trpc } from '@/lib/trpc/client'
 import { useSession } from 'next-auth/react'
 import { ReservationDialog } from '@/components/features/ReservationDialog'
+import { getKSTDate } from '@/lib/dayjs'
 
 const facilityIcons: Record<string, string> = {
   '헬스장': '🏋️',
@@ -41,12 +42,7 @@ export default function ReservationPage() {
   }
 
   const formatDate = (date: Date | string) => {
-    return new Date(date).toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      timeZone: 'Asia/Seoul',
-    })
+    return getKSTDate(date).format('YYYY.MM.DD')
   }
 
   return (

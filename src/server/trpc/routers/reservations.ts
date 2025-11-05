@@ -2,6 +2,12 @@ import { z } from 'zod'
 import { router, publicProcedure, protectedProcedure } from '../trpc'
 import { prisma } from '@/lib/prisma'
 import { TRPCError } from '@trpc/server'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 export const reservationsRouter = router({
   // 시설 목록
@@ -35,9 +41,8 @@ export const reservationsRouter = router({
         })
       }
 
-      // 날짜를 로컬 시간 기준으로 파싱
-      const [year, month, day] = input.date.split('-').map(Number)
-      const queryDate = new Date(year, month - 1, day)
+      // 날짜를 서울 시간 기준으로 파싱
+      const queryDate = dayjs.tz(input.date, 'Asia/Seoul').startOf('day').toDate()
 
       const reservations = await prisma.reservation.findMany({
         where: {
@@ -57,7 +62,7 @@ export const reservationsRouter = router({
       for (let hour = startHour; hour < endHour; hour++) {
         const startTime = `${hour.toString().padStart(2, '0')}:00`
         const endTime = `${(hour + 1).toString().padStart(2, '0')}:00`
-        const slotStart = new Date(year, month - 1, day, hour, 0)
+        const slotStart = dayjs.tz(input.date, 'Asia/Seoul').hour(hour).minute(0).second(0).toDate()
 
         // 해당 시간대 예약 수 계산
         const reservationCount = reservations.filter(
@@ -93,15 +98,13 @@ export const reservationsRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      // 날짜 문자열을 로컬 시간 기준으로 파싱
-      const [year, month, day] = input.date.split('-').map(Number)
+      // 날짜를 서울 시간 기준으로 파싱
       const [startHour, startMin] = input.startTime.split(':').map(Number)
       const [endHour, endMin] = input.endTime.split(':').map(Number)
       
-      // 로컬 시간 기준으로 Date 객체 생성
-      const reservationDate = new Date(year, month - 1, day)
-      const startDateTime = new Date(year, month - 1, day, startHour, startMin)
-      const endDateTime = new Date(year, month - 1, day, endHour, endMin)
+      const reservationDate = dayjs.tz(input.date, 'Asia/Seoul').startOf('day').toDate()
+      const startDateTime = dayjs.tz(input.date, 'Asia/Seoul').hour(startHour).minute(startMin).second(0).toDate()
+      const endDateTime = dayjs.tz(input.date, 'Asia/Seoul').hour(endHour).minute(endMin).second(0).toDate()
 
       // 시설 정보 조회
       const facility = await prisma.facility.findUnique({
