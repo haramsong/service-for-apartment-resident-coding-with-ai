@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
 
+const MAX_FILE_SIZE = 2 * 1024 * 1024 // 2MB
+
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions)
   
@@ -15,6 +17,14 @@ export async function POST(request: NextRequest) {
   
   if (!file) {
     return NextResponse.json({ error: 'No file uploaded' }, { status: 400 })
+  }
+
+  if (file.size > MAX_FILE_SIZE) {
+    return NextResponse.json({ error: 'File too large' }, { status: 400 })
+  }
+
+  if (!file.type.startsWith('image/')) {
+    return NextResponse.json({ error: 'Invalid file type' }, { status: 400 })
   }
 
   const bytes = await file.arrayBuffer()

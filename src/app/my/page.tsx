@@ -46,15 +46,32 @@ export default function MyPage() {
     const file = e.target.files?.[0]
     if (!file) return
 
+    // 파일 크기 제한 (2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      alert('이미지 크기는 2MB 이하여야 합니다.')
+      return
+    }
+
+    // 이미지 타입 확인
+    if (!file.type.startsWith('image/')) {
+      alert('이미지 파일만 업로드 가능합니다.')
+      return
+    }
+
     setUploading(true)
     try {
+      // 이미지 압축
+      const compressedFile = await compressImage(file)
+      
       const formData = new FormData()
-      formData.append('file', file)
+      formData.append('file', compressedFile)
 
       const response = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
       })
+
+      if (!response.ok) throw new Error('Upload failed')
 
       const { url } = await response.json()
       
@@ -62,9 +79,48 @@ export default function MyPage() {
       await update()
     } catch (error) {
       console.error('Upload failed:', error)
+      alert('업로드에 실패했습니다. 다시 시도해주세요.')
     } finally {
       setUploading(false)
     }
+  }
+
+  const compressImage = (file: File): Promise<File> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = (e) => {
+        const img = document.createElement('img')
+        img.src = e.target?.result as string
+        img.onload = () => {
+          const canvas = document.createElement('canvas')
+          const MAX_SIZE = 400
+          let width = img.width
+          let height = img.height
+
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height *= MAX_SIZE / width
+              width = MAX_SIZE
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height
+              height = MAX_SIZE
+            }
+          }
+
+          canvas.width = width
+          canvas.height = height
+          const ctx = canvas.getContext('2d')!
+          ctx.drawImage(img, 0, 0, width, height)
+
+          canvas.toBlob((blob) => {
+            resolve(new File([blob!], file.name, { type: 'image/jpeg' }))
+          }, 'image/jpeg', 0.8)
+        }
+      }
+    })
   }
 
   return (
@@ -75,7 +131,15 @@ export default function MyPage() {
           <div className="relative">
             <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center overflow-hidden">
               {session?.user?.avatar ? (
-                <Image src={session.user.avatar} alt="Avatar" width={64} height={64} className="object-cover" />
+                <Image 
+                  src={session.user.avatar} 
+                  alt="Avatar" 
+                  width={64} 
+                  height={64} 
+                  className="object-cover w-full h-full"
+                  priority
+                  unoptimized={session.user.avatar.includes('supabase')}
+                />
               ) : (
                 <User className="h-8 w-8 text-primary-600" />
               )}
@@ -83,14 +147,19 @@ export default function MyPage() {
             <button
               onClick={handleAvatarClick}
               disabled={uploading}
-              className="absolute bottom-0 right-0 w-6 h-6 bg-primary-600 rounded-full flex items-center justify-center hover:bg-primary-700 transition-colors"
+              className="absolute bottom-0 right-0 w-6 h-6 bg-primary-600 rounded-full flex items-center justify-center hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="아바타 변경"
             >
-              <Camera className="h-3 w-3 text-white" />
+              {uploading ? (
+                <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <Camera className="h-3 w-3 text-white" />
+              )}
             </button>
             <input
               ref={fileInputRef}
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
               onChange={handleFileChange}
               className="hidden"
             />
