@@ -13,7 +13,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { signOut, useSession } from "next-auth/react";
 import { trpc } from "@/lib/trpc/client";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 
 const menuItems = [
@@ -42,6 +42,15 @@ export default function MyPage() {
   const updateAvatar = trpc.user.updateAvatar.useMutation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(
+    session?.user?.avatar || null
+  );
+
+  useEffect(() => {
+    if (session?.user?.avatar) {
+      setAvatarUrl(session.user.avatar);
+    }
+  }, [session?.user?.avatar]);
 
   const handleLogout = async () => {
     await signOut({ callbackUrl: "/auth/signin" });
@@ -84,11 +93,9 @@ export default function MyPage() {
 
       const { url } = await response.json();
 
-      console.log(url);
-
       await updateAvatar.mutateAsync({ avatar: url });
+      setAvatarUrl(url); // 즉시 UI 반영
       await update();
-      console.log(session?.user);
     } catch (error) {
       console.error("Upload failed:", error);
       alert("업로드에 실패했습니다. 다시 시도해주세요.");
@@ -146,15 +153,15 @@ export default function MyPage() {
         <div className="flex items-center space-x-4">
           <div className="relative">
             <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center overflow-hidden">
-              {session?.user?.avatar ? (
+              {avatarUrl ? (
                 <Image
-                  src={session.user.avatar}
+                  src={avatarUrl}
                   alt="Avatar"
                   width={64}
                   height={64}
                   className="object-cover w-full h-full"
                   priority
-                  unoptimized={session.user.avatar.includes("supabase")}
+                  unoptimized={avatarUrl.includes("supabase")}
                 />
               ) : (
                 <User className="h-8 w-8 text-primary-600" />
