@@ -63,6 +63,7 @@ _최종 업데이트: 2025-11-04 15:56_
 | ✅       | apartmentId null 타입 에러 수정 | 완료 | Developer Agent | 2025-11-04 | 2025-11-04 | 빌드 에러 해결, null 체크 추가, 타입 안전성 확보 |
 | ✅       | 공지사항 API 연동 | 완료 | Developer Agent | 2025-11-04 | 2025-11-04 | 홈페이지 공지사항 실제 데이터 연동, 긴급 알림 배너 구현 |
 | ✅       | 프로필 아바타 업로드 기능 구현 | 완료 | Developer Agent | 2025-11-05 | 2025-11-05 | User 모델 avatar 필드, 파일 업로드 API, MY 페이지 UI 구현 |
+| ✅       | 파일 업로드 API Supabase Storage 연동 | 완료 | Developer Agent | 2025-11-05 | 2025-11-05 | 로컬 파일 시스템에서 Supabase Storage로 변경, CDN 지원 |
 | ✅       | MY 페이지 최근 활동 데이터 연동 | 완료 | Developer Agent | 2025-11-04 | 2025-11-04 | User 라우터 생성, 작성한 글/댓글/예약 수 실시간 조회 |
 
 ## Designer Agent 작업 목록
