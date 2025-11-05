@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { writeFile } from 'fs/promises'
-import { join } from 'path'
+import { supabase } from '@/lib/supabase'
 
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions)
@@ -21,10 +20,22 @@ export async function POST(request: NextRequest) {
   const bytes = await file.arrayBuffer()
   const buffer = Buffer.from(bytes)
 
-  const filename = `${Date.now()}-${file.name}`
-  const path = join(process.cwd(), 'public', 'uploads', filename)
+  const filename = `${session.user.id}/${Date.now()}-${file.name}`
   
-  await writeFile(path, buffer)
+  const { data, error } = await supabase.storage
+    .from('avatars')
+    .upload(filename, buffer, {
+      contentType: file.type,
+      upsert: false,
+    })
 
-  return NextResponse.json({ url: `/uploads/${filename}` })
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  const { data: { publicUrl } } = supabase.storage
+    .from('avatars')
+    .getPublicUrl(data.path)
+
+  return NextResponse.json({ url: publicUrl })
 }
