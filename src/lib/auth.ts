@@ -53,7 +53,7 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt'
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.apartmentId = user.apartmentId
         token.dong = user.dong
@@ -61,6 +61,18 @@ export const authOptions: NextAuthOptions = {
         token.role = user.role
         token.avatar = user.avatar
       }
+      
+      // update() 호출 시 최신 사용자 정보 가져오기
+      if (trigger === 'update' && token.sub) {
+        const updatedUser = await prisma.user.findUnique({
+          where: { id: token.sub },
+          select: { avatar: true }
+        })
+        if (updatedUser) {
+          token.avatar = updatedUser.avatar
+        }
+      }
+      
       return token
     },
     async session({ session, token }) {
