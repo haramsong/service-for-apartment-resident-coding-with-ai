@@ -3,13 +3,6 @@ import { router, publicProcedure, protectedProcedure } from '../trpc'
 import { prisma } from '@/lib/prisma'
 import { TRPCError } from '@trpc/server'
 
-// 날짜 문자열을 UTC 기준 Date로 변환
-const parseDate = (dateStr: string) => {
-  // YYYY-MM-DD 형식을 UTC 기준으로 파싱
-  const [year, month, day] = dateStr.split('-').map(Number)
-  return new Date(Date.UTC(year, month - 1, day))
-}
-
 export const reservationsRouter = router({
   // 시설 목록
   getFacilities: publicProcedure
@@ -42,10 +35,14 @@ export const reservationsRouter = router({
         })
       }
 
+      // 날짜를 로컬 시간 기준으로 파싱
+      const [year, month, day] = input.date.split('-').map(Number)
+      const queryDate = new Date(year, month - 1, day)
+
       const reservations = await prisma.reservation.findMany({
         where: {
           facilityId: input.facilityId,
-          date: parseDate(input.date),
+          date: queryDate,
           status: 'confirmed',
         },
       })
@@ -60,11 +57,11 @@ export const reservationsRouter = router({
       for (let hour = startHour; hour < endHour; hour++) {
         const startTime = `${hour.toString().padStart(2, '0')}:00`
         const endTime = `${(hour + 1).toString().padStart(2, '0')}:00`
-        const startDateTime = new Date(`1970-01-01T${startTime}:00`)
+        const slotStart = new Date(year, month - 1, day, hour, 0)
 
         // 해당 시간대 예약 수 계산
         const reservationCount = reservations.filter(
-          (r) => r.startTime.getTime() === startDateTime.getTime()
+          (r) => r.startTime.getTime() === slotStart.getTime()
         ).length
 
         // 정원 초과 여부 확인
@@ -96,18 +93,15 @@ export const reservationsRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      // UTC 기준 날짜 생성
-      const reservationDate = parseDate(input.date)
-      
-      // 시간 문자열을 UTC DateTime으로 변환
+      // 날짜 문자열을 로컬 시간 기준으로 파싱
+      const [year, month, day] = input.date.split('-').map(Number)
       const [startHour, startMin] = input.startTime.split(':').map(Number)
       const [endHour, endMin] = input.endTime.split(':').map(Number)
       
-      const startDateTime = new Date(reservationDate)
-      startDateTime.setUTCHours(startHour, startMin, 0, 0)
-      
-      const endDateTime = new Date(reservationDate)
-      endDateTime.setUTCHours(endHour, endMin, 0, 0)
+      // 로컬 시간 기준으로 Date 객체 생성
+      const reservationDate = new Date(year, month - 1, day)
+      const startDateTime = new Date(year, month - 1, day, startHour, startMin)
+      const endDateTime = new Date(year, month - 1, day, endHour, endMin)
 
       // 시설 정보 조회
       const facility = await prisma.facility.findUnique({
