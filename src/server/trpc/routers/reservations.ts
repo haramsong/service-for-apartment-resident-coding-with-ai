@@ -55,14 +55,20 @@ export const reservationsRouter = router({
         const endTime = `${(hour + 1).toString().padStart(2, '0')}:00`
         const startDateTime = new Date(`1970-01-01T${startTime}:00`)
 
-        const isReserved = reservations.some(
+        // 해당 시간대 예약 수 계산
+        const reservationCount = reservations.filter(
           (r) => r.startTime.getTime() === startDateTime.getTime()
-        )
+        ).length
+
+        // 정원 초과 여부 확인
+        const isFull = facility.capacity ? reservationCount >= facility.capacity : reservationCount > 0
 
         slots.push({
           startTime,
           endTime,
-          isAvailable: !isReserved,
+          isAvailable: !isFull,
+          currentCount: reservationCount,
+          capacity: facility.capacity,
         })
       }
 
@@ -88,6 +94,36 @@ export const reservationsRouter = router({
       const endDateTime = new Date(`1970-01-01T${input.endTime}:00`)
       const reservationDate = new Date(input.date)
 
+      // 시설 정보 조회
+      const facility = await prisma.facility.findUnique({
+        where: { id: input.facilityId },
+      })
+
+      if (!facility) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: '시설을 찾을 수 없습니다',
+        })
+      }
+
+      // 해당 시간대 예약 수 확인
+      const existingReservations = await prisma.reservation.findMany({
+        where: {
+          facilityId: input.facilityId,
+          date: reservationDate,
+          startTime: startDateTime,
+          status: 'confirmed',
+        },
+      })
+
+      // 정원 초과 확인
+      if (facility.capacity && existingReservations.length >= facility.capacity) {
+        throw new TRPCError({
+          code: 'CONFLICT',
+          message: '해당 시간대 정원이 초과되었습니다',
+        })
+      }
+
       // 본인의 같은 날짜 예약 확인
       const myReservations = await prisma.reservation.findMany({
         where: {
@@ -110,23 +146,6 @@ export const reservationsRouter = router({
             message: '이미 해당 시간에 다른 예약이 있습니다',
           })
         }
-      }
-
-      // 시설 중복 예약 확인
-      const facilityReservation = await prisma.reservation.findFirst({
-        where: {
-          facilityId: input.facilityId,
-          date: reservationDate,
-          startTime: startDateTime,
-          status: 'confirmed',
-        },
-      })
-
-      if (facilityReservation) {
-        throw new TRPCError({
-          code: 'CONFLICT',
-          message: '이미 예약된 시간입니다',
-        })
       }
 
       const reservation = await prisma.reservation.create({

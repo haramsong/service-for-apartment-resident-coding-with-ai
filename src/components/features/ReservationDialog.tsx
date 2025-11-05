@@ -138,6 +138,7 @@ export function ReservationDialog({
               <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto p-1">
                 {slots.map((slot: any) => {
                   const available = isSlotAvailable(slot);
+                  const showCapacity = slot.capacity && slot.capacity > 1;
                   return (
                     <button
                       key={`${slot.startTime}-${slot.endTime}`}
@@ -157,11 +158,18 @@ export function ReservationDialog({
                           : "bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed"
                       }`}
                     >
-                      <div className="flex items-center justify-center space-x-1.5">
-                        <Clock className="h-4 w-4" />
-                        <span>
-                          {slot.startTime} - {slot.endTime}
-                        </span>
+                      <div className="flex flex-col items-center justify-center space-y-1">
+                        <div className="flex items-center space-x-1.5">
+                          <Clock className="h-4 w-4" />
+                          <span>
+                            {slot.startTime} - {slot.endTime}
+                          </span>
+                        </div>
+                        {showCapacity && (
+                          <span className="text-xs">
+                            {slot.currentCount}/{slot.capacity}
+                          </span>
+                        )}
                       </div>
                     </button>
                   );
