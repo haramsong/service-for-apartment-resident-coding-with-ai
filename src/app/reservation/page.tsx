@@ -1,10 +1,12 @@
 'use client'
 
+import { useState } from 'react'
 import { CalendarCheck, Clock, Users } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { trpc } from '@/lib/trpc/client'
 import { useSession } from 'next-auth/react'
+import { ReservationDialog } from '@/components/features/ReservationDialog'
 
 const facilityIcons: Record<string, string> = {
   '헬스장': '🏋️',
@@ -17,6 +19,8 @@ const facilityIcons: Record<string, string> = {
 export default function ReservationPage() {
   const { data: session } = useSession()
   const apartmentId = session?.user?.apartmentId || ''
+  const [selectedFacility, setSelectedFacility] = useState<any>(null)
+  const [dialogOpen, setDialogOpen] = useState(false)
 
   const { data: facilitiesData, isLoading: facilitiesLoading } = trpc.reservations.getFacilities.useQuery(
     { apartmentId },
@@ -30,6 +34,11 @@ export default function ReservationPage() {
 
   const facilities = facilitiesData?.items || []
   const myReservations = myReservationsData?.items || []
+
+  const handleReserveClick = (facility: any) => {
+    setSelectedFacility(facility)
+    setDialogOpen(true)
+  }
 
   const formatDate = (date: Date | string) => {
     return new Date(date).toLocaleDateString('ko-KR', {
@@ -146,12 +155,23 @@ export default function ReservationPage() {
                     </div>
                   )}
                 </div>
-                <Button className="w-full min-h-[44px] font-medium">예약하기</Button>
+                <Button className="w-full min-h-[44px] font-medium" onClick={() => handleReserveClick(facility)}>
+                  예약하기
+                </Button>
               </Card>
             ))}
           </div>
         )}
       </section>
+
+      {/* 예약 Dialog */}
+      {selectedFacility && (
+        <ReservationDialog
+          facility={selectedFacility}
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+        />
+      )}
     </div>
   )
 }
