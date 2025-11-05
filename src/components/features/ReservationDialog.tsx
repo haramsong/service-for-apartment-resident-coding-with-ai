@@ -55,29 +55,29 @@ export function ReservationDialog({ facility, open, onOpenChange }: ReservationD
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{facility.name} 예약</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-gray-900">{facility.name} 예약</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {/* 날짜 선택 */}
           <div>
-            <label className="text-sm font-medium text-gray-700 mb-2 block">날짜 선택</label>
+            <label className="text-sm font-semibold text-gray-900 mb-3 block">날짜 선택</label>
             <Calendar
               mode="single"
               selected={date}
               onSelect={setDate}
               disabled={(date) => date < new Date()}
-              className="rounded-md border"
+              className="rounded-xl border border-gray-200 bg-white shadow-sm"
             />
           </div>
 
           {/* 시간 선택 */}
           {date && (
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">시간 선택</label>
-              <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+              <label className="text-sm font-semibold text-gray-900 mb-3 block">시간 선택</label>
+              <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto p-1">
                 {slots.map((slot: any) => (
                   <button
                     key={`${slot.startTime}-${slot.endTime}`}
@@ -86,16 +86,16 @@ export function ReservationDialog({ facility, open, onOpenChange }: ReservationD
                       setSelectedSlot({ start: slot.startTime, end: slot.endTime })
                     }
                     disabled={!slot.isAvailable}
-                    className={`p-3 rounded-lg border text-sm transition-all ${
+                    className={`p-4 rounded-xl border-2 text-sm font-medium transition-all min-h-[56px] ${
                       selectedSlot?.start === slot.startTime
-                        ? 'bg-primary text-white border-primary'
+                        ? 'bg-[#2B5CE6] text-white border-[#2B5CE6] shadow-md'
                         : slot.isAvailable
-                        ? 'hover:bg-gray-50 border-gray-200'
-                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        ? 'hover:bg-blue-50 hover:border-[#2B5CE6] border-gray-200 text-gray-700'
+                        : 'bg-gray-50 text-gray-400 border-gray-200 cursor-not-allowed'
                     }`}
                   >
-                    <div className="flex items-center justify-center space-x-1">
-                      <Clock className="h-3 w-3" />
+                    <div className="flex items-center justify-center space-x-1.5">
+                      <Clock className="h-4 w-4" />
                       <span>
                         {slot.startTime} - {slot.endTime}
                       </span>
@@ -107,18 +107,18 @@ export function ReservationDialog({ facility, open, onOpenChange }: ReservationD
           )}
 
           {/* 예약 버튼 */}
-          <div className="flex space-x-2 pt-4">
+          <div className="flex space-x-3 pt-2">
             <Button
               variant="outline"
               onClick={() => onOpenChange(false)}
-              className="flex-1"
+              className="flex-1 h-12 text-base font-semibold border-2"
             >
               취소
             </Button>
             <Button
               onClick={handleReserve}
               disabled={!date || !selectedSlot || createReservation.isPending}
-              className="flex-1"
+              className="flex-1 h-12 text-base font-semibold bg-[#2B5CE6] hover:bg-[#1E4BD1]"
             >
               {createReservation.isPending ? '예약 중...' : '예약하기'}
             </Button>
