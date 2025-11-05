@@ -53,9 +53,10 @@ export const reservationsRouter = router({
       for (let hour = startHour; hour < endHour; hour++) {
         const startTime = `${hour.toString().padStart(2, '0')}:00`
         const endTime = `${(hour + 1).toString().padStart(2, '0')}:00`
+        const startDateTime = new Date(`1970-01-01T${startTime}:00`)
 
         const isReserved = reservations.some(
-          (r) => r.startTime === startTime
+          (r) => r.startTime.getTime() === startDateTime.getTime()
         )
 
         slots.push({
@@ -82,12 +83,16 @@ export const reservationsRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      // 시간 문자열을 DateTime으로 변환
+      const startDateTime = new Date(`1970-01-01T${input.startTime}:00`)
+      const endDateTime = new Date(`1970-01-01T${input.endTime}:00`)
+
       // 중복 예약 확인
       const existing = await prisma.reservation.findFirst({
         where: {
           facilityId: input.facilityId,
           date: new Date(input.date),
-          startTime: input.startTime,
+          startTime: startDateTime,
         },
       })
 
@@ -103,8 +108,8 @@ export const reservationsRouter = router({
           facilityId: input.facilityId,
           userId: ctx.session.user.id,
           date: new Date(input.date),
-          startTime: input.startTime,
-          endTime: input.endTime,
+          startTime: startDateTime,
+          endTime: endDateTime,
         },
         include: {
           facility: {
