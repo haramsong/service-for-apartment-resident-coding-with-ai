@@ -35,7 +35,7 @@ const menuItems = [
 export default function MyPage() {
   const router = useRouter();
   const supabase = createClient();
-  const { data: profile } = trpc.auth.getProfile.useQuery();
+  const { data: profile, refetch } = trpc.auth.getProfile.useQuery();
   const { data: stats, isLoading } = trpc.user.getActivityStats.useQuery();
   const updateAvatar = trpc.user.updateAvatar.useMutation();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -95,7 +95,8 @@ export default function MyPage() {
 
       await updateAvatar.mutateAsync({ avatar: url });
       setAvatarUrl(url); // 즉시 UI 반영
-      await update();
+      // 프로필 다시 fetch
+      await refetch();
     } catch (error) {
       console.error("Upload failed:", error);
       alert("업로드에 실패했습니다. 다시 시도해주세요.");

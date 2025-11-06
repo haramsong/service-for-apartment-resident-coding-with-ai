@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useSession } from 'next-auth/react'
+import { useAuth } from '@/hooks/useAuth'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -20,7 +20,7 @@ const categories = [
 
 export default function NewNoticePage() {
   const router = useRouter()
-  const { data: session } = useSession()
+  const { user } = useAuth()
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [category, setCategory] = useState('general')
@@ -44,8 +44,12 @@ export default function NewNoticePage() {
     })
   }
 
+  const { data: userProfile } = trpc.auth.getProfile.useQuery(undefined, {
+    enabled: !!user,
+  })
+
   // 관리자 권한 확인
-  if (session?.user?.role !== 'admin') {
+  if (userProfile?.role !== 'admin') {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <Card className="p-6 max-w-md">

@@ -3,10 +3,12 @@ import type { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'com.apartment.community',
   appName: '우리동네',
-  webDir: 'out',
+  webDir: '.next',
   server: {
     androidScheme: 'https',
     iosScheme: 'https',
+    url: 'http://localhost:2555',
+    cleartext: true,
   },
   plugins: {
     SplashScreen: {

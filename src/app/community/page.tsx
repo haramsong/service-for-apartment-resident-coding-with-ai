@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useSession } from 'next-auth/react'
+import { useAuth } from '@/hooks/useAuth'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -27,17 +27,21 @@ const categoryLabels: Record<string, string> = {
 
 export default function CommunityPage() {
   const router = useRouter()
-  const { data: session } = useSession()
+  const { user } = useAuth()
   const [selectedCategory, setSelectedCategory] = useState('')
 
+  const { data: userProfile } = trpc.auth.getProfile.useQuery(undefined, {
+    enabled: !!user,
+  })
+
   const { data: postsData, isLoading } = trpc.posts.getList.useQuery({
-    apartmentId: session?.user?.apartmentId || '',
+    apartmentId: userProfile?.apartment?.id || '',
     category: selectedCategory || undefined,
     sortBy: 'latest',
     page: 1,
     limit: 20,
   }, {
-    enabled: !!session?.user?.apartmentId,
+    enabled: !!userProfile?.apartment?.id,
   })
 
   const formatTimeAgo = (date: Date) => {

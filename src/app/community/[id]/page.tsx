@@ -2,7 +2,7 @@
 
 import { useState, use } from 'react'
 import { useRouter } from 'next/navigation'
-import { useSession } from 'next-auth/react'
+import { useAuth } from '@/hooks/useAuth'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -21,7 +21,7 @@ const categoryLabels: Record<string, string> = {
 export default function PostDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params)
   const router = useRouter()
-  const { data: session } = useSession()
+  const { user } = useAuth()
   const [comment, setComment] = useState('')
   const [isAnonymous, setIsAnonymous] = useState(false)
   const utils = trpc.useContext()
@@ -150,7 +150,7 @@ export default function PostDetailPage({ params }: { params: Promise<{ id: strin
           </div>
 
           {/* 댓글 작성 */}
-          {session && (
+          {user && (
             <form onSubmit={handleCommentSubmit} className="mb-6">
               <Textarea
                 value={comment}

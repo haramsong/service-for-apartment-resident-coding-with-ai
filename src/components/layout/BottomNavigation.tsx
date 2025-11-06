@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useSession } from 'next-auth/react'
+import { useAuth } from '@/hooks/useAuth'
 import { Home, MessageSquare, Building, CalendarCheck, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -36,10 +36,10 @@ const navigation = [
 
 export default function BottomNavigation() {
   const pathname = usePathname()
-  const { data: session, status } = useSession()
+  const { user, loading } = useAuth()
 
   // 로딩 중이거나 인증되지 않은 경우 렌더링하지 않음
-  if (status === 'loading' || !session) {
+  if (loading || !user) {
     return null
   }
 

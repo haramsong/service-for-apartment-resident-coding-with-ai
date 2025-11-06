@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useSession } from 'next-auth/react'
+import { useAuth } from '@/hooks/useAuth'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Eye, AlertCircle } from 'lucide-react'
@@ -26,16 +26,20 @@ const categoryLabels: Record<string, string> = {
 
 export default function NoticesPage() {
   const router = useRouter()
-  const { data: session } = useSession()
+  const { user } = useAuth()
   const [selectedCategory, setSelectedCategory] = useState('')
 
+  const { data: userProfile } = trpc.auth.getProfile.useQuery(undefined, {
+    enabled: !!user,
+  })
+
   const { data: noticesData, isLoading } = trpc.notices.getList.useQuery({
-    apartmentId: session?.user?.apartmentId || '',
+    apartmentId: userProfile?.apartment?.id || '',
     category: selectedCategory || undefined,
     page: 1,
     limit: 20,
   }, {
-    enabled: !!session?.user?.apartmentId,
+    enabled: !!userProfile?.apartment?.id,
   })
 
   const formatDate = (date: Date | string) => {
@@ -51,7 +55,7 @@ export default function NoticesPage() {
             <h1 className="text-2xl font-bold text-gray-900 lg:text-3xl">공지사항</h1>
             <p className="text-sm text-gray-600 mt-1 lg:text-base">관리사무소의 중요한 소식</p>
           </div>
-          {session?.user?.role === 'admin' && (
+          {userProfile?.role === 'admin' && (
             <button
               onClick={() => router.push('/notices/new')}
               className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"

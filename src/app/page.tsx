@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useAuth } from "@/hooks/useAuth";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,52 +21,56 @@ import {
   CreditCard,
   Bell,
 } from "lucide-react";
-import { profile } from "console";
 
 export default function HomePage() {
-  const { data: session, status } = useSession();
+  const { user, loading } = useAuth();
+
+  // tRPC 쿼리에서 사용할 사용자 정보
+  const { data: userProfile } = trpc.auth.getProfile.useQuery(undefined, {
+    enabled: !!user,
+  });
 
   // 최근 커뮤니티 글 가져오기
   const { data: recentPosts } = trpc.posts.getList.useQuery(
     {
-      apartmentId: session?.user?.apartmentId || "",
+      apartmentId: userProfile?.apartment?.id || "",
       page: 1,
       limit: 3,
       sortBy: "latest",
     },
     {
-      enabled: !!session?.user?.apartmentId,
+      enabled: !!userProfile?.apartment?.id,
     }
   );
 
   // 최근 공지사항 가져오기
   const { data: recentNotices } = trpc.notices.getList.useQuery(
     {
-      apartmentId: session?.user?.apartmentId || "",
+      apartmentId: userProfile?.apartment?.id || "",
       page: 1,
       limit: 3,
     },
     {
-      enabled: !!session?.user?.apartmentId,
+      enabled: !!userProfile?.apartment?.id,
     }
   );
 
   // 긴급 공지사항 가져오기
   const { data: urgentNotices } = trpc.notices.getList.useQuery(
     {
-      apartmentId: session?.user?.apartmentId || "",
+      apartmentId: userProfile?.apartment?.id || "",
       page: 1,
       limit: 1,
       isUrgent: true,
     },
     {
-      enabled: !!session?.user?.apartmentId,
+      enabled: !!userProfile?.apartment?.id,
     }
   );
 
   const urgentNotice = urgentNotices?.items[0];
 
-  if (status === "loading") {
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-lg">로딩 중...</div>
@@ -74,7 +78,7 @@ export default function HomePage() {
     );
   }
 
-  if (!session) {
+  if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-lg">로그인이 필요합니다.</div>
@@ -83,10 +87,10 @@ export default function HomePage() {
   }
 
   const userInfo = {
-    name: session.user.name || "사용자",
-    apartment: `${session.user.dong || "?"}동`,
-    unit: `${session.user.ho || "?"}호`,
-    profileImage: session.user.avatar || undefined,
+    name: userProfile?.name || "사용자",
+    apartment: `${userProfile?.dong || "?"}동`,
+    unit: `${userProfile?.ho || "?"}호`,
+    profileImage: userProfile?.avatar || undefined,
   };
 
   // 시간 포맷 함수

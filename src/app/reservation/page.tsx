@@ -5,7 +5,7 @@ import { CalendarCheck, Clock, Users } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { trpc } from '@/lib/trpc/client'
-import { useSession } from 'next-auth/react'
+import { useAuth } from '@/hooks/useAuth'
 import { ReservationDialog } from '@/components/features/ReservationDialog'
 import { getKSTDate } from '@/lib/dayjs'
 
@@ -18,8 +18,11 @@ const facilityIcons: Record<string, string> = {
 }
 
 export default function ReservationPage() {
-  const { data: session } = useSession()
-  const apartmentId = session?.user?.apartmentId || ''
+  const { user } = useAuth()
+  const { data: userProfile } = trpc.auth.getProfile.useQuery(undefined, {
+    enabled: !!user,
+  })
+  const apartmentId = userProfile?.apartment?.id || ''
   const [selectedFacility, setSelectedFacility] = useState<any>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
 
@@ -30,7 +33,7 @@ export default function ReservationPage() {
 
   const { data: myReservationsData, isLoading: reservationsLoading } = trpc.reservations.getMyList.useQuery(
     { status: 'confirmed' },
-    { enabled: !!session }
+    { enabled: !!user }
   )
 
   const facilities = facilitiesData?.items || []

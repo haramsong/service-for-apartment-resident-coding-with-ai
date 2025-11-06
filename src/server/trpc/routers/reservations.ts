@@ -91,7 +91,7 @@ export const reservationsRouter = router({
         const isMyReservation = reservations.some(
           (r) =>
             r.startTime.getTime() === slotStart.getTime() &&
-            r.userId === ctx.session.user.id
+            r.userId === ctx.user.id
         );
 
         // 정원 초과 여부 확인
@@ -184,7 +184,7 @@ export const reservationsRouter = router({
       // 본인의 같은 날짜 예약 확인
       const myReservations = await prisma.reservation.findMany({
         where: {
-          userId: ctx.session.user.id,
+          userId: ctx.user.id,
           date: reservationDate,
           status: "confirmed",
         },
@@ -208,7 +208,7 @@ export const reservationsRouter = router({
       const reservation = await prisma.reservation.create({
         data: {
           facilityId: input.facilityId,
-          userId: ctx.session.user.id,
+          userId: ctx.user.id,
           date: reservationDate,
           startTime: startDateTime,
           endTime: endDateTime,
@@ -236,7 +236,7 @@ export const reservationsRouter = router({
       const skip = (input.page - 1) * input.limit;
 
       const where = {
-        userId: ctx.session.user.id,
+        userId: ctx.user.id,
         ...(input.status && { status: input.status }),
       };
 

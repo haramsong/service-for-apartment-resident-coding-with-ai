@@ -102,6 +102,7 @@ export const authRouter = router({
       dong: user.dong,
       ho: user.ho,
       role: user.role,
+      avatar: user.avatar,
       createdAt: user.createdAt,
     };
   }),
