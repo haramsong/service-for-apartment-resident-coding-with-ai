@@ -41,3 +41,8 @@ coverage/
 postgres_data/
 
 /generated/prisma
+
+# Capacitor
+ios/
+android/
+.capacitor/
