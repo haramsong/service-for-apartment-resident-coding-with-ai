@@ -69,6 +69,7 @@ _최종 업데이트: 2025-11-05 13:35_
 | ✅       | JWT 토큰 리프레시 구현 | 완료 | Developer Agent | 2025-11-05 | 2025-11-05 | 아바타 업로드 후 세션 자동 갱신, trigger: 'update' 처리, 실시간 UI 반영 |
 | ✅       | 예약 페이지 API 연동 | 완료 | Developer Agent | 2025-11-05 | 2025-11-05 | tRPC 클라이언트 연동, 시설 목록/내 예약 조회, 시설 데이터 시드 |
 | ✅       | 예약 Dialog 구현 및 API 연동 | 완료 | Developer Agent | 2025-11-05 | 2025-11-05 | ReservationDialog 컴포넌트, Calendar/Dialog UI, 날짜/시간 선택 기능 |
+| ✅       | 모바일 앱 패키징 설정 | 완료 | Developer Agent | 2025-11-06 | 2025-11-06 | Capacitor 설치, Next.js static export, iOS/Android 지원 |
 
 ## Designer Agent 작업 목록
 
