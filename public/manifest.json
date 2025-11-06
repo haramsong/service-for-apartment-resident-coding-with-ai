@@ -1,0 +1,24 @@
+{
+  "name": "우리동네 - 아파트 커뮤니티",
+  "short_name": "우리동네",
+  "description": "아파트 생활의 모든 것을 연결하는 스마트 커뮤니티 플랫폼",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2B5CE6",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

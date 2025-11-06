@@ -10,6 +10,18 @@ import { TRPCProvider } from "@/lib/trpc/provider";
 export const metadata: Metadata = {
   title: "우리동네 - 아파트 커뮤니티",
   description: "아파트 입주민을 위한 소통 플랫폼",
+  manifest: "/manifest.json",
+  themeColor: "#2B5CE6",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "우리동네",
+  },
 };
 
 export default function RootLayout({
