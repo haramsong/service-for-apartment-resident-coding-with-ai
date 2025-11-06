@@ -45,6 +45,7 @@ export const reservationsRouter = router({
       const queryDate = dayjs
         .tz(input.date, "Asia/Seoul")
         .startOf("day")
+        .utc()
         .toDate();
 
       const reservations = await prisma.reservation.findMany({
@@ -54,6 +55,8 @@ export const reservationsRouter = router({
           status: "confirmed",
         },
       });
+
+      console.log(reservations);
 
       // 운영시간 파싱 (기본값: 09:00-22:00)
       const operatingHours = facility.operatingHours as {

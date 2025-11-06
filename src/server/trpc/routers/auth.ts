@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { prisma } from "@/lib/prisma";
-import { hashPassword } from "@/lib/auth-utils";
 import { TRPCError } from "@trpc/server";
 
 export const authRouter = router({
@@ -17,7 +16,7 @@ export const authRouter = router({
   signUp: publicProcedure
     .input(
       z.object({
-        email: z.email(),
+        email: z.string().email(),
         password: z.string().min(8),
         name: z.string(),
         apartmentId: z.string(),
@@ -25,26 +24,33 @@ export const authRouter = router({
         ho: z.string(),
       })
     )
-    .mutation(async ({ input }) => {
-      // 이메일 중복 확인
-      const existing = await prisma.user.findUnique({
-        where: { email: input.email },
+    .mutation(async ({ input, ctx }) => {
+      // Supabase Auth에 사용자 생성
+      const { data: authData, error: authError } = await ctx.supabase.auth.signUp({
+        email: input.email,
+        password: input.password,
       });
 
-      if (existing) {
+      if (authError) {
         throw new TRPCError({
-          code: "CONFLICT",
-          message: "이미 존재하는 이메일입니다",
+          code: "BAD_REQUEST",
+          message: authError.message,
         });
       }
 
-      // 비밀번호 해싱
-      const hashedPassword = await hashPassword(input.password);
+      if (!authData.user) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "사용자 생성에 실패했습니다",
+        });
+      }
 
+      // Prisma에 사용자 정보 저장
       const user = await prisma.user.create({
         data: {
+          id: authData.user.id,
           email: input.email,
-          password: hashedPassword,
+          password: "", // Supabase Auth 사용으로 불필요
           name: input.name,
           apartmentId: input.apartmentId,
           dong: input.dong,

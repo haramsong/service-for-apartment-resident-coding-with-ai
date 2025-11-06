@@ -11,10 +11,11 @@ import {
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { signOut, useSession } from "next-auth/react";
 import { trpc } from "@/lib/trpc/client";
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 const menuItems = [
   {
@@ -32,28 +33,27 @@ const menuItems = [
 ];
 
 export default function MyPage() {
-  const { data: session, update } = useSession();
-  const { data: stats, isLoading } = trpc.user.getActivityStats.useQuery(
-    undefined,
-    {
-      enabled: !!session,
-    }
-  );
+  const router = useRouter();
+  const supabase = createClient();
+  const { data: profile } = trpc.auth.getProfile.useQuery();
+  const { data: stats, isLoading } = trpc.user.getActivityStats.useQuery();
   const updateAvatar = trpc.user.updateAvatar.useMutation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(
-    session?.user?.avatar || null
+    profile?.avatar || null
   );
 
   useEffect(() => {
-    if (session?.user?.avatar) {
-      setAvatarUrl(session.user.avatar);
+    if (profile?.avatar) {
+      setAvatarUrl(profile.avatar);
     }
-  }, [session?.user?.avatar]);
+  }, [profile?.avatar]);
 
   const handleLogout = async () => {
-    await signOut({ callbackUrl: "/auth/signin" });
+    await supabase.auth.signOut();
+    router.push("/auth/signin");
+    router.refresh();
   };
 
   const handleAvatarClick = () => {
@@ -189,10 +189,10 @@ export default function MyPage() {
           </div>
           <div className="flex-1">
             <h2 className="text-xl font-bold text-gray-900">
-              {session?.user?.name || "사용자"}
+              {profile?.name || "사용자"}
             </h2>
             <p className="text-sm text-gray-500">
-              {session?.user?.dong}동 {session?.user?.ho}호
+              {profile?.dong}동 {profile?.ho}호
             </p>
           </div>
           <Button variant="outline" size="sm">

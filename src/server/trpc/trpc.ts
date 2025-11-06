@@ -1,17 +1,47 @@
 import { initTRPC, TRPCError } from '@trpc/server'
 import { type FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch'
 import { ZodError } from 'zod'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
+import { prisma } from '@/lib/prisma'
 
 // Context 생성
 export const createTRPCContext = async (opts: FetchCreateContextFnOptions) => {
-  const session = await getServerSession(authOptions)
+  const cookieStore = await cookies()
+  
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            )
+          } catch {}
+        },
+      },
+    }
+  )
+
+  const { data: { user: supabaseUser } } = await supabase.auth.getUser()
+  
+  let user = null
+  if (supabaseUser) {
+    user = await prisma.user.findUnique({
+      where: { id: supabaseUser.id },
+      include: { apartment: true }
+    })
+  }
   
   return {
     req: opts.req,
-    session,
-    user: session?.user,
+    supabase,
+    user,
   }
 }
 
@@ -37,14 +67,13 @@ export const publicProcedure = t.procedure
 
 // 인증 미들웨어
 const isAuthenticated = t.middleware(async ({ ctx, next }) => {
-  if (!ctx.session || !ctx.user) {
+  if (!ctx.user) {
     throw new TRPCError({ code: 'UNAUTHORIZED' })
   }
   
   return next({
     ctx: {
       ...ctx,
-      session: ctx.session,
       user: ctx.user,
     },
   })
@@ -52,7 +81,7 @@ const isAuthenticated = t.middleware(async ({ ctx, next }) => {
 
 // 관리자 권한 미들웨어
 const isAdmin = t.middleware(async ({ ctx, next }) => {
-  if (!ctx.session || !ctx.user) {
+  if (!ctx.user) {
     throw new TRPCError({ code: 'UNAUTHORIZED' })
   }
   
@@ -63,7 +92,6 @@ const isAdmin = t.middleware(async ({ ctx, next }) => {
   return next({
     ctx: {
       ...ctx,
-      session: ctx.session,
       user: ctx.user,
     },
   })

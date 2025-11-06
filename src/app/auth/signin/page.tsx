@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn, getSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { createClient } from '@/lib/supabase/client'
 
 export default function SignInPage() {
   const [email, setEmail] = useState('')
@@ -13,6 +13,7 @@ export default function SignInPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
+  const supabase = createClient()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -20,13 +21,12 @@ export default function SignInPage() {
     setError('')
 
     try {
-      const result = await signIn('credentials', {
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
-        redirect: false,
       })
 
-      if (result?.error) {
+      if (error) {
         setError('이메일 또는 비밀번호가 올바르지 않습니다.')
       } else {
         router.push('/')

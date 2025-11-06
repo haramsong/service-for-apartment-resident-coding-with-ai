@@ -1,22 +1,8 @@
-import { withAuth } from "next-auth/middleware"
+import { updateSession } from '@/lib/supabase/middleware'
 
-export default withAuth(
-  function middleware(req) {
-    // 인증이 필요한 페이지에서 추가 로직 수행 가능
-  },
-  {
-    callbacks: {
-      authorized: ({ token, req }) => {
-        // 인증 페이지는 로그인하지 않은 사용자만 접근 가능
-        if (req.nextUrl.pathname.startsWith('/auth/')) {
-          return !token
-        }
-        // 다른 모든 페이지는 인증 필요
-        return !!token
-      },
-    },
-  }
-)
+export async function middleware(request: any) {
+  return await updateSession(request)
+}
 
 export const config = {
   matcher: [
