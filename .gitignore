@@ -46,3 +46,5 @@ postgres_data/
 ios/
 android/
 .capacitor/
+
+certificates

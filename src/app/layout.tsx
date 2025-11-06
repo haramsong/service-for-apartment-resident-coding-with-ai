@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "react-day-picker/dist/style.css";
 import TopNavigation from "@/components/layout/TopNavigation";
@@ -11,17 +11,17 @@ export const metadata: Metadata = {
   title: "우리동네 - 아파트 커뮤니티",
   description: "아파트 입주민을 위한 소통 플랫폼",
   manifest: "/manifest.json",
-  themeColor: "#2B5CE6",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "우리동네",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({
