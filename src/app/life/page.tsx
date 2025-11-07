@@ -73,7 +73,7 @@ export default function LifePage() {
     }
   ]
 
-  const formatDate = (date: Date) => {
+  const formatDate = (date: Date | string) => {
     return new Date(date).toLocaleDateString('ko-KR', {
       year: 'numeric',
       month: '2-digit',
