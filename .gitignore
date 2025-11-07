@@ -42,9 +42,8 @@ postgres_data/
 
 /generated/prisma
 
-# Capacitor
-ios/
-android/
-.capacitor/
+# PWA
+/public/sw.js
+/public/workbox-*
 
 certificates
