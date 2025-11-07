@@ -26,7 +26,10 @@ import { profile } from "console";
 export default function HomePage() {
   const { data: session, status } = useSession();
 
-  // 최근 커뮤니티 글 가져오기
+  // 최근 커뮤니티 글 가져오기 (일주일 이내)
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  
   const { data: recentPosts } = trpc.posts.getList.useQuery(
     {
       apartmentId: session?.user?.apartmentId || "",
@@ -38,6 +41,11 @@ export default function HomePage() {
       enabled: !!session?.user?.apartmentId,
     }
   );
+
+  // 일주일 이내 글만 필터링
+  const weeklyPosts = recentPosts?.items.filter(
+    (post) => new Date(post.createdAt) >= oneWeekAgo
+  ) || [];
 
   // 최근 공지사항 가져오기
   const { data: recentNotices } = trpc.notices.getList.useQuery(
@@ -98,10 +106,10 @@ export default function HomePage() {
     {
       icon: MessageSquare,
       title: "커뮤니티",
-      description: "새 글 3개",
+      description: `새 글 ${weeklyPosts.length}개`,
       color: "bg-blue-50 text-blue-600",
       href: "/community",
-      badge: "3",
+      badge: weeklyPosts.length > 0 ? weeklyPosts.length.toString() : undefined,
     },
     {
       icon: FileText,
@@ -502,10 +510,10 @@ export default function HomePage() {
               </div>
 
               <Card className="divide-y divide-gray-100 border-0 shadow-sm overflow-hidden">
-                {!recentPosts?.items.length ? (
+                {!weeklyPosts.length ? (
                   <div className="p-8 text-center text-gray-500">
                     <MessageSquare className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-                    <p className="mb-2">아직 커뮤니티 글이 없습니다</p>
+                    <p className="mb-2">최근 일주일간 작성된 글이 없습니다</p>
                     <Button
                       size="sm"
                       onClick={() =>
@@ -516,7 +524,7 @@ export default function HomePage() {
                     </Button>
                   </div>
                 ) : (
-                  recentPosts.items.map((post) => (
+                  weeklyPosts.map((post) => (
                     <article
                       key={post.id}
                       className="group p-4 flex items-center justify-between hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-200 cursor-pointer focus-within:bg-gray-50 touch-manipulation sm:p-5"
