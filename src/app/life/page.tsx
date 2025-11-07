@@ -12,8 +12,22 @@ import {
   Shield,
   ChevronRight 
 } from 'lucide-react'
+import { trpc } from '@/lib/trpc/client'
+import { useSession } from 'next-auth/react'
 
 export default function LifePage() {
+  const { data: session } = useSession()
+  
+  const { data: notices, isLoading } = trpc.notices.getList.useQuery(
+    {
+      apartmentId: session?.user?.apartmentId || '',
+      limit: 3,
+    },
+    {
+      enabled: !!session?.user?.apartmentId,
+    }
+  )
+
   const services = [
     {
       icon: CreditCard,
@@ -59,23 +73,13 @@ export default function LifePage() {
     }
   ]
 
-  const notices = [
-    {
-      title: '정기 소독 안내',
-      date: '2024.10.20',
-      type: '공지'
-    },
-    {
-      title: '주차장 보수공사',
-      date: '2024.10.18',
-      type: '공지'
-    },
-    {
-      title: '관리비 고지서 발송',
-      date: '2024.10.15',
-      type: '안내'
-    }
-  ]
+  const formatDate = (date: Date) => {
+    return new Date(date).toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).replace(/\. /g, '.').replace(/\.$/, '')
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -125,22 +129,36 @@ export default function LifePage() {
             </Button>
           </div>
           
-          <Card className="divide-y divide-gray-100 border-0 shadow-sm">
-            {notices.map((notice, index) => (
-              <div key={index} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors duration-200">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Badge variant="outline" className="text-xs border-gray-200">
-                      {notice.type}
-                    </Badge>
-                    <span className="text-xs text-gray-500">{notice.date}</span>
+          {isLoading ? (
+            <Card className="p-8 text-center border-0 shadow-sm">
+              <p className="text-sm text-gray-500">공지사항을 불러오는 중...</p>
+            </Card>
+          ) : notices && notices.items.length > 0 ? (
+            <Card className="divide-y divide-gray-100 border-0 shadow-sm">
+              {notices.items.map((notice) => (
+                <div 
+                  key={notice.id} 
+                  className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
+                  onClick={() => window.location.href = `/notices/${notice.id}`}
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Badge variant="outline" className="text-xs border-gray-200">
+                        {notice.category}
+                      </Badge>
+                      <span className="text-xs text-gray-500">{formatDate(notice.createdAt)}</span>
+                    </div>
+                    <h3 className="text-sm font-medium text-gray-900">{notice.title}</h3>
                   </div>
-                  <h3 className="text-sm font-medium text-gray-900">{notice.title}</h3>
+                  <ChevronRight className="h-4 w-4 text-gray-400" />
                 </div>
-                <ChevronRight className="h-4 w-4 text-gray-400" />
-              </div>
-            ))}
-          </Card>
+              ))}
+            </Card>
+          ) : (
+            <Card className="p-8 text-center border-0 shadow-sm">
+              <p className="text-sm text-gray-500">등록된 공지사항이 없습니다.</p>
+            </Card>
+          )}
         </div>
 
         {/* 하단 여백 */}
